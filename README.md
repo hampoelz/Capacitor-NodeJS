@@ -2,6 +2,8 @@
 
 ➡ A full-fledged [Node.js](https://nodejs.org/) runtime for [Capacitor](https://capacitorjs.com) apps.
 
+> ℹ️ This project uses the [Node.js for Mobile Apps](https://github.com/JaneaSystems/nodejs-mobile) toolkit to add NodeJS support in Android and IOS
+
 > **⚠ In early development ⚠**
 > - _Note:_ The project is still very unstable, if you have any problems or suggestions it would be nice if you create an issue.
 > - Only the Android platform is currently supported.
