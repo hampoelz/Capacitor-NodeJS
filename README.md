@@ -1,6 +1,6 @@
-# Capacitor NodeJS-Integration
+# 📱 Capacitor NodeJS-Integration
 
-A full-fledged [Node.js](https://nodejs.org/) runtime for [Capacitor](https://capacitorjs.com) apps.
+➡ A full-fledged [Node.js](https://nodejs.org/) runtime for [Capacitor](https://capacitorjs.com) apps.
 
 > **⚠ In early development ⚠**
 > - _Note:_ The project is still very unstable, if you have any problems or suggestions it would be nice if you create an issue.
