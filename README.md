@@ -9,7 +9,7 @@ A full-fledged [Node.js](https://nodejs.org/) runtime for [Capacitor](https://ca
 > - Features like IOS- and [Electron](https://github.com/capacitor-community/electron)- support or a command to update the NodeJS runtime will be added in the future.
 
 ## Install
-**You have to use Capacitor v3. This project is not compatible with lower versions of Capacitor.**
+**You've to use Capacitor v3. This project isn't compatible with lower versions of Capacitor.**
 
 ```bash
 npm install hampoelz/capacitor-nodejs
@@ -62,7 +62,7 @@ my-capacitor-app/
  +-- README.md
 ```
 
-Now we can send messages from the NodeJS layer and wait for them in our Capacitor App:
+Now in our Capacitor app we can send messages from the NodeJS layer and wait for them:
 ```typescript
 import { NodeJS } from 'capacitor-nodejs';
 
@@ -78,7 +78,8 @@ NodeJS.send({
 ```
 
 ## Configuration
-We can customize the NodeJS project directory. By default it is in the root of the Capacitor webdir. But it can be changed in the `capacitor.config.json` file so that the Capacitor- and the NodeJS- project are more separated:
+We can customize the NodeJS project directory. By default it is in the root of the Capacitor webdir. But it can be changed in the `capacitor.config.json` file so that the Capacitor- and the NodeJS- project are more separated.
+
 ```json
 {
   "plugins": {
@@ -109,25 +110,23 @@ my-capacitor-app/
  +-- ...
 ```
 
-## Node Module
+## Node Modules
 Node modules can be added to the project using npm. The Node modules have to be installed in the NodeJS project folder in which we created the `package.json` file.
 
 Go to the NodeJS project folder and proceed with the installation of the Node modules you want to add to your Node.js project.
 
-Sync and rebuild your Capacitor project so that the newly added Node modules are added to the Capacitor application.
+Sync and rebuild your Capacitor project so that the newly added Node modules are added to the application.
 
-On Android, the plugin extracts the project files and the Node modules from the APK assets in order to make them available to the Node.js for Mobile Apps engine. They are extracted from the APK and copied to a working folder (`context.getFilesDir().getAbsolutePath() + "/public/<nodeDir>"` -> `<nodeDir>` is the NodeJS project folder configured in the `capacitor.config.json` file. If there is no configuration, the `<nodeDir>` can be omitted) when the application is launched for the first time or a new version of the application has been installed.
+On Android, the plugin extracts the project files and the Node modules from the APK assets in order to make them available to the Node.js for Mobile Apps engine. They are extracted from the APK and copied to a working folder (`context.getFilesDir().getAbsolutePath() + "/public/<nodeDir>"` -> `<nodeDir>` is the NodeJS project folder configured in the `capacitor.config.json` file. If there is no configuration, the `<nodeDir>` can be omitted in the path) when the application is launched for the first time or a new version of the application has been installed.
 
 > ⚠️ Warning
 >
 > Given the project folder will be overwritten after each application update, it should not be used for persistent data storage.
 
-To expedite the process of extracting the assets files, instead of parsing the assets hierarchy, a list of files `file.list` and a list of folders `dir.list` are created when the application is compiled and then added to the application assets. On Android 6.x and older versions, this allows to work around a serious perfomance bug in the Android assets manager.
+You may want to add a gitignore file to ignore unnecessary files. To do this, create a new file named `.gitignore` in the NodeJS project folder and copy the contents of [github.com/github/gitignore/blob/master/Node.gitignore](https://github.com/github/gitignore/blob/master/Node.gitignore) into it.
 
-You may want to add a gitignore file to the Node JS project folder to ignore unnecessary files and save bandwidth. To do this, create a new file named `.gitignore` and copy the contents of [github.com/github/gitignore/blob/master/Node.gitignore](https://github.com/github/gitignore/blob/master/Node.gitignore) into it.
 ## API - NodeJS layer
-
-The `channel` module is an [Event Emitter](https://nodejs.org/api/events.html#events_class_eventemitter). It provides a few methods so you can send  messages from the NodeJS process to the capacitor layer. You can also receive replies from the capacitor layer.
+The `channel` module is an [Event Emitter](https://nodejs.org/api/events.html#events_class_eventemitter). It provides a few methods so you can send messages from the NodeJS process to the capacitor layer. You can also receive replies from the capacitor layer.
 
 It has the following method to listen for events and send messages:
 
@@ -181,6 +180,7 @@ Send a message to the capacitor layer via `eventName`, along with
 arguments. Arguments will be serialized with JSON.
 
 ## API - Capacitor layer
+The `NodeJS` module is the API you use in your Capacitor app. It provides a few methods so you can send messages from the NodeJS layer and wait for them.
 
 <docgen-index>
 
