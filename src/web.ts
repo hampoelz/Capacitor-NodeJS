@@ -3,8 +3,7 @@ import { WebPlugin } from '@capacitor/core';
 import type { NodeJSPlugin } from './definitions';
 
 export class NodeJSWeb extends WebPlugin implements NodeJSPlugin {
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
+  send(): Promise<{ value: boolean }> {
+    throw this.unavailable('NodeJs Engine not available in browser.');
   }
 }

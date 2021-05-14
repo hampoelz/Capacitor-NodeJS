@@ -1,0 +1,7 @@
+Executable : C:\Users\reneh\AppData\Local\Android\Sdk\cmake\3.10.2.4988404\bin\ninja.exe
+arguments : 
+-C
+C:\Users\reneh\Desktop\Capacitor-NodeJS\android\.cxx\cmake\debug\x86
+native-lib
+jvmArgs : 
+

@@ -1,0 +1,4 @@
+# ninja log v5
+1	961	642686474	CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o	17debc686bb481bb
+21	1404	642686475	CMakeFiles/native-lib.dir/src/main/cpp/Bridge.cpp.o	68c7b9d9e0c3580e
+1406	1681	642686475	../../../../build/intermediates/cmake/debug/obj/x86/libnative-lib.so	f8d92d526ab9095
