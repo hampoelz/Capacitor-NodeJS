@@ -8,7 +8,9 @@
   "unpkg": "dist/plugin.js",
   "files": [
     "android/src/main/",
+    "android/libnode/",
     "android/build.gradle",
+    "android/CMakeLists.txt",
     "dist/",
     "ios/Plugin/",
     "CapacitorNodejs.podspec"
