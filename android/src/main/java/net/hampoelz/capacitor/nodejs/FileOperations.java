@@ -1,7 +1,6 @@
 package net.hampoelz.capacitor.nodejs;
 
 import android.content.res.AssetManager;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,8 +13,7 @@ public class FileOperations {
 
     public static void DeleteFolderRecursively(File file) throws IOException {
         for (File childFile : file.listFiles()) {
-            if (childFile.isDirectory()) DeleteFolderRecursively(childFile);
-            else childFile.delete();
+            if (childFile.isDirectory()) DeleteFolderRecursively(childFile); else childFile.delete();
         }
         file.delete();
     }
@@ -23,7 +21,7 @@ public class FileOperations {
     public static void CopyAssetFolder(AssetManager assetManager, String assetFolder, String destinationFolder) throws IOException {
         String[] files = assetManager.list(assetFolder);
 
-        if (files.length==0) {
+        if (files.length == 0) {
             //If it's a file, it won't have any assets "inside" it.
             CopyAsset(assetManager, assetFolder, destinationFolder);
         } else {
@@ -70,8 +68,7 @@ public class FileOperations {
             buffer.close();
 
             return content.toString();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

@@ -1,15 +1,13 @@
 package net.hampoelz.capacitor.nodejs;
 
-import android.system.ErrnoException;
-import android.system.Os;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-
+import android.system.ErrnoException;
+import android.system.Os;
 import java.io.File;
 import java.io.IOException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,7 +39,7 @@ public class NodeJS {
         }
     }
 
-    public void StartEngine (boolean redirectOutputToLogcat) {
+    public void StartEngine(boolean redirectOutputToLogcat) {
         if (isNodeEngineRunning) return;
         isNodeEngineRunning = true;
 
@@ -52,38 +50,42 @@ public class NodeJS {
             e.printStackTrace();
         }
 
-        new Thread(() -> {
-            try {
-                String nodeLocation = plugin.getConfig().getString("nodeDir");
+        new Thread(
+            () -> {
+                try {
+                    String nodeLocation = plugin.getConfig().getString("nodeDir");
 
-                if (nodeLocation == null) nodeLocation = ".";
+                    if (nodeLocation == null) nodeLocation = ".";
 
-                if (nodeLocation.startsWith("./")) nodeLocation = nodeLocation.substring(2);
-                else if (nodeLocation.startsWith(".") || nodeLocation.startsWith("/")) nodeLocation = nodeLocation.substring(1);
+                    if (nodeLocation.startsWith("./")) nodeLocation = nodeLocation.substring(2); else if (
+                        nodeLocation.startsWith(".") || nodeLocation.startsWith("/")
+                    ) nodeLocation = nodeLocation.substring(1);
 
-                if (nodeLocation.length() > 0 && !nodeLocation.startsWith("/"))  nodeLocation = "/" + nodeLocation;
+                    if (nodeLocation.length() > 0 && !nodeLocation.startsWith("/")) nodeLocation = "/" + nodeLocation;
 
-                String filesDir = pluginContext.getFilesDir().getAbsolutePath();
-                String nodeFolder = filesDir + "/public/" /* + nodeLocation */;
-                String modulesFolder = filesDir + "/builtin_modules";
-                String nodePath = nodeFolder + ":" + modulesFolder;
+                    String filesDir = pluginContext.getFilesDir().getAbsolutePath();
+                    String nodeFolder = filesDir + "/public/"/* + nodeLocation */;
+                    String modulesFolder = filesDir + "/builtin_modules";
+                    String nodePath = nodeFolder + ":" + modulesFolder;
 
-                copyNodeJsAssets(nodeLocation, nodeFolder, modulesFolder);
+                    copyNodeJsAssets(nodeLocation, nodeFolder, modulesFolder);
 
-                File packageFile = new File(nodeFolder + "/package.json");
-                JSONObject packageJSON = new JSONObject(FileOperations.ReadFile(packageFile));
+                    File packageFile = new File(nodeFolder + "/package.json");
+                    JSONObject packageJSON = new JSONObject(FileOperations.ReadFile(packageFile));
 
-                String mainFile = packageJSON.getString("main");
-                if (mainFile.startsWith("./")) mainFile = mainFile.substring(1);
-                else if (!mainFile.startsWith("/"))  mainFile = "/" + mainFile;
+                    String mainFile = packageJSON.getString("main");
+                    if (mainFile.startsWith("./")) mainFile = mainFile.substring(1); else if (!mainFile.startsWith("/")) mainFile =
+                        "/" + mainFile;
 
-                String mainPath = nodeFolder + mainFile;
+                    String mainPath = nodeFolder + mainFile;
 
-                startNodeWithArguments(new String[] {"node",  mainPath}, nodePath, redirectOutputToLogcat);
-            } catch (Exception e) {
-                e.printStackTrace();
+                    startNodeWithArguments(new String[] { "node", mainPath }, nodePath, redirectOutputToLogcat);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }).start();
+        )
+            .start();
     }
 
     public boolean SendEventMessage(JSONObject data) {
@@ -107,8 +109,7 @@ public class NodeJS {
         try {
             JSONObject data = new JSONObject(message);
 
-            if (channelName.equals("EVENT_CHANNEL")) plugin.receive(data);
-            else if (channelName.equals(("APP_CHANNEL"))) {
+            if (channelName.equals("EVENT_CHANNEL")) plugin.receive(data); else if (channelName.equals(("APP_CHANNEL"))) {
                 String event = data.get("event").toString();
                 if (event.equals("ready")) isNodeEngineReady = true;
             }
@@ -116,19 +117,17 @@ public class NodeJS {
             // TODO
             e.printStackTrace();
         }
-    };
+    }
 
     private void copyNodeJsAssets(String nodeLocation, String nodeFolder, String modulesFolder) throws IOException {
         String assetNodeFolder = "public" + nodeLocation;
         String assetModulesFolder = "builtin_modules";
 
         File nodeFolderReference = new File(nodeFolder);
-        if (nodeFolderReference.exists() && wasAppUpdated())
-            FileOperations.DeleteFolderRecursively(nodeFolderReference);
+        if (nodeFolderReference.exists() && wasAppUpdated()) FileOperations.DeleteFolderRecursively(nodeFolderReference);
 
         File modulesFolderReference = new File(nodeFolder);
-        if (modulesFolderReference.exists() && wasAppUpdated())
-            FileOperations.DeleteFolderRecursively(modulesFolderReference);
+        if (modulesFolderReference.exists() && wasAppUpdated()) FileOperations.DeleteFolderRecursively(modulesFolderReference);
 
         FileOperations.CopyAssetFolder(pluginContext.getAssets(), assetNodeFolder, nodeFolder);
         FileOperations.CopyAssetFolder(pluginContext.getAssets(), assetModulesFolder, modulesFolder);
