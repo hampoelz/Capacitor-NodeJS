@@ -187,8 +187,9 @@ The `NodeJS` module is the API you use in your Capacitor app. It provides a few 
 <docgen-index>
 
 * [`send(...)`](#send)
-* [`addListener(...)`](#addlistener)
+* [`addListener(string, ...)`](#addlistenerstring-)
 * [Interfaces](#interfaces)
+* [Type Aliases](#type-aliases)
 
 </docgen-index>
 
@@ -198,7 +199,7 @@ The `NodeJS` module is the API you use in your Capacitor app. It provides a few 
 ### send(...)
 
 ```typescript
-send(options: MessageOptions) => any
+send(options: MessageOptions) => Promise<{ value: boolean; }>
 ```
 
 Send a message to the NodeJS process.
@@ -207,14 +208,14 @@ Send a message to the NodeJS process.
 | ------------- | --------------------------------------------------------- |
 | **`options`** | <code><a href="#messageoptions">MessageOptions</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;{ value: boolean; }&gt;</code>
 
 **Since:** 1.0.0
 
 --------------------
 
 
-### addListener(...)
+### addListener(string, ...)
 
 ```typescript
 addListener(eventName: string, listenerFunc: ChannelListener) => Promise<PluginListenerHandle> & PluginListenerHandle
@@ -222,12 +223,12 @@ addListener(eventName: string, listenerFunc: ChannelListener) => Promise<PluginL
 
 Listens to `eventName`, when a new message arrives `listenerFunc` from the NodeJS process would be called with `listenerFunc(event)`.
 
-| Param              | Type                                                  |
-| ------------------ | ----------------------------------------------------- |
-| **`eventName`**    | <code>string</code>                                   |
-| **`listenerFunc`** | <code>(event: ChannelListenerEvent) =&gt; void</code> |
+| Param              | Type                                                        |
+| ------------------ | ----------------------------------------------------------- |
+| **`eventName`**    | <code>string</code>                                         |
+| **`listenerFunc`** | <code><a href="#channellistener">ChannelListener</a></code> |
 
-**Returns:** <code>any</code>
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
 
 **Since:** 1.0.0
 
@@ -245,13 +246,32 @@ arguments. Arguments will be serialized with JSON.
 | Prop            | Type                | Description                         | Since |
 | --------------- | ------------------- | ----------------------------------- | ----- |
 | **`eventName`** | <code>string</code> | The name of the event being send to | 1.0.0 |
-| **`args`**      | <code>{}</code>     | Array of arguments to send          | 1.0.0 |
+| **`args`**      | <code>any[]</code>  | Array of arguments to send          | 1.0.0 |
 
 
 #### PluginListenerHandle
 
-| Prop         | Type                      |
-| ------------ | ------------------------- |
-| **`remove`** | <code>() =&gt; any</code> |
+| Prop         | Type                                      |
+| ------------ | ----------------------------------------- |
+| **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
+
+
+#### ChannelListenerEvent
+
+The event object when a message from the NodeJS process arrives.
+
+| Prop       | Type               | Description                 | Since |
+| ---------- | ------------------ | --------------------------- | ----- |
+| **`args`** | <code>any[]</code> | Received array of arguments | 1.0.0 |
+
+
+### Type Aliases
+
+
+#### ChannelListener
+
+The callback function when listen to messages from the NodeJS process.
+
+<code>(event: <a href="#channellistenerevent">ChannelListenerEvent</a>): void</code>
 
 </docgen-api>
