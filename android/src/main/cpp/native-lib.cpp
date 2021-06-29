@@ -1,7 +1,6 @@
 /*
-  The JNI layer between the native Java code and the Node.js bridge.
+ * The JNI layer between the native Java code and the Node.js bridge.
  */
-
 
 #include <jni.h>
 #include <string>
@@ -56,7 +55,7 @@ void receiveMessageFromNode(const char *channelName, const char *channelMessage)
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_hampoelz_capacitor_nodejs_NodeJS_sendMessageToNode(
+Java_net_hampoelz_capacitor_nodejs_NodeJS_sendMessageToNode(
     JNIEnv *env,
     jobject /* this */,
     jstring channelName,
@@ -74,7 +73,7 @@ Java_com_hampoelz_capacitor_nodejs_NodeJS_sendMessageToNode(
 
 // Node's libUV requires all arguments being on contiguous memory.
 extern "C" jint JNICALL
-Java_com_hampoelz_capacitor_nodejs_NodeJS_startNodeWithArguments(
+Java_net_hampoelz_capacitor_nodejs_NodeJS_startNodeWithArguments(
     JNIEnv *env,
     jobject object/* this */,
     jobjectArray arguments,

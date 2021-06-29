@@ -1,21 +1,34 @@
 {
   "buildFiles": [
-    "C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\CMakeLists.txt",
-    "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\ndk\\21.1.6352462\\build\\cmake\\android.toolchain.cmake",
-    "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\ndk\\21.1.6352462\\build\\cmake\\platforms.cmake"
+    "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\CMakeLists.txt"
   ],
-  "cleanCommands": [
-    "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe -C \"C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\armeabi-v7a\" clean"
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\armeabi-v7a",
+      "clean"
+    ]
   ],
-  "buildTargetsCommand": "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe  -C \"C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\armeabi-v7a\" {LIST_OF_TARGETS_TO_BUILD}",
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
   "libraries": {
     "native-lib-Debug-armeabi-v7a": {
       "artifactName": "native-lib",
-      "buildCommand": "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe -C \"C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\armeabi-v7a\" native-lib",
+      "buildCommandComponents": [
+        "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+        "-C",
+        "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\armeabi-v7a",
+        "native-lib"
+      ],
       "abi": "armeabi-v7a",
-      "output": "C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\obj\\armeabi-v7a\\libnative-lib.so",
+      "output": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\obj\\armeabi-v7a\\libnative-lib.so",
       "runtimeFiles": [
-        "C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\libnode\\bin\\armeabi-v7a\\libnode.so"
+        "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\libnode\\bin\\armeabi-v7a\\libnode.so"
       ]
     }
   }

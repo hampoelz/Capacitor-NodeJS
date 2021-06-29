@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/reneh/Desktop/Capacitor-NodeJS/android
+# Install script for directory: C:/Users/reneh/GitHub/Capacitor-NodeJS/android
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/reneh/Desktop/Capacitor-NodeJS/android/.cxx/cmake/debug/x86/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/reneh/GitHub/Capacitor-NodeJS/android/.cxx/cmake/debug/x86/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -1,17 +1,30 @@
 {
   "buildFiles": [
-    "C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\CMakeLists.txt",
-    "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\ndk\\21.1.6352462\\build\\cmake\\android.toolchain.cmake",
-    "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\ndk\\21.1.6352462\\build\\cmake\\platforms.cmake"
+    "C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\CMakeLists.txt"
   ],
-  "cleanCommands": [
-    "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe -C \"C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86_64\" clean"
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86_64",
+      "clean"
+    ]
   ],
-  "buildTargetsCommand": "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe  -C \"C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86_64\" {LIST_OF_TARGETS_TO_BUILD}",
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
   "libraries": {
     "native-lib-Debug-x86_64": {
       "artifactName": "native-lib",
-      "buildCommand": "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe -C \"C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86_64\" native-lib",
+      "buildCommandComponents": [
+        "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
+        "-C",
+        "C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86_64",
+        "native-lib"
+      ],
       "abi": "x86_64",
       "output": "C:\\Users\\reneh\\Desktop\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\obj\\x86_64\\libnative-lib.so",
       "runtimeFiles": [

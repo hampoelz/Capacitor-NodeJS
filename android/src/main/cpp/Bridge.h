@@ -1,5 +1,5 @@
 /*
-  The bridge APIs between the native Java code and the Node.js engine.
+ * The bridge APIs between the native Java code and the Node.js engine.
  */
 
 #ifndef ANDROID_BRIDGE_H

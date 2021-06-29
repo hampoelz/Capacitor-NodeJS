@@ -1,6 +1,6 @@
 /// <reference types="@capacitor/cli" />
 
-import { PluginListenerHandle } from "@capacitor/core";
+import type { PluginListenerHandle } from "@capacitor/core";
 
 declare module '@capacitor/cli' {
   export interface PluginsConfig {
@@ -61,7 +61,7 @@ export interface MessageOptions {
    * 
    * @since 1.0.0
    */
-  args: Array<any>;
+  args: any[];
 
 }
 
@@ -85,6 +85,6 @@ export interface ChannelListenerEvent {
    * 
    * @since 1.0.0
    */
-  args: Array<any>;
+  args: any[];
 
 }

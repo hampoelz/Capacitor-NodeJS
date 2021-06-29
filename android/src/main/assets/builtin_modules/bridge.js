@@ -49,8 +49,6 @@ const appChannel = new Channel('APP_CHANNEL');
 
 appChannel.send('ready');
 
-// TODO: Add app channel
-
 module.exports = exports = {
     channel: eventChannel
 };
