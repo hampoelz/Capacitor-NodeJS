@@ -66,7 +66,8 @@ my-capacitor-app/
 
 Now in our Capacitor app we can send messages from the NodeJS layer and wait for them:
 ```typescript
-import { NodeJS } from 'capacitor-nodejs';
+const NodeJS = Capacitor.Plugins.NodeJS;
+//import { NodeJS } from 'capacitor-nodejs';
 
 NodeJS.addListener('msg-from-nodejs', event => {
     document.body.innerHTML = `<p>First argument: ${event.args[0]}<br>Second argument: ${event.args[1]}</p>`
