@@ -6,12 +6,12 @@
     "deprecated": false,
     "default": true
   },
-  "originalCxxBuildFolder": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
-  "cxxBuildFolder": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
+  "originalCxxBuildFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
+  "cxxBuildFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
   "abiPlatformVersion": 21,
   "cmake": {
-    "cmakeWrappingBaseFolder": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cxx\\debug\\x86",
-    "cmakeArtifactsBaseFolder": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
+    "cmakeWrappingBaseFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cxx\\debug\\x86",
+    "cmakeArtifactsBaseFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
     "effectiveConfiguration": {
       "name": "traditional-android-studio-cmake-environment",
       "description": "Composite reified CMakeSettings configuration",
@@ -19,13 +19,13 @@
       "inheritEnvironments": [
         "ndk"
       ],
-      "buildRoot": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
+      "buildRoot": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
       "cmakeToolchain": "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\ndk\\21.4.7075529\\build\\cmake\\android.toolchain.cmake",
       "cmakeExecutable": "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\cmake.exe",
       "variables": [
         {
           "name": "CMAKE_FIND_ROOT_PATH",
-          "value": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\prefab\\x86\\prefab"
+          "value": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\prefab\\x86\\prefab"
         },
         {
           "name": "CMAKE_BUILD_TYPE",
@@ -61,11 +61,11 @@
         },
         {
           "name": "CMAKE_LIBRARY_OUTPUT_DIRECTORY",
-          "value": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\obj\\x86"
+          "value": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\obj\\x86"
         },
         {
           "name": "CMAKE_RUNTIME_OUTPUT_DIRECTORY",
-          "value": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\obj\\x86"
+          "value": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\obj\\x86"
         },
         {
           "name": "CMAKE_MAKE_PROGRAM",
@@ -85,7 +85,7 @@
         }
       ]
     },
-    "cmakeServerLogFile": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86\\cmake_server_log.txt"
+    "cmakeServerLogFile": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86\\cmake_server_log.txt"
   },
   "variant": {
     "buildSystemArgumentList": [
@@ -96,8 +96,8 @@
       ""
     ],
     "variantName": "debug",
-    "objFolder": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\obj",
-    "soFolder": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\lib",
+    "objFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\obj",
+    "soFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\lib",
     "isDebuggableEnabled": true,
     "validAbiList": [
       "ARMEABI_V7A",
@@ -109,13 +109,13 @@
     "implicitBuildTargetSet": [],
     "cmakeSettingsConfiguration": "android-gradle-plugin-predetermined-name",
     "module": {
-      "cxxFolder": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx",
+      "cxxFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx",
       "splitsAbiFilterSet": [],
-      "intermediatesFolder": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\build\\intermediates",
-      "gradleModulePathName": ":capacitor-nodejs",
-      "moduleRootFolder": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android",
-      "moduleBuildFile": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\build.gradle",
-      "makeFile": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\CMakeLists.txt",
+      "intermediatesFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\build\\intermediates",
+      "gradleModulePathName": ":",
+      "moduleRootFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android",
+      "moduleBuildFile": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\build.gradle",
+      "makeFile": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\CMakeLists.txt",
       "buildSystem": "CMAKE",
       "ndkFolder": "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\ndk\\21.4.7075529",
       "ndkVersion": "21.4.7075529",
@@ -201,9 +201,9 @@
         "SYSTEM": {}
       },
       "project": {
-        "rootBuildGradleFolder": "C:\\Users\\reneh\\Desktop\\Test\\android",
-        "cxxFolder": "C:\\Users\\reneh\\Desktop\\Test\\android\\.cxx",
-        "compilerSettingsCacheFolder": "C:\\Users\\reneh\\Desktop\\Test\\android\\.cxx",
+        "rootBuildGradleFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android",
+        "cxxFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx",
+        "compilerSettingsCacheFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx",
         "sdkFolder": "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk",
         "isNativeCompilerSettingsCacheEnabled": false,
         "isBuildOnlyTargetAbiEnabled": true,
@@ -213,10 +213,10 @@
       },
       "nativeBuildOutputLevel": "QUIET"
     },
-    "prefabDirectory": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\prefab"
+    "prefabDirectory": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\prefab"
   },
   "buildSettings": {
     "environmentVariables": []
   },
-  "prefabFolder": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\prefab\\x86"
+  "prefabFolder": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\prefab\\x86"
 }

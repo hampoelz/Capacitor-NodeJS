@@ -1,1 +1,1 @@
-C:\Users\reneh\GitHub\Capacitor-NodeJS\android\CMakeLists.txt
+C:\Users\reneh\GitHub\hampoelz\Capacitor-NodeJS\android\CMakeLists.txt

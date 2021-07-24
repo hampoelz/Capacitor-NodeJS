@@ -1,19 +1,19 @@
 {
   "buildFiles": [
-    "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\CMakeLists.txt"
+    "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
     [
       "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
       "-C",
-      "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
+      "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
       "clean"
     ]
   ],
   "buildTargetsCommandComponents": [
     "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
     "-C",
-    "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
+    "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
@@ -22,13 +22,13 @@
       "buildCommandComponents": [
         "C:\\Users\\reneh\\AppData\\Local\\Android\\Sdk\\cmake\\3.10.2.4988404\\bin\\ninja.exe",
         "-C",
-        "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
+        "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\.cxx\\cmake\\debug\\x86",
         "native-lib"
       ],
       "abi": "x86",
-      "output": "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\obj\\x86\\libnative-lib.so",
+      "output": "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\build\\intermediates\\cmake\\debug\\obj\\x86\\libnative-lib.so",
       "runtimeFiles": [
-        "C:\\Users\\reneh\\GitHub\\Capacitor-NodeJS\\android\\libnode\\bin\\x86\\libnode.so"
+        "C:\\Users\\reneh\\GitHub\\hampoelz\\Capacitor-NodeJS\\android\\libnode\\bin\\x86\\libnode.so"
       ]
     }
   }
