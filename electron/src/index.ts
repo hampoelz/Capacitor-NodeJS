@@ -1,4 +1,5 @@
 import { PluginListenerHandle } from '@capacitor/core';
+
 import type {
     NodeJSPlugin,
     MessageOptions,
