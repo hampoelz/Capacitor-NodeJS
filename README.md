@@ -66,7 +66,7 @@ my-capacitor-app/
 
 Now in our Capacitor app we can send messages from the NodeJS layer and wait for them:
 ```typescript
-const NodeJS = Capacitor.Plugins.NodeJS;
+const NodeJS = Capacitor.Plugins.NodeJS || CapacitorElectronPlugins.NodeJS;
 //import { NodeJS } from 'capacitor-nodejs';
 
 NodeJS.addListener('msg-from-nodejs', event => {
@@ -79,6 +79,8 @@ NodeJS.send({
     args: [ "Hello from Capacitor!" ]
 });
 ```
+
+Since Capacitor-Electron doesn't automatically register the plugin to `Capacitor.Plugins.NodeJS` (See [capacitor-community/electron#115](https://github.com/capacitor-community/electron/issues/115)) we've to use `CapacitorElectronPlugins.NodeJS` instead.
 
 ## Configuration
 We can customize the NodeJS project directory. By default it is in the root of the Capacitor webdir. But it can be changed in the `capacitor.config.json` file so that the Capacitor- and the NodeJS- project are more separated.
