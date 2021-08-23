@@ -67,6 +67,9 @@
   "peerDependencies": {
     "@capacitor/core": "^3.0.0"
   },
+  "dependencies": {
+    "bridge": "file:electron/assets/builtin_modules/bridge"
+  },
   "prettier": "@ionic/prettier-config",
   "swiftlint": "@ionic/swiftlint-config",
   "eslintConfig": {
