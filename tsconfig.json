@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
     "allowUnreachableCode": false,
     "declaration": true,
     "esModuleInterop": true,
