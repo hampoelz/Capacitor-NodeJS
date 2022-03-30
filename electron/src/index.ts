@@ -6,8 +6,9 @@ import { join } from 'path';
 import type {
     NodeJSPlugin,
     MessageOptions,
-    ChannelListener,
+    ChannelListener
 } from '../../src/definitions';
+import { channel } from '../assets/builtin_modules/bridge/main';
 
 export class NodeJS implements NodeJSPlugin {
     constructor() {
@@ -37,11 +38,17 @@ export class NodeJS implements NodeJSPlugin {
         }
     }
 
-    send(options: MessageOptions): Promise<{ value: boolean; }> {
-        throw new Error('Send method not implemented yet! MessageOptions: "' + options + '"');
-    }
-    addListener(eventName: string, listenerFunc: ChannelListener): Promise<PluginListenerHandle> & PluginListenerHandle {
-        throw new Error('Listener method not implemented yet! EventName: "' + eventName + '", ChannelListener: "' + listenerFunc + '"');
+    async send(options: MessageOptions): Promise<{ value: boolean; }> {
+        channel.emitWrapper(options.eventName, options.args);
+        return { value: true };
     }
 
+    addListener(eventName: string, listenerFunc: ChannelListener): Promise<PluginListenerHandle> & PluginListenerHandle {
+        listenerFunc({ args: [eventName] });
+        throw new Error('Method not implemented.');
+    }
+
+    removeAllListeners(): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
 }

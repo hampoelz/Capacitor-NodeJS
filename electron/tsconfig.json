@@ -16,7 +16,8 @@
         "outDir": "build",
         "sourceMap": true,
         "strict": false,
-        "target": "ES2017"
+        "target": "ES2017",
+        "allowJs": true
     },
     "include": [
         "src/**/*"
