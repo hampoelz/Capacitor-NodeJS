@@ -37,6 +37,13 @@ export interface NodeJSPlugin {
     eventName: string,
     listenerFunc: ChannelListener,
   ): Promise<PluginListenerHandle> & PluginListenerHandle;
+
+  /**
+   * Remove all listeners for this plugin.
+   *
+   * @since 1.0.0
+   */
+  removeAllListeners(): Promise<void>;
 }
 
 /**

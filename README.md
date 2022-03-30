@@ -189,6 +189,7 @@ The `NodeJS` module is the API you use in your Capacitor app. It provides a few 
 
 * [`send(...)`](#send)
 * [`addListener(string, ...)`](#addlistenerstring-)
+* [`removeAllListeners()`](#removealllisteners)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
 
@@ -230,6 +231,19 @@ Listens to `eventName`, when a new message arrives `listenerFunc` from the NodeJ
 | **`listenerFunc`** | <code><a href="#channellistener">ChannelListener</a></code> |
 
 **Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### removeAllListeners()
+
+```typescript
+removeAllListeners() => Promise<void>
+```
+
+Remove all listeners for this plugin.
 
 **Since:** 1.0.0
 
