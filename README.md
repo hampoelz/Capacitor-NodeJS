@@ -190,7 +190,7 @@ The `NodeJS` module is the API you use in your Capacitor app. It provides a few 
 <docgen-index>
 
 * [`send(...)`](#send)
-* [`addListener(string, ...)`](#addlistenerstring-)
+* [`addListener(string, ...)`](#addlistenerstring)
 * [`removeAllListeners()`](#removealllisteners)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
