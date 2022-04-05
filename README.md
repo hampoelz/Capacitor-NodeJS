@@ -191,6 +191,7 @@ The `NodeJS` module is the API you use in your Capacitor app. It provides a few 
 
 * [`send(...)`](#send)
 * [`addListener(string, ...)`](#addlistenerstring)
+* [`removeListener(...)`](#removelistener)
 * [`removeAllListeners()`](#removealllisteners)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
@@ -227,12 +228,31 @@ addListener(eventName: string, listenerFunc: ChannelListener) => Promise<PluginL
 
 Listens to `eventName`, when a new message arrives `listenerFunc` from the NodeJS process would be called with `listenerFunc(event)`.
 
+**Note:** When using the electron platform, `listenerHandle.remove()` does not work due to limitations. Use [`removeListener(listenerFunc)`](#removelistener) instead.
+
 | Param              | Type                                                        |
 | ------------------ | ----------------------------------------------------------- |
 | **`eventName`**    | <code>string</code>                                         |
 | **`listenerFunc`** | <code><a href="#channellistener">ChannelListener</a></code> |
 
 **Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### removeListener(...)
+
+```typescript
+removeListener(listenerHandle: Promise<PluginListenerHandle> | PluginListenerHandle) => Promise<void>
+```
+
+Remove the `listenerFunc` of the specified `listenerHandle` from the listener array for the event named `eventName`.
+
+| Param                | Type                                                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`listenerHandle`** | <code><a href="#pluginlistenerhandle">PluginListenerHandle</a> \| Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code> |
 
 **Since:** 1.0.0
 
