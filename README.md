@@ -4,16 +4,15 @@
 
 > ℹ️ This project uses the [Node.js for Mobile Apps](https://github.com/JaneaSystems/nodejs-mobile) toolkit to add NodeJS support in Android and IOS
 
-> **⚠ In early development ⚠**
+> **⚠ WIP - Work in Progress ⚠**
 > - _Note:_ The project is still very unstable, if you have any problems or suggestions it would be nice if you create an issue.
-> - Only the Android platform is currently supported.
 > - When the project is stable it will be published on NPM.
 > - Features like IOS support or a command to update the NodeJS runtime will be added in the future.
 
 ### Supported Platforms
 - [x] Android
 - [ ] IOS _(coming soon)_
-- [x] Using the [Electron-Platform CapacitorJS plugin](https://github.com/capacitor-community/electron):
+- [x] Using the [`capacitor-community/electron` plugin](https://github.com/capacitor-community/electron):
   - [x] Windows
   - [x] Linux
   - [x] macOS
@@ -88,7 +87,7 @@ NodeJS.send({
 });
 ```
 
-Since Capacitor-Electron doesn't automatically register the plugin to `Capacitor.Plugins.NodeJS` (See [capacitor-community/electron#115](https://github.com/capacitor-community/electron/issues/115)) we've to use `CapacitorElectronPlugins.NodeJS` instead.
+Since the electron platform plugin doesn't automatically register the plugin to `Capacitor.Plugins.NodeJS` (See [capacitor-community/electron#115](https://github.com/capacitor-community/electron/issues/115)) we've to use `CapacitorCustomPlatform.plugin.NodeJS` instead.
 
 ## Configuration
 We can customize the NodeJS project directory. By default it is in the root of the Capacitor webdir. But it can be changed in the `capacitor.config.json` file so that the Capacitor- and the NodeJS- project are more separated.
