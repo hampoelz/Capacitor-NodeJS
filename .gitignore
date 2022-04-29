@@ -11,7 +11,8 @@ xcuserdata
 # macOS files
 .DS_Store
 
-
+# Packed NPM module
+capacitor-nodejs-*.tgz
 
 # Based on Android gitignore template: https://github.com/github/gitignore/blob/HEAD/Android.gitignore
 
@@ -43,22 +44,24 @@ proguard
 # Log Files
 *.log
 
-# Android Studio Navigation editor temp files
-.navigation
-
-# Android Studio captures folder
-captures
+# Android Studio generated files and folders
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+output.json
 
 # IntelliJ
 *.iml
-.idea
+.idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
 
 # Keystore files
 # Uncomment the following line if you do not want to check your keystore files in.
 #*.jks
+#*.keystore
 
-# External native build folder generated in Android Studio 2.2 and later
-.externalNativeBuild
-
-# Packed NPM module
-capacitor-nodejs-*.tgz
+# Android Profiling
+*.hprof

@@ -1,9 +1,0 @@
-ninja: Entering directory `C:\Users\reneh\Desktop\Capacitor-NodeJS\android\.cxx\cmake\debug\x86_64'
-[1/3] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/Bridge.cpp.o
-[2/3] Building CXX object CMakeFiles/native-lib.dir/src/main/cpp/native-lib.cpp.o
-../../../../src/main/cpp/native-lib.cpp:15:10: warning: non-portable path to file '"Bridge.h"'; specified path differs in case from file name on disk [-Wnonportable-include-path]
-#include "bridge.h"
-         ^~~~~~~~~~
-         "Bridge.h"
-1 warning generated.
-[3/3] Linking CXX shared library ..\..\..\..\build\intermediates\cmake\debug\obj\x86_64\libnative-lib.so
