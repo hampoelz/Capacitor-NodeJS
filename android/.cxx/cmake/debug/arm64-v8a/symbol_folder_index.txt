@@ -1,1 +1,0 @@
-C:\Users\reneh\Desktop\Capacitor-NodeJS\android\build\intermediates\cmake\debug\obj\arm64-v8a

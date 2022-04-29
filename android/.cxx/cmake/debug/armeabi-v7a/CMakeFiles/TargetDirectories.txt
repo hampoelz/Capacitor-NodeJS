@@ -1,3 +1,0 @@
-C:/Users/reneh/GitHub/Capacitor-NodeJS/android/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/native-lib.dir
-C:/Users/reneh/GitHub/Capacitor-NodeJS/android/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/Users/reneh/GitHub/Capacitor-NodeJS/android/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/rebuild_cache.dir
