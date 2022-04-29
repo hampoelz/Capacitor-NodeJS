@@ -13,6 +13,7 @@
     "android/CMakeLists.txt",
     "dist/",
     "ios/Plugin/",
+    "electron/",
     "CapacitorNodejs.podspec"
   ],
   "author": "Rene Hampölz",
@@ -40,20 +41,22 @@
     "prettier": "prettier \"**/*.{css,html,ts,js,java}\"",
     "swiftlint": "node-swiftlint",
     "docgen": "docgen --api NodeJSPlugin --output-readme README.md --output-json dist/docs.json",
-    "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.js",
+    "build-electron": "tsc --project electron/tsconfig.json && rollup -c electron/rollup.config.js && rimraf ./electron/build",
+    "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.js && npm run build-electron",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@capacitor/android": "^3.0.0",
-    "@capacitor/cli": "^3.0.0",
-    "@capacitor/core": "^3.0.0",
-    "@capacitor/docgen": "^0.0.17",
-    "@capacitor/ios": "^3.0.0",
+    "@capacitor/android": "^3.4.3",
+    "@capacitor/cli": "^3.4.3",
+    "@capacitor/core": "^3.4.3",
+    "@capacitor/docgen": "^0.2.0",
+    "@capacitor/ios": "^3.4.3",
     "@ionic/eslint-config": "^0.3.0",
     "@ionic/prettier-config": "^1.0.1",
     "@ionic/swiftlint-config": "^1.1.2",
+    "electron": "^13.2.1",
     "eslint": "^7.11.0",
     "prettier": "~2.3.0",
     "prettier-plugin-java": "~1.0.2",
@@ -76,6 +79,9 @@
     },
     "android": {
       "src": "android"
+    },
+    "electron": {
+      "src": "electron"
     }
   }
 }

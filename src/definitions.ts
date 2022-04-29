@@ -31,12 +31,21 @@ export interface NodeJSPlugin {
   /**
    * Listens to `eventName`, when a new message arrives `listenerFunc` from the NodeJS process would be called with `listenerFunc(event)`.
    *
+   * **Note:** When using the electron platform, `listenerHandle.remove()` does not work due to limitations. Use [`removeListener(listenerFunc)`](#removelistener) instead.
+   * 
    * @since 1.0.0
    */
   addListener(
     eventName: string,
     listenerFunc: ChannelListener,
   ): Promise<PluginListenerHandle> & PluginListenerHandle;
+
+  /**
+   * Remove the `listenerFunc` of the specified `listenerHandle` from the listener array for the event named `eventName`.
+   *
+   * @since 1.0.0
+   */
+  removeListener(listenerHandle: Promise<PluginListenerHandle> | PluginListenerHandle): Promise<void>;
 
   /**
    * Remove all listeners for this plugin.

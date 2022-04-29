@@ -1,0 +1,8 @@
+{
+    "name": "bridge",
+    "version": "1.0.0",
+    "description": "Provides a few methods to send messages from the NodeJS process to the capacitor layer and receive replies from the capacitor layer.",
+    "main": "main.js",
+    "author": "hampoelz",
+    "license": "MIT"
+}

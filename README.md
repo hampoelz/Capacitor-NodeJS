@@ -8,7 +8,15 @@
 > - _Note:_ The project is still very unstable, if you have any problems or suggestions it would be nice if you create an issue.
 > - Only the Android platform is currently supported.
 > - When the project is stable it will be published on NPM.
-> - Features like IOS- and [Electron](https://github.com/capacitor-community/electron)- support or a command to update the NodeJS runtime will be added in the future.
+> - Features like IOS support or a command to update the NodeJS runtime will be added in the future.
+
+### Supported Platforms
+- [x] Android
+- [ ] IOS _(coming soon)_
+- [x] Using the [Electron-Platform CapacitorJS plugin](https://github.com/capacitor-community/electron):
+  - [x] Windows
+  - [x] Linux
+  - [x] macOS
 
 ## Install
 **You've to use Capacitor v3. This project isn't compatible with lower versions of Capacitor.**
@@ -66,7 +74,7 @@ my-capacitor-app/
 
 Now in our Capacitor app we can send messages from the NodeJS layer and wait for them:
 ```typescript
-const NodeJS = Capacitor.Plugins.NodeJS;
+const NodeJS = Capacitor.Plugins.NodeJS || CapacitorCustomPlatform.plugins.NodeJS;
 //import { NodeJS } from 'capacitor-nodejs';
 
 NodeJS.addListener('msg-from-nodejs', event => {
@@ -79,6 +87,8 @@ NodeJS.send({
     args: [ "Hello from Capacitor!" ]
 });
 ```
+
+Since Capacitor-Electron doesn't automatically register the plugin to `Capacitor.Plugins.NodeJS` (See [capacitor-community/electron#115](https://github.com/capacitor-community/electron/issues/115)) we've to use `CapacitorElectronPlugins.NodeJS` instead.
 
 ## Configuration
 We can customize the NodeJS project directory. By default it is in the root of the Capacitor webdir. But it can be changed in the `capacitor.config.json` file so that the Capacitor- and the NodeJS- project are more separated.
@@ -189,6 +199,7 @@ The `NodeJS` module is the API you use in your Capacitor app. It provides a few 
 
 * [`send(...)`](#send)
 * [`addListener(string, ...)`](#addlistenerstring)
+* [`removeListener(...)`](#removelistener)
 * [`removeAllListeners()`](#removealllisteners)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
@@ -225,12 +236,31 @@ addListener(eventName: string, listenerFunc: ChannelListener) => Promise<PluginL
 
 Listens to `eventName`, when a new message arrives `listenerFunc` from the NodeJS process would be called with `listenerFunc(event)`.
 
+**Note:** When using the electron platform, `listenerHandle.remove()` does not work due to limitations. Use [`removeListener(listenerFunc)`](#removelistener) instead.
+
 | Param              | Type                                                        |
 | ------------------ | ----------------------------------------------------------- |
 | **`eventName`**    | <code>string</code>                                         |
 | **`listenerFunc`** | <code><a href="#channellistener">ChannelListener</a></code> |
 
 **Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### removeListener(...)
+
+```typescript
+removeListener(listenerHandle: Promise<PluginListenerHandle> | PluginListenerHandle) => Promise<void>
+```
+
+Remove the `listenerFunc` of the specified `listenerHandle` from the listener array for the event named `eventName`.
+
+| Param                | Type                                                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`listenerHandle`** | <code><a href="#pluginlistenerhandle">PluginListenerHandle</a> \| Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code> |
 
 **Since:** 1.0.0
 
