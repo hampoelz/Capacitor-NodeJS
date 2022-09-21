@@ -5,7 +5,13 @@
 > ℹ️ This project uses the [Node.js for Mobile Apps](https://github.com/JaneaSystems/nodejs-mobile) toolkit to add NodeJS support in Android and IOS
 
 > **⚠ WIP - Work in Progress ⚠**
-> - _Note:_ The project is still very unstable, if you have any problems or suggestions it would be nice if you create an issue.
+>
+> The project is part of my diploma thesis, an overview can be found at [hampoelz/HTL_Diplomarbeit](https://github.com/hampoelz/HTL_Diplomarbeit).
+>
+> ⏰ Planed Deadline: March 2023
+>
+> Notes:
+> - The project is still very unstable, if you have any problems or suggestions it would be nice if you create an issue.
 > - When the project is stable it will be published on NPM.
 > - Features like IOS support or a command to update the NodeJS runtime will be added in the future.
 
