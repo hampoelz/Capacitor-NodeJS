@@ -11,7 +11,7 @@
 #include <android/log.h>
 
 #include "node.h"
-#include "bridge.h"
+#include "Bridge.h"
 
 const char *AdbTag = "NodeJS-Engine";
 
