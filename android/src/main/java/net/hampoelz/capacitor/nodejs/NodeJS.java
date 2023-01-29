@@ -17,7 +17,7 @@ public class NodeJS {
     private static final String APP_UPDATED_TIME = "AppUpdateTime";
 
     private static boolean isNodeEngineRunning = false;
-    private static boolean isNodeEngineReady = false;
+    public static boolean isNodeEngineReady = false;
 
     static {
         System.loadLibrary("native-lib");
@@ -55,37 +55,38 @@ public class NodeJS {
                 try {
                     String nodeLocation = plugin.getConfig().getString("nodeDir");
 
-                    if (nodeLocation == null) nodeLocation = ".";
+                    if (nodeLocation == null) nodeLocation = "nodejs";
 
-                    if (nodeLocation.startsWith("./")) nodeLocation = nodeLocation.substring(2); else if (
-                        nodeLocation.startsWith(".") || nodeLocation.startsWith("/")
-                    ) nodeLocation = nodeLocation.substring(1);
+                    if (nodeLocation.startsWith("./"))
+                        nodeLocation = nodeLocation.substring(2);
+                    else if (nodeLocation.startsWith(".") || nodeLocation.startsWith("/"))
+                        nodeLocation = nodeLocation.substring(1);
 
-                    if (nodeLocation.length() > 0 && !nodeLocation.startsWith("/")) nodeLocation = "/" + nodeLocation;
-
+                    if (nodeLocation.endsWith("/"))
+                        nodeLocation = nodeLocation.substring(0, nodeLocation.length() - 1);
+                    
                     String filesDir = pluginContext.getFilesDir().getAbsolutePath();
-                    String nodeFolder = filesDir + "/public/"/* + nodeLocation */;
-                    String modulesFolder = filesDir + "/builtin_modules";
-                    String nodePath = nodeFolder + ":" + modulesFolder;
+                    String nodeFolder = filesDir + "/public/" + nodeLocation;
 
-                    copyNodeJsAssets(nodeLocation, nodeFolder, modulesFolder);
+                    copyNodeJsAssets(nodeLocation, nodeFolder);
 
                     File packageFile = new File(nodeFolder + "/package.json");
                     JSONObject packageJSON = new JSONObject(FileOperations.ReadFile(packageFile));
 
                     String mainFile = packageJSON.getString("main");
-                    if (mainFile.startsWith("./")) mainFile = mainFile.substring(1); else if (!mainFile.startsWith("/")) mainFile =
-                        "/" + mainFile;
+                    if (mainFile.startsWith("./"))
+                        mainFile = mainFile.substring(1);
+                    else if (!mainFile.startsWith("/"))
+                        mainFile = "/" + mainFile;
 
                     String mainPath = nodeFolder + mainFile;
 
-                    startNodeWithArguments(new String[] { "node", mainPath }, nodePath, redirectOutputToLogcat);
+                    startNodeWithArguments(new String[] { "node", mainPath }, nodeFolder, redirectOutputToLogcat);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        )
-            .start();
+        ).start();
     }
 
     public boolean SendEventMessage(JSONObject data) {
@@ -109,9 +110,13 @@ public class NodeJS {
         try {
             JSONObject data = new JSONObject(message);
 
-            if (channelName.equals("EVENT_CHANNEL")) plugin.receive(data); else if (channelName.equals(("APP_CHANNEL"))) {
+            if (channelName.equals("EVENT_CHANNEL"))
+                plugin.receive(data);
+            else if (channelName.equals(("APP_CHANNEL"))) {
                 String event = data.get("event").toString();
-                if (event.equals("ready")) isNodeEngineReady = true;
+
+                if (event.equals("ready"))
+                    isNodeEngineReady = true;
             }
         } catch (JSONException e) {
             // TODO
@@ -119,18 +124,14 @@ public class NodeJS {
         }
     }
 
-    private void copyNodeJsAssets(String nodeLocation, String nodeFolder, String modulesFolder) throws IOException {
-        String assetNodeFolder = "public" + nodeLocation;
-        String assetModulesFolder = "builtin_modules";
+    private void copyNodeJsAssets(String nodeLocation, String nodeFolder) throws IOException {
+        String assetNodeFolder = "public/" + nodeLocation;
 
         File nodeFolderReference = new File(nodeFolder);
-        if (nodeFolderReference.exists() && wasAppUpdated()) FileOperations.DeleteFolderRecursively(nodeFolderReference);
-
-        File modulesFolderReference = new File(nodeFolder);
-        if (modulesFolderReference.exists() && wasAppUpdated()) FileOperations.DeleteFolderRecursively(modulesFolderReference);
+        if (nodeFolderReference.exists() && wasAppUpdated())
+            FileOperations.DeleteFolderRecursively(nodeFolderReference);
 
         FileOperations.CopyAssetFolder(pluginContext.getAssets(), assetNodeFolder, nodeFolder);
-        FileOperations.CopyAssetFolder(pluginContext.getAssets(), assetModulesFolder, modulesFolder);
 
         saveAppUpdateTime();
     }

@@ -1,75 +1,88 @@
 import { app } from 'electron';
 import { EventEmitter } from 'events';
-import { existsSync, readFile, writeFile } from 'fs';
-import { join, relative, sep, resolve, dirname } from 'path';
+import { existsSync } from 'fs';
+import { join } from 'path';
 
+import type { Channel } from '../../assets/builtin_modules/bridge/bridge';
 import type { MessageOptions } from '../../src/definitions';
-import { NativeBridge, MessageCodec, eventChannel } from '../assets/builtin_modules/bridge/bridge';
 
 export class NodeJS extends EventEmitter {
+  private isNodeEngineRunning = false;
+  private eventChannel: Channel = undefined;
 
-    isNodeEngineRunning = false;
+  constructor() {
+    super();
 
-    constructor() {
-        super();
-        
-        if (!app) return;
+    if (!app) return;
 
-        //
-        // Forward event emits from the NodeJS engine to CapacitorJS
-        //
-        NativeBridge.addListener('APP_CHANNEL', data => {
-            const messageCodec = MessageCodec.deserialize(data);
-            if (messageCodec.event == "ready") this.isNodeEngineRunning = true;
-        });
+    const _self = this;
 
-        NativeBridge.addListener('EVENT_CHANNEL', data => {
-            const messageCodec = MessageCodec.deserialize(data);
-            this.emit(messageCodec.event, { args: messageCodec.payload });
-        });
-
-        //
-        // Get configurations and start NodeJS engine
-        //
-        const configFileBase = join(app.getAppPath(), 'capacitor.config.');
+    //
+    // Get configurations and start NodeJS engine
+    //
+    const configFileBase = join(app.getAppPath(), 'capacitor.config.');
         const configFileExt =
             existsSync(configFileBase + 'json') ? 'json' :
                 existsSync(configFileBase + 'js') ? 'js' :
                     existsSync(configFileBase + 'ts') ? 'ts' : undefined;
 
-        if (!configFileExt) startEngine();
+    if (!configFileExt) startEngine();
 
-        const configFile = configFileBase + configFileExt;
-        import(configFile).then(value => {
-            const config = value.default || value;
-            startEngine({ nodeDir: config?.plugins?.NodeJS?.nodeDir });
+    const configFile = configFileBase + configFileExt;
+    import(configFile).then(value => {
+      const config = value.default || value;
+      startEngine({ nodeDir: config?.plugins?.NodeJS?.nodeDir });
+    });
+
+    function startEngine(options: { nodeDir: string } = undefined): void {
+      const nodeDir = join(app.getAppPath(), 'app', options?.nodeDir ?? 'nodejs');
+      const nodePackageJson = join(nodeDir, 'package.json');
+      const bridgeModule = join(nodeDir, 'node_modules', 'bridge', 'bridge');
+
+      import(bridgeModule).then(bridge => {
+        _self.eventChannel = bridge.eventChannel;
+
+        //
+        // Forward event emits from the NodeJS engine to CapacitorJS
+        //
+        bridge.NativeBridge.addListener('APP_CHANNEL', (data: any) => {
+          const messageCodec = bridge.MessageCodec.deserialize(data);
+          if (messageCodec.event == 'ready') _self.isNodeEngineRunning = true;
         });
 
-        function startEngine(options: { nodeDir: string } = undefined): void {
-            const nodeDir = join(app.getAppPath(), 'app', options?.nodeDir ?? '');
-            const nodePackageJson = join(nodeDir, 'package.json');
-            import(nodePackageJson).then(async value => {
-                const nodeMainFile = join(nodeDir, value.main);
+        bridge.NativeBridge.addListener('EVENT_CHANNEL', (data: any) => {
+          const messageCodec = bridge.MessageCodec.deserialize(data);
+          _self.emit(messageCodec.event, { args: messageCodec.payload });
+        });
 
-                // link 'bridge' dependency to correct folder
-                readFile(nodeMainFile, 'utf8', (error, data) => {
-                    if (error) return; // TODO
+        //
+        // Start NodeJS project from app
+        //
+        import(nodePackageJson).then(value => {
+          const nodeMainFile = join(nodeDir, value.main);
+          require(nodeMainFile);
+        });
+      });
+    }
+  }
 
-                    const relativeFile = relative(dirname(nodeMainFile), resolve('node_modules/capacitor-nodejs/electron/assets/builtin_modules/bridge')).split(sep).join('/');
-                    const result = data.replace(/(?<=(require\(|import(( .+?(?= from) from )|\(|\s))['|"|`])bridge(?=['|"|`])/g, relativeFile); // https://regex101.com/r/nwKu42
+  async send(options: MessageOptions): Promise<{ value: boolean }> {
+    if (!this.isNodeEngineRunning || !this.eventChannel)
+      return { value: false };
+    this.eventChannel.emitWrapper(options.eventName, options.args);
+    return { value: true };
+  }
 
-                    writeFile(nodeMainFile, result, 'utf8', error => {
-                        if (error) return; // TODO
-                        require(nodeMainFile);
-                    });
-                });
-            });
+  async whenReady(): Promise<void> {
+    return new Promise(resolve => {
+      const timer = setTimeout(() => {
+        if (this.isNodeEngineRunning && this.eventChannel) {
+          resolve();
+          clearInterval(timer);
         }
-    }
+      }, 50);
+    });
+  }
 
-    async send(options: MessageOptions): Promise<{ value: boolean; }> {
-        if (!this.isNodeEngineRunning) return { value: false };
-        eventChannel.emitWrapper(options.eventName, options.args);
-        return { value: true };
-    }
+  // removeAllListeners() function is missing (https://github.com/capacitor-community/electron/pull/185)
 }

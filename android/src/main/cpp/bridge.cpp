@@ -8,7 +8,7 @@
 #include <string>
 
 #include "uv.h"
-#include "Bridge.h"
+#include "bridge.h"
 #include "node_api.h"
 
 #define NM_F_LINKED 0x2
@@ -308,7 +308,7 @@ napi_value Init(napi_env env, napi_value exports)
 {
   napi_status status;
   napi_property_descriptor properties[] = {
-      DECLARE_NAPI_METHOD("sendMessage", Method_SendMessage),
+      DECLARE_NAPI_METHOD("emit", Method_SendMessage),
       DECLARE_NAPI_METHOD("registerChannel", Method_RegisterChannel),
   };
   NAPI_CALL(env, napi_define_properties(env, exports, sizeof(properties) / sizeof(*properties), properties));

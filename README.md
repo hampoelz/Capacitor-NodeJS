@@ -13,7 +13,8 @@
 > Notes:
 > - The project is still very unstable, if you have any problems or suggestions it would be nice if you create an issue.
 > - When the project is stable it will be published on NPM.
-> - Features like IOS support or a command to update the NodeJS runtime will be added in the future.
+> - Features like IOS support will be added in the future.
+> - The node.js version used in this project depends on the [Node.js for Mobile Apps](https://github.com/JaneaSystems/nodejs-mobile) toolkit.
 
 ### Supported Platforms
 - [x] Android
@@ -24,118 +25,134 @@
   - [x] macOS
 
 ## Install
-**You've to use Capacitor v3. This project isn't compatible with lower versions of Capacitor.**
+**You've to use Capacitor v3 or newer. This project isn't compatible with lower versions of Capacitor.**
 
 ```bash
-npm install hampoelz/capacitor-nodejs
+npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.1/capacitor-nodejs.tgz
 npx cap sync
 ```
 
 ## Example
-The starting point of the NodeJS integration is a `package.json` file.
 
-So we need to go into the webdir (For Angular, this is `www`, React is `build`, and Vue is `dist`. If you don’t know right now, you can check this value in the `capacitor.config.ts`.) and create a `package.json` file:
-```json
-{
-    "name": "capacitor-node-project",
-    "version": "1.0.0",
-    "description": "node part of the project",
-    "main": "main.js",
-    "author": "hampoelz",
-    "license": "MIT"
-}
-```
+To add a NodeJS project to your app, the following steps are required:
 
-The main script of the NodeJS integration is defined in the `package.json` file, in this case `main.js`. The NodeJS apis and modules can then be accessed from there. Therefore we also have to create a `main.js` file inside the Capacitor webdir.
+1. Create a new directory called `nodejs` inside your app's source directory _(this is usually the `src` folder)_. The `nodejs` dir will serve as your NodeJS project folder. _(modules can be installed later in this folder)_
+2. Create a `package.json` file in it as the starting point of the NodeJS integration:
+  ```json
+  {
+      "name": "capacitor-node-project",
+      "version": "1.0.0",
+      "description": "node part of the project",
+      "main": "main.js",
+      "author": "hampoelz",
+      "license": "MIT",
+      "dependencies": {
+          "bridge": "file:../../node_modules/capacitor-nodejs/assets/builtin_modules/bridge"
+      }
+  }
+  ```
+3. Create the main script of the NodeJS integration _(in this case `main.js`)_, which could look like this:
+  ```javascript
+  const { channel } = require('bridge');
 
-The main script `main.js` could look like this:
-```javascript
-const { channel } = require('bridge');
+  channel.addListener('msg-from-capacitor', message => {
+      console.log('[node] Message from Capacitor code: ' + message);
+      channel.send("msg-from-nodejs", "Replying to this message: " + message, "And optionally add further args");
+  });
+  ```
+4. Run `npm install` in your newly created NodeJS project folder.
 
-channel.addListener('msg-from-capacitor', message => {
-    console.log('[node] Message from Capacitor code: ' + message);
-    channel.send("msg-from-nodejs", "Replying to this message: " + message, "And optionally add further args");
-});
-```
-
-After that, our project structure should look something like this:
+After that, the project structure should look something like this:
 ```
 my-capacitor-app/
- +-- android
- +-- node_modules
- +-- www (capacitor webdir)
- |   +-- css
- |   +-- js
- |   +-- index.html
- |   +-- main.js (nodejs main file, defined in package.json)
- |   +-- manifest.json
- |   +-- package.json (nodejs start point)
- +-- .gitignore
- +-- capacitor.config.json
- +-- package-lock.json
- +-- package.json
- +-- README.md
+├── ...
+├── src/                    # app source directory
+│   ├── ...
+│   ├── nodejs/             # NodeJS project directory
+│   │   ├── node_modules/
+│   │   ├── main.js         # main script of the NodeJS integration
+│   │   ├── package.json    # starting point of the NodeJS integration
+│   ├── ...
+│   ├── index.html
+├── capacitor.config.json
+├── package.json
+├── README.md
+└── ...
 ```
 
-Now in our Capacitor app we can send messages from the NodeJS layer and wait for them:
+Now you can communicate with the NodeJS layer in your CapacitorJS app:
 ```typescript
-const NodeJS = Capacitor.Plugins.NodeJS || CapacitorCustomPlatform.plugins.NodeJS;
-//import { NodeJS } from 'capacitor-nodejs';
+import { NodeJS } from 'capacitor-nodejs';
+//const NodeJS = Capacitor.Plugins.NodeJS;
 
+// Listens to "msg-from-nodejs" from the NodeJS process.
 NodeJS.addListener('msg-from-nodejs', event => {
-    document.body.innerHTML = `<p>First argument: ${event.args[0]}<br>Second argument: ${event.args[1]}</p>`
-    console.log(event);
+  document.body.innerHTML = `<p>First argument: ${event.args[0]}<br>Second argument: ${event.args[1]}</p>`
+  console.log(event);
 });
 
-NodeJS.send({
-    eventName: "msg-from-capacitor",
-    args: [ "Hello from Capacitor!" ]
+// Wait for the NodeJS process to initialize.
+NodeJS.whenReady().then(() => {
+
+  // Send a message to the NodeJS process.
+  NodeJS.send({
+      eventName: "msg-from-capacitor",
+      args: [ "Hello from Capacitor!" ]
+  });
+
 });
 ```
 
-Since the electron platform plugin doesn't automatically register the plugin to `Capacitor.Plugins.NodeJS` (See [capacitor-community/electron#115](https://github.com/capacitor-community/electron/issues/115)) we've to use `CapacitorCustomPlatform.plugin.NodeJS` instead.
+> ❗ Important
+>
+> If you use a build system for your app, make sure it copies the NodeJS project directory to the output directory. For example by adding `cp -r src/nodejs dist/` to your build steps.
+> 
+
+> ℹ️ Information
+>
+> If you are using the [`capacitor-community/electron`](https://github.com/capacitor-community/electron) plugin, packaging with the electron-builder may cause problems since it does not include the modules from the nodejs project by default.
+>
+> To fix this issue, add `"includeSubNodeModules": true` to your `electron-builder.config.json`.
 
 ## Configuration
-We can customize the NodeJS project directory. By default it is in the root of the Capacitor webdir. But it can be changed in the `capacitor.config.json` file so that the Capacitor- and the NodeJS- project are more separated.
+You can customize the NodeJS project directory. By default, it is a folder named `nodejs` in your app's source directory. But it can be changed in the `capacitor.config.json` file.
 
 ```json
 {
   "plugins": {
     "NodeJS": {
-      "nodeDir": "nodejs"
+      "nodeDir": "custom-nodejs"
     }
   }
 }
 ```
-For example, if we change it to `nodejs`, we've to create a `nodejs` directory inside the Capacitor webdir and move the files `package.json` and `main.js` to the newly created directory. Then our project structure should look something like this:
+
+For example, if you change it to `custom-nodejs`, then your project structure should look something like this:
 ```
 my-capacitor-app/
- +-- android
- +-- node_modules
- +-- www
- |   +-- css
- |   +-- js
- |   +-- nodejs     (our new node directory)
- |   |   +-- main.js
- |   |   +-- package.json
- |   +-- index.html
- |   +-- manifest.json 
- +-- .gitignore
- +-- capacitor.config.json
- +-- package-lock.json
- +-- package.json
- +-- README.md
- +-- ...
+├── ...
+├── src/                    # app source directory
+│   ├── ...
+│   ├── custom-nodejs/      # the new NodeJS project directory
+│   │   ├── node_modules/
+│   │   ├── main.js
+│   │   ├── package.json
+│   ├── ...
+│   ├── index.html
+├── capacitor.config.json
+├── package.json
+├── README.md
+└── ...
 ```
 
 ## Node Modules
-Node modules can be added to the project using npm. The Node modules have to be installed in the NodeJS project folder in which we created the `package.json` file.
+Node modules can be added to the project using npm. The Node modules have to be installed in the NodeJS project folder in which the `package.json` file was created.
 
 Go to the NodeJS project folder and proceed with the installation of the Node modules you want to add to your Node.js project.
 
 Sync and rebuild your Capacitor project so that the newly added Node modules are added to the application.
 
-On Android, the plugin extracts the project files and the Node modules from the APK assets in order to make them available to the Node.js for Mobile Apps engine. They are extracted from the APK and copied to a working folder (`context.getFilesDir().getAbsolutePath() + "/public/<nodeDir>"` -> `<nodeDir>` is the NodeJS project folder configured in the `capacitor.config.json` file. If there is no configuration, the `<nodeDir>` can be omitted in the path) when the application is launched for the first time or a new version of the application has been installed.
+On Android, the plugin extracts the project files and the Node modules from the APK assets in order to make them available to the Node.js for Mobile Apps engine. They are extracted from the APK and copied to a working folder (`context.getFilesDir().getAbsolutePath() + "/public/<nodeDir>"` where `<nodeDir>` is the NodeJS project folder configured in the `capacitor.config.json` file. If there is no configuration, the `<nodeDir>` can be omitted in the path) when the application is launched for the first time or a new version of the application has been installed.
 
 > ⚠️ Warning
 >
@@ -204,6 +221,7 @@ The `NodeJS` module is the API you use in your Capacitor app. It provides a few 
 
 * [`send(...)`](#send)
 * [`addListener(string, ...)`](#addlistenerstring)
+* [`whenReady()`](#whenready)
 * [`removeListener(...)`](#removelistener)
 * [`removeAllListeners()`](#removealllisteners)
 * [Interfaces](#interfaces)
@@ -255,6 +273,19 @@ Listens to `eventName`, when a new message arrives `listenerFunc` from the NodeJ
 --------------------
 
 
+### whenReady()
+
+```typescript
+whenReady() => Promise<void>
+```
+
+Fulfilled when the NodeJS process is initialized.
+
+**Since:** 1.0.0
+
+--------------------
+
+
 ### removeListener(...)
 
 ```typescript
@@ -279,6 +310,8 @@ removeAllListeners() => Promise<void>
 ```
 
 Remove all listeners for this plugin.
+
+**Note:** When using the electron platform, this method does not work! _(will be solved by https://github.com/capacitor-community/electron/pull/185)_
 
 **Since:** 1.0.0
 

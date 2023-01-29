@@ -5,6 +5,8 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +38,22 @@ public class NodeJSPlugin extends Plugin {
         } catch (JSONException e) {
             call.reject(e.toString());
         }
+    }
+
+    @PluginMethod
+    public void whenReady(PluginCall call) {
+        Timer timer = new Timer();
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (NodeJS.isNodeEngineReady) {
+                    call.resolve();
+                    timer.cancel();
+                    timer.purge();
+                }
+            }
+        }, 50, 50);
     }
 
     public void receive(JSONObject data) throws JSONException {
