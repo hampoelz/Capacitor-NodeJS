@@ -28,9 +28,13 @@
 **You've to use Capacitor v3 or newer. This project isn't compatible with lower versions of Capacitor.**
 
 ```bash
-npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.1/capacitor-nodejs.tgz
+npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.2/capacitor-nodejs.tgz
 npx cap sync
 ```
+
+> ❗ Important
+>
+> For now Android 32-bit x86 support is disabled in Capacitor-NodeJS v1.0.0-beta.2 _(based on node.js v16)_ as there is currently no support for it in the latest version of the nodejs-mobile core library. However, you can use Capacitor-NodeJS v1.0.0-beta.1 which is based on node.js v12.
 
 ## Example
 
