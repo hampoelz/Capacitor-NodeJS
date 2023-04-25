@@ -8,7 +8,7 @@
 >
 > The project is part of my diploma thesis, an overview can be found at [hampoelz/HTL_Diplomarbeit](https://github.com/hampoelz/HTL_Diplomarbeit).
 >
-> ⏰ Planed Deadline: March 2023
+> ⏰ Planed Deadline: September 2023
 >
 > Notes:
 > - The project is still very unstable, if you have any problems or suggestions it would be nice if you create an issue.
