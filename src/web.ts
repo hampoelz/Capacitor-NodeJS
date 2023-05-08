@@ -8,19 +8,28 @@ export class NodeJSWeb extends WebPlugin {
     super();
 
     // electron platform loads web implementation by default, but native implementation should be used
-    if (typeof CapacitorCustomPlatform !== 'undefined' && CapacitorCustomPlatform?.plugins?.NodeJS)
+    if (
+      typeof CapacitorCustomPlatform !== 'undefined' &&
+      CapacitorCustomPlatform?.plugins?.NodeJS
+    )
       return CapacitorCustomPlatform.plugins.NodeJS;
   }
 
   send(): Promise<{ value: boolean }> {
-    throw this.unavailable('The NodeJS engine is not available in the browser!');
+    throw this.unavailable(
+      'The NodeJS engine is not available in the browser!',
+    );
   }
 
   whenReady(): Promise<void> {
-    throw this.unavailable('The NodeJS engine is not available in the browser!');
+    throw this.unavailable(
+      'The NodeJS engine is not available in the browser!',
+    );
   }
 
   addListener(): Promise<PluginListenerHandle> & PluginListenerHandle {
-    throw this.unavailable('The NodeJS engine is not available in the browser!');
+    throw this.unavailable(
+      'The NodeJS engine is not available in the browser!',
+    );
   }
 }

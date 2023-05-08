@@ -44,16 +44,20 @@ public class NodeJSPlugin extends Plugin {
     public void whenReady(PluginCall call) {
         Timer timer = new Timer();
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (NodeJS.isNodeEngineReady) {
-                    call.resolve();
-                    timer.cancel();
-                    timer.purge();
+        timer.scheduleAtFixedRate(
+            new TimerTask() {
+                @Override
+                public void run() {
+                    if (NodeJS.isNodeEngineReady) {
+                        call.resolve();
+                        timer.cancel();
+                        timer.purge();
+                    }
                 }
-            }
-        }, 50, 50);
+            },
+            50,
+            50
+        );
     }
 
     public void receive(JSONObject data) throws JSONException {

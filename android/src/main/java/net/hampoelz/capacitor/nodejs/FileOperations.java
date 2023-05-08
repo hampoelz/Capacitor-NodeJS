@@ -13,7 +13,11 @@ public class FileOperations {
 
     public static void DeleteFolderRecursively(File file) throws IOException {
         for (File childFile : file.listFiles()) {
-            if (childFile.isDirectory()) DeleteFolderRecursively(childFile); else childFile.delete();
+            if (childFile.isDirectory()) {
+                DeleteFolderRecursively(childFile);
+            } else {
+                childFile.delete();
+            }
         }
         file.delete();
     }

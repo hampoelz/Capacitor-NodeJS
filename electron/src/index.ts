@@ -21,10 +21,13 @@ export class NodeJS extends EventEmitter {
     // Get configurations and start NodeJS engine
     //
     const configFileBase = join(app.getAppPath(), 'capacitor.config.');
-        const configFileExt =
-            existsSync(configFileBase + 'json') ? 'json' :
-                existsSync(configFileBase + 'js') ? 'js' :
-                    existsSync(configFileBase + 'ts') ? 'ts' : undefined;
+    const configFileExt = existsSync(configFileBase + 'json')
+      ? 'json'
+      : existsSync(configFileBase + 'js')
+      ? 'js'
+      : existsSync(configFileBase + 'ts')
+      ? 'ts'
+      : undefined;
 
     if (!configFileExt) startEngine();
 
@@ -35,7 +38,11 @@ export class NodeJS extends EventEmitter {
     });
 
     function startEngine(options: { nodeDir: string } = undefined): void {
-      const nodeDir = join(app.getAppPath(), 'app', options?.nodeDir ?? 'nodejs');
+      const nodeDir = join(
+        app.getAppPath(),
+        'app',
+        options?.nodeDir ?? 'nodejs',
+      );
       const nodePackageJson = join(nodeDir, 'package.json');
       const bridgeModule = join(nodeDir, 'node_modules', 'bridge', 'bridge');
 

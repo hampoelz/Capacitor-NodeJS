@@ -57,14 +57,16 @@ public class NodeJS {
 
                     if (nodeLocation == null) nodeLocation = "nodejs";
 
-                    if (nodeLocation.startsWith("./"))
+                    if (nodeLocation.startsWith("./")) {
                         nodeLocation = nodeLocation.substring(2);
-                    else if (nodeLocation.startsWith(".") || nodeLocation.startsWith("/"))
+                    } else if (nodeLocation.startsWith(".") || nodeLocation.startsWith("/")) {
                         nodeLocation = nodeLocation.substring(1);
+                    }
 
-                    if (nodeLocation.endsWith("/"))
+                    if (nodeLocation.endsWith("/")) {
                         nodeLocation = nodeLocation.substring(0, nodeLocation.length() - 1);
-                    
+                    }
+
                     String filesDir = pluginContext.getFilesDir().getAbsolutePath();
                     String nodeFolder = filesDir + "/public/" + nodeLocation;
 
@@ -74,10 +76,11 @@ public class NodeJS {
                     JSONObject packageJSON = new JSONObject(FileOperations.ReadFile(packageFile));
 
                     String mainFile = packageJSON.getString("main");
-                    if (mainFile.startsWith("./"))
+                    if (mainFile.startsWith("./")) {
                         mainFile = mainFile.substring(1);
-                    else if (!mainFile.startsWith("/"))
+                    } else if (!mainFile.startsWith("/")) {
                         mainFile = "/" + mainFile;
+                    }
 
                     String mainPath = nodeFolder + mainFile;
 
@@ -86,7 +89,8 @@ public class NodeJS {
                     e.printStackTrace();
                 }
             }
-        ).start();
+        )
+            .start();
     }
 
     public boolean SendEventMessage(JSONObject data) {
@@ -110,13 +114,12 @@ public class NodeJS {
         try {
             JSONObject data = new JSONObject(message);
 
-            if (channelName.equals("EVENT_CHANNEL"))
+            if (channelName.equals("EVENT_CHANNEL")) {
                 plugin.receive(data);
-            else if (channelName.equals(("APP_CHANNEL"))) {
+            } else if (channelName.equals(("APP_CHANNEL"))) {
                 String event = data.get("event").toString();
 
-                if (event.equals("ready"))
-                    isNodeEngineReady = true;
+                if (event.equals("ready")) isNodeEngineReady = true;
             }
         } catch (JSONException e) {
             // TODO
@@ -128,8 +131,9 @@ public class NodeJS {
         String assetNodeFolder = "public/" + nodeLocation;
 
         File nodeFolderReference = new File(nodeFolder);
-        if (nodeFolderReference.exists() && wasAppUpdated())
+        if (nodeFolderReference.exists() && wasAppUpdated()) {
             FileOperations.DeleteFolderRecursively(nodeFolderReference);
+        }
 
         FileOperations.CopyAssetFolder(pluginContext.getAssets(), assetNodeFolder, nodeFolder);
 
