@@ -36,11 +36,11 @@ npx cap sync
 >
 > For now Android 32-bit x86 support is disabled in Capacitor-NodeJS v1.0.0-beta.2 _(based on node.js v16)_ as there is currently no support for it in the latest version of the nodejs-mobile core library. However, you can use Capacitor-NodeJS v1.0.0-beta.1 which is based on node.js v12.
 
-## Example
+## Getting Started
 
 To add a NodeJS project to your app, the following steps are required:
 
-1. Create a new directory called `nodejs` inside your app's source directory _(this is usually the `src` folder)_. The `nodejs` dir will serve as your NodeJS project folder. _(modules can be installed later in this folder)_
+1. Create a new directory called `nodejs` inside your app's source/public directory _(this is usually the `src` folder or if you use a build system the `public` folder)_. The `nodejs` dir will serve as your NodeJS project folder. _(modules can be installed later in this folder)_
 2. Create a `package.json` file in it as the starting point of the NodeJS integration:
   ```json
   {
@@ -109,7 +109,7 @@ NodeJS.whenReady().then(() => {
 
 > ❗ Important
 >
-> If you use a build system for your app, make sure it copies the NodeJS project directory to the output directory. For example by adding `cp -r src/nodejs dist/` to your build steps.
+> If you use a build system for your app, make sure to add the NodeJS project directory to you static assets. _(Or copy the nodejs dir to the output directory, for example by adding `cp -r src/nodejs dist/` to your build steps.)_
 > 
 
 > ℹ️ Information
