@@ -36,6 +36,10 @@ npx cap sync
 >
 > For now Android 32-bit x86 support is disabled in Capacitor-NodeJS v1.0.0-beta.2 _(based on node.js v16)_ as there is currently no support for it in the latest version of the nodejs-mobile core library. However, you can use Capacitor-NodeJS v1.0.0-beta.1 which is based on node.js v12.
 
+## Examples
+
+Currently there are two example projects available. One without any additional framework, located in the [`example/vanilla`](https://github.com/hampoelz/Capacitor-NodeJS/tree/example/vanilla) branch. And one that uses the vitejs framework in [`example/vite`](https://github.com/hampoelz/Capacitor-NodeJS/tree/example/vite).
+
 ## Getting Started
 
 To add a NodeJS project to your app, the following steps are required:
