@@ -40,6 +40,8 @@ npx cap sync
 
 Currently there are two example projects available. One without any additional framework, located in the [`example/vanilla`](https://github.com/hampoelz/Capacitor-NodeJS/tree/example/vanilla) branch. And one that uses the vitejs framework in [`example/vite`](https://github.com/hampoelz/Capacitor-NodeJS/tree/example/vite).
 
+_⚠ Warning: The example projects are currently affected by issue [#12](https://github.com/hampoelz/Capacitor-NodeJS/issues/12)_
+
 ## Getting Started
 
 To add a NodeJS project to your app, the following steps are required:
