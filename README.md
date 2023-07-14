@@ -68,7 +68,7 @@ To add a NodeJS project to your app, the following steps are required:
       channel.send("msg-from-nodejs", "Replying to this message: " + message, "And optionally add further args");
   });
   ```
-4. Run `npm install` in your newly created NodeJS project folder.
+4. Run `npm install --install-links` in your newly created NodeJS project folder.
 
 After that, the project structure should look something like this:
 ```
