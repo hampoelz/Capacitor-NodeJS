@@ -38,9 +38,9 @@ npx cap sync
 
 ## Examples
 
-Currently there are two example projects available. One without any additional framework, located in the [`example/vanilla`](https://github.com/hampoelz/Capacitor-NodeJS/tree/example/vanilla) branch. And one that uses the vitejs framework in [`example/vite`](https://github.com/hampoelz/Capacitor-NodeJS/tree/example/vite).
+Several example projects can be found in the [hampoelz/Capacitor-NodeJS_Examples](https://github.com/hampoelz/Capacitor-NodeJS_Examples) repository.
 
-_⚠ Warning: The example projects are currently affected by issue [#12](https://github.com/hampoelz/Capacitor-NodeJS/issues/12)_
+Currently there are two example projects available. One without any additional framework, located in the [`example/vanilla`](https://github.com/hampoelz/Capacitor-NodeJS_Examples/tree/example/vanilla) branch. And one that uses the vitejs framework in [`example/vite`](https://github.com/hampoelz/Capacitor-NodeJS_Examples/tree/example/vite).
 
 ## Getting Started
 
