@@ -11,13 +11,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@CapacitorPlugin(name = "NodeJS")
-public class NodeJSPlugin extends Plugin {
+@CapacitorPlugin(name = "CapacitorNodeJS")
+public class CapacitorNodeJSPlugin extends Plugin {
 
-    private NodeJS implementation;
+    private CapacitorNodeJS implementation;
 
     public void load() {
-        implementation = new NodeJS(this);
+        implementation = new CapacitorNodeJS(this);
         implementation.StartEngine(true);
     }
 
@@ -47,7 +47,7 @@ public class NodeJSPlugin extends Plugin {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (NodeJS.isNodeEngineReady) {
+                if (CapacitorNodeJS.isNodeEngineReady) {
                     call.resolve();
                     timer.cancel();
                     timer.purge();

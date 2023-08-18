@@ -4,9 +4,9 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 
 import type { Channel } from '../../assets/builtin_modules/bridge/bridge';
-import type { MessageOptions } from '../../src/definitions';
+import type { ChannelPayloadData } from '../../src/definitions';
 
-export class NodeJS extends EventEmitter {
+export class CapacitorNodeJS extends EventEmitter {
   private isNodeEngineRunning = false;
   private eventChannel: Channel = undefined;
 
@@ -66,10 +66,10 @@ export class NodeJS extends EventEmitter {
     }
   }
 
-  async send(options: MessageOptions): Promise<{ value: boolean }> {
+  async send(args: ChannelPayloadData): Promise<{ value: boolean }> {
     if (!this.isNodeEngineRunning || !this.eventChannel)
       return { value: false };
-    this.eventChannel.emitWrapper(options.eventName, options.args);
+    this.eventChannel.emitWrapper(args.eventName, args.args);
     return { value: true };
   }
 

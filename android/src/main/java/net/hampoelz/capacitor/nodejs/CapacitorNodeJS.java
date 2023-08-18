@@ -11,7 +11,7 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class NodeJS {
+public class CapacitorNodeJS {
 
     private static final String SHARED_PREFS = "NODEJS_PREFS";
     private static final String APP_UPDATED_TIME = "AppUpdateTime";
@@ -24,11 +24,11 @@ public class NodeJS {
         System.loadLibrary("node");
     }
 
-    private NodeJSPlugin plugin;
+    private CapacitorNodeJSPlugin plugin;
     private Context pluginContext;
     private PackageInfo packageInfo = null;
 
-    public NodeJS(NodeJSPlugin plugin) {
+    public CapacitorNodeJS(CapacitorNodeJSPlugin plugin) {
         this.plugin = plugin;
         pluginContext = plugin.getActivity().getApplicationContext();
 

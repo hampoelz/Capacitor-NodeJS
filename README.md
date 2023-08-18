@@ -2,7 +2,7 @@
 
 ➡ A full-fledged [Node.js](https://nodejs.org/) runtime for [Capacitor](https://capacitorjs.com) apps.
 
-> ℹ️ This project uses the [Node.js for Mobile Apps](https://github.com/nodejs-mobile/nodejs-mobile) toolkit to add NodeJS support in Android and IOS
+> ℹ️ This project uses the [Node.js for Mobile Apps](https://github.com/nodejs-mobile/nodejs-mobile) toolkit to add Node.js support in Android and IOS
 
 > **⚠ WIP - Work in Progress ⚠**
 >
@@ -17,6 +17,7 @@
 > - The node.js version used in this project depends on the [Node.js for Mobile Apps](https://github.com/nodejs-mobile/nodejs-mobile) toolkit.
 
 ### Supported Platforms
+
 - [x] Android
 - [ ] IOS _(coming soon)_
 - [x] Using the [`capacitor-community/electron` plugin](https://github.com/capacitor-community/electron):
@@ -25,6 +26,7 @@
   - [x] macOS
 
 ## Install
+
 **You've to use Capacitor v3 or newer. This project isn't compatible with lower versions of Capacitor.**
 
 ```bash
@@ -44,10 +46,10 @@ Currently there are two example projects available. One without any additional f
 
 ## Getting Started
 
-To add a NodeJS project to your app, the following steps are required:
+To add a Node.js project to your app, the following steps are required:
 
-1. Create a new directory called `nodejs` inside your app's source/public directory _(this is usually the `src` folder or if you use a build system the `public` folder)_. The `nodejs` dir will serve as your NodeJS project folder. _(modules can be installed later in this folder)_
-2. Create a `package.json` file in it as the starting point of the NodeJS integration:
+1. Create a new directory called `nodejs` inside your app's source/public directory _(this is usually the `src` folder or if you use a build system the `public` folder)_. The `nodejs` dir will serve as your Node.js project folder. _(modules can be installed later in this folder)_
+2. Create a `package.json` file in it as the starting point of the Node.js integration:
   ```json
   {
       "name": "capacitor-node-project",
@@ -61,7 +63,7 @@ To add a NodeJS project to your app, the following steps are required:
       }
   }
   ```
-3. Create the main script of the NodeJS integration _(in this case `main.js`)_, which could look like this:
+3. Create the main script of the Node.js integration _(in this case `main.js`)_, which could look like this:
   ```javascript
   const { channel } = require('bridge');
 
@@ -70,18 +72,19 @@ To add a NodeJS project to your app, the following steps are required:
       channel.send("msg-from-nodejs", "Replying to this message: " + message, "And optionally add further args");
   });
   ```
-4. Run `npm install --install-links` in your newly created NodeJS project folder.
+4. Run `npm install --install-links` in your newly created Node.js project folder.
 
 After that, the project structure should look something like this:
+
 ```
 my-capacitor-app/
 ├── ...
 ├── src/                    # app source directory
 │   ├── ...
-│   ├── nodejs/             # NodeJS project directory
+│   ├── nodejs/             # Node.js project directory
 │   │   ├── node_modules/
-│   │   ├── main.js         # main script of the NodeJS integration
-│   │   ├── package.json    # starting point of the NodeJS integration
+│   │   ├── main.js         # main script of the Node.js integration
+│   │   ├── package.json    # starting point of the Node.js integration
 │   ├── ...
 │   ├── index.html
 ├── capacitor.config.json
@@ -90,21 +93,22 @@ my-capacitor-app/
 └── ...
 ```
 
-Now you can communicate with the NodeJS layer in your CapacitorJS app:
+Now you can communicate with the Node.js layer in your Capacitor app:
+
 ```typescript
 import { NodeJS } from 'capacitor-nodejs';
 //const NodeJS = Capacitor.Plugins.NodeJS;
 
-// Listens to "msg-from-nodejs" from the NodeJS process.
+// Listens to "msg-from-nodejs" from the Node.js process.
 NodeJS.addListener('msg-from-nodejs', event => {
   document.body.innerHTML = `<p>First argument: ${event.args[0]}<br>Second argument: ${event.args[1]}</p>`
   console.log(event);
 });
 
-// Wait for the NodeJS process to initialize.
+// Wait for the Node.js process to initialize.
 NodeJS.whenReady().then(() => {
 
-  // Send a message to the NodeJS process.
+  // Send a message to the Node.js process.
   NodeJS.send({
       eventName: "msg-from-capacitor",
       args: [ "Hello from Capacitor!" ]
@@ -115,7 +119,7 @@ NodeJS.whenReady().then(() => {
 
 > ❗ Important
 >
-> If you use a build system for your app, make sure to add the NodeJS project directory to you static assets. _(Or copy the nodejs dir to the output directory, for example by adding `cp -r src/nodejs dist/` to your build steps.)_
+> If you use a build system for your app, make sure to add the Node.js project directory to you static assets. _(Or copy the nodejs dir to the output directory, for example by adding `cp -r src/nodejs dist/` to your build steps.)_
 > 
 
 > ℹ️ Information
@@ -125,25 +129,58 @@ NodeJS.whenReady().then(() => {
 > To fix this issue, add `"includeSubNodeModules": true` to your `electron-builder.config.json`.
 
 ## Configuration
-You can customize the NodeJS project directory. By default, it is a folder named `nodejs` in your app's source directory. But it can be changed in the `capacitor.config.json` file.
+
+<docgen-config>
+<!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
+
+These config values are available:
+
+| Prop          | Type                | Description                                                                    | Default             | Since |
+| ------------- | ------------------- | ------------------------------------------------------------------------------ | ------------------- | ----- |
+| **`nodeDir`** | <code>string</code> | Relative path of the integrated Node.js project based on the Capacitor webdir. | <code>nodejs</code> | 1.0.0 |
+
+### Examples
+
+In `capacitor.config.json`:
 
 ```json
 {
   "plugins": {
-    "NodeJS": {
-      "nodeDir": "custom-nodejs"
+    "CapacitorNodeJS": {
+      "nodeDir": custom-nodejs
     }
   }
 }
 ```
 
-For example, if you change it to `custom-nodejs`, then your project structure should look something like this:
+In `capacitor.config.ts`:
+
+```ts
+/// <reference types="capacitor-nodejs" />
+
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  plugins: {
+    CapacitorNodeJS: {
+      nodeDir: custom-nodejs,
+    },
+  },
+};
+
+export default config;
+```
+
+</docgen-config>
+
+For example, if you change your `nodeDir` to `custom-nodejs`, then your project structure should look something like this:
+
 ```
 my-capacitor-app/
 ├── ...
 ├── src/                    # app source directory
 │   ├── ...
-│   ├── custom-nodejs/      # the new NodeJS project directory
+│   ├── custom-nodejs/      # the new Node.js project directory
 │   │   ├── node_modules/
 │   │   ├── main.js
 │   │   ├── package.json
@@ -156,84 +193,178 @@ my-capacitor-app/
 ```
 
 ## Node Modules
-Node modules can be added to the project using npm. The Node modules have to be installed in the NodeJS project folder in which the `package.json` file was created.
 
-Go to the NodeJS project folder and proceed with the installation of the Node modules you want to add to your Node.js project.
+Node modules can be added to the project using npm. The Node modules have to be installed in the Node.js project folder in which the `package.json` file was created.
+
+Go to the Node.js project folder and proceed with the installation of the Node modules you want to add to your Node.js project.
 
 Sync and rebuild your Capacitor project so that the newly added Node modules are added to the application.
 
-On Android, the plugin extracts the project files and the Node modules from the APK assets in order to make them available to the Node.js for Mobile Apps engine. They are extracted from the APK and copied to a working folder (`context.getFilesDir().getAbsolutePath() + "/public/<nodeDir>"` where `<nodeDir>` is the NodeJS project folder configured in the `capacitor.config.json` file. If there is no configuration, the `<nodeDir>` can be omitted in the path) when the application is launched for the first time or a new version of the application has been installed.
+On Android, the plugin extracts the project files and the Node modules from the APK assets in order to make them available to the Node.js for Mobile Apps engine. They are extracted from the APK and copied to a working folder (`context.getFilesDir().getAbsolutePath() + "/public/<nodeDir>"` where `<nodeDir>` is the Node.js project folder configured in the `capacitor.config.json` file. If there is no configuration, the `<nodeDir>` can be omitted in the path) when the application is launched for the first time or a new version of the application has been installed.
 
 > ⚠️ Warning
 >
 > Given the project folder will be overwritten after each application update, it should not be used for persistent data storage.
 
-You may want to add a gitignore file to ignore unnecessary files. To do this, create a new file named `.gitignore` in the NodeJS project folder and copy the contents of [github.com/github/gitignore/blob/master/Node.gitignore](https://github.com/github/gitignore/blob/master/Node.gitignore) into it.
+You may want to add a gitignore file to ignore unnecessary files. To do this, create a new file named `.gitignore` in the Node.js project folder and copy the contents of [github.com/github/gitignore/blob/master/Node.gitignore](https://github.com/github/gitignore/blob/master/Node.gitignore) into it.
 
-## API - NodeJS layer
-The `channel` module is an [Event Emitter](https://nodejs.org/api/events.html#events_class_eventemitter). It provides a few methods so you can send messages from the NodeJS process to the capacitor layer. You can also receive replies from the capacitor layer.
+## API - Node.js layer
+
+The `channel` module is an [Event Emitter](https://nodejs.org/api/events.html#events_class_eventemitter). It provides a few methods so you can send messages from the Node.js process to the Capacitor layer. You can also receive replies from the Capacitor layer. To use this module, you need to add it to the dependencies of your Node.js project, as described in the [Getting Started](#getting-started) section.
 
 It has the following method to listen for events and send messages:
 
-### `channel.on(eventName, listener)`
+* [`send(...)`](#channelsend)
+* [`on(string, ...)`](#channelonstring)
+* [`once(string, ...)`](#channeloncestring)
+* [`addListener(string, ...)`](#channeladdlistenerstring)
+* [`removeListener(...)`](#channelremovelistener)
+* [`removeAllListeners(...)`](#channelremovealllisteners)
 
-* `eventName` String
-* `listener` Function
-  * `...args` any[]
+### channel.send(...)
 
-Listens to `eventName`, when a new message arrives `listener` would be called with
-`listener(args...)`.
+```typescript
+send: (eventName: string, ...args: any[]) => void
+```
 
-### `channel.once(eventName, listener)`
+Sends a message to the Capacitor layer via `eventName`, along with arguments.
+Arguments will be serialized with JSON.
 
-* `eventName` String
-* `listener` Function
-  * `...args` any[]
+| Param           | Type                | Description                          | Since |
+| --------------- | ------------------- | ------------------------------------ | ----- |
+| **`eventName`** | <code>string</code> | The name of the event being send to. | 1.0.0 |
+| **`args`**      | <code>any[]</code>  | The Array of arguments to send.      | 1.0.0 |
 
-Adds a one time `listener` function for the event. This `listener` is invoked
-only the next time a message is sent to `eventName`, after which it is removed.
+**Since:** 1.0.0
 
-### `channel.addListener(eventName, listener)`
+--------------------
 
-* `eventName` String
-* `listener` Function
-  * `...args` any[]
 
-Alias for `channel.on(eventName, listener)`.
+### channel.on(string, ...)
 
-### `channel.removeListener(eventName, listener)`
+```typescript
+on: (eventName: string, listener: (...args: any[]) => void) => void
+```
 
-* `eventName` String
-* `listener` Function
-  * `...args` any[]
+Listens to `eventName` and calls `listener(args...)` when a new message arrives from the Capacitor layer.
 
-Removes the specified `listener` from the listener array for the specified
-`eventName`.
+| Param           | Type                                  |
+| --------------- | ------------------------------------- |
+| **`eventName`** | <code>string</code>                   |
+| **`listener`**  | <code>(...args: any[]) => void</code> |
 
-### `channel.removeAllListeners(eventName)`
+```typescript
+listener: (...args: any[]) => void
+```
 
-* `eventName` String
+| Param      | Type                | Description                      | Since |
+| ---------- | ------------------- | -------------------------------- | ----- |
+| **`args`** | <code>any[]</code>  | The received array of arguments. | 1.0.0 |
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### channel.once(string, ...)
+
+```typescript
+once: (eventName: string, listener: (...args: any[]) => void) => void
+```
+
+Listens one time to `eventName` and calls `listener(args...)` when a new message arrives from the Capacitor layer, after which it is removed.
+
+| Param           | Type                                  |
+| --------------- | ------------------------------------- |
+| **`eventName`** | <code>string</code>                   |
+| **`listener`**  | <code>(...args: any[]) => void</code> |
+
+```typescript
+listener: (...args: any[]) => void
+```
+
+| Param      | Type                | Description                      | Since |
+| ---------- | ------------------- | -------------------------------- | ----- |
+| **`args`** | <code>any[]</code>  | The received array of arguments. | 1.0.0 |
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### channel.addListener(string, ...)
+
+```typescript
+addListener: (eventName: string, listener: (...args: any[]) => void) => void
+```
+
+Alias for [`channel.on(string, ...)`](#channelonstring).
+
+| Param           | Type                                  |
+| --------------- | ------------------------------------- |
+| **`eventName`** | <code>string</code>                   |
+| **`listener`**  | <code>(...args: any[]) => void</code> |
+
+```typescript
+listener: (...args: any[]) => void
+```
+
+| Param      | Type                | Description                      | Since |
+| ---------- | ------------------- | -------------------------------- | ----- |
+| **`args`** | <code>any[]</code>  | The received array of arguments. | 1.0.0 |
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### channel.removeListener(...)
+
+```typescript
+removeListener: (eventName: string, listener: (...args: any[]) => void) => void
+```
+
+Removes the specified `listener` from the listener array for the specified `eventName`.
+
+| Param           | Type                                  |
+| --------------- | ------------------------------------- |
+| **`eventName`** | <code>string</code>                   |
+| **`listener`**  | <code>(...args: any[]) => void</code> |
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### channel.removeAllListeners(...)
+
+```typescript
+removeAllListeners: (eventName?: string) => void
+```
 
 Removes all listeners, or those of the specified `eventName`.
 
-### `channel.send(eventName, ...args)`
+| Param           | Type                | Description                                               | Since |
+| --------------- | ------------------- | --------------------------------------------------------- | ----- |
+| **`eventName`** | <code>string</code> | The name of the event all listeners will be removed from. | 1.0.0 |
 
-* `eventName` String
-* `...args` any[]
+**Since:** 1.0.0
 
-Send a message to the capacitor layer via `eventName`, along with
-arguments. Arguments will be serialized with JSON.
+--------------------
 
 ## API - Capacitor layer
-The `NodeJS` module is the API you use in your Capacitor app. It provides a few methods so you can send messages from the NodeJS layer and wait for them.
+
+The `NodeJS` module is the API you use in your Capacitor app. It provides a few methods so you can send messages from the Node.js layer and wait for them.
+
+It has the following methods:
 
 <docgen-index>
 
 * [`send(...)`](#send)
-* [`addListener(string, ...)`](#addlistenerstring)
 * [`whenReady()`](#whenready)
+* [`addListener(string, ...)`](#addlistenerstring)
 * [`removeListener(...)`](#removelistener)
-* [`removeAllListeners()`](#removealllisteners)
+* [`removeAllListeners(...)`](#removealllisteners)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
 
@@ -245,38 +376,16 @@ The `NodeJS` module is the API you use in your Capacitor app. It provides a few 
 ### send(...)
 
 ```typescript
-send(options: MessageOptions) => Promise<{ value: boolean; }>
+send(args: ChannelPayloadData) => Promise<{ value: boolean; }>
 ```
 
-Send a message to the NodeJS process.
+Sends a message to the Node.js process.
 
-| Param         | Type                                                      |
-| ------------- | --------------------------------------------------------- |
-| **`options`** | <code><a href="#messageoptions">MessageOptions</a></code> |
+| Param      | Type                                                              |
+| ---------- | ----------------------------------------------------------------- |
+| **`args`** | <code><a href="#channelpayloaddata">ChannelPayloadData</a></code> |
 
 **Returns:** <code>Promise&lt;{ value: boolean; }&gt;</code>
-
-**Since:** 1.0.0
-
---------------------
-
-
-### addListener(string, ...)
-
-```typescript
-addListener(eventName: string, listenerFunc: ChannelListener) => Promise<PluginListenerHandle> & PluginListenerHandle
-```
-
-Listens to `eventName`, when a new message arrives `listenerFunc` from the NodeJS process would be called with `listenerFunc(event)`.
-
-**Note:** When using the electron platform, `listenerHandle.remove()` does not work due to limitations. Use [`removeListener(listenerFunc)`](#removelistener) instead.
-
-| Param              | Type                                                        |
-| ------------------ | ----------------------------------------------------------- |
-| **`eventName`**    | <code>string</code>                                         |
-| **`listenerFunc`** | <code><a href="#channellistener">ChannelListener</a></code> |
-
-**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
 
 **Since:** 1.0.0
 
@@ -289,7 +398,30 @@ Listens to `eventName`, when a new message arrives `listenerFunc` from the NodeJ
 whenReady() => Promise<void>
 ```
 
-Fulfilled when the NodeJS process is initialized.
+Resolves when the Node.js process is initialized.
+
+**Since:** 1.0.0
+
+--------------------
+
+
+### addListener(string, ...)
+
+```typescript
+addListener(eventName: string, listenerFunc: ChannelListenerCallback) => Promise<PluginListenerHandle> & PluginListenerHandle
+```
+
+Listens to `eventName` and calls `listenerFunc(data)` when a new message arrives from the Node.js process.
+
+**Note:** When using the Electron platform, [`PluginListenerHandle.remove()`](#pluginlistenerhandle) does not work due to limitations.
+Use [`removeListener(listenerFunc)`](#removelistener) instead.
+
+| Param              | Type                                                                        |
+| ------------------ | --------------------------------------------------------------------------- |
+| **`eventName`**    | <code>string</code>                                                         |
+| **`listenerFunc`** | <code><a href="#channellistenercallback">ChannelListenerCallback</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
 
 **Since:** 1.0.0
 
@@ -299,29 +431,31 @@ Fulfilled when the NodeJS process is initialized.
 ### removeListener(...)
 
 ```typescript
-removeListener(listenerHandle: Promise<PluginListenerHandle> | PluginListenerHandle) => Promise<void>
+removeListener(listenerHandle: PluginListenerHandle) => Promise<void>
 ```
 
-Remove the `listenerFunc` of the specified `listenerHandle` from the listener array for the event named `eventName`.
+Removes the specified `listenerHandle` from the listener array for the event it refers to.
 
-| Param                | Type                                                                                                                                             |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`listenerHandle`** | <code><a href="#pluginlistenerhandle">PluginListenerHandle</a> \| Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code> |
+| Param                | Type                                                                  |
+| -------------------- | --------------------------------------------------------------------- |
+| **`listenerHandle`** | <code><a href="#pluginlistenerhandle">PluginListenerHandle</a></code> |
 
 **Since:** 1.0.0
 
 --------------------
 
 
-### removeAllListeners()
+### removeAllListeners(...)
 
 ```typescript
-removeAllListeners() => Promise<void>
+removeAllListeners(eventName?: string | undefined) => Promise<void>
 ```
 
-Remove all listeners for this plugin.
+Removes all listeners, or those of the specified `eventName`, for this plugin.
 
-**Note:** When using the electron platform, this method does not work! _(will be solved by https://github.com/capacitor-community/electron/pull/185)_
+| Param           | Type                |
+| --------------- | ------------------- |
+| **`eventName`** | <code>string</code> |
 
 **Since:** 1.0.0
 
@@ -331,15 +465,15 @@ Remove all listeners for this plugin.
 ### Interfaces
 
 
-#### MessageOptions
+#### ChannelPayloadData
 
-Options to send a message to the NodeJS process via `eventName`, along with
-arguments. Arguments will be serialized with JSON.
+The payload data to send a message to the web page via `eventName`,
+along with arguments. Arguments will be serialized with JSON.
 
-| Prop            | Type                | Description                         | Since |
-| --------------- | ------------------- | ----------------------------------- | ----- |
-| **`eventName`** | <code>string</code> | The name of the event being send to | 1.0.0 |
-| **`args`**      | <code>any[]</code>  | Array of arguments to send          | 1.0.0 |
+| Prop            | Type                | Description                          | Since |
+| --------------- | ------------------- | ------------------------------------ | ----- |
+| **`eventName`** | <code>string</code> | The name of the event being send to. | 1.0.0 |
+| **`args`**      | <code>any[]</code>  | The array of arguments to send.      | 1.0.0 |
 
 
 #### PluginListenerHandle
@@ -349,23 +483,23 @@ arguments. Arguments will be serialized with JSON.
 | **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
 
 
-#### ChannelListenerEvent
+#### ChannelCallbackData
 
-The event object when a message from the NodeJS process arrives.
+The callback data object when a message from the Node.js process arrives.
 
-| Prop       | Type               | Description                 | Since |
-| ---------- | ------------------ | --------------------------- | ----- |
-| **`args`** | <code>any[]</code> | Received array of arguments | 1.0.0 |
+| Prop       | Type               | Description                      | Since |
+| ---------- | ------------------ | -------------------------------- | ----- |
+| **`args`** | <code>any[]</code> | The received array of arguments. | 1.0.0 |
 
 
 ### Type Aliases
 
 
-#### ChannelListener
+#### ChannelListenerCallback
 
-The callback function when listen to messages from the NodeJS process.
+The callback function to be called when listen to messages from the Node.js process.
 
-<code>(event: <a href="#channellistenerevent">ChannelListenerEvent</a>): void</code>
+<code>(data: <a href="#channelcallbackdata">ChannelCallbackData</a>): void</code>
 
 </docgen-api>
 

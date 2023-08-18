@@ -55,7 +55,7 @@ void receiveMessageFromNode(const char *channelName, const char *channelMessage)
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_net_hampoelz_capacitor_nodejs_NodeJS_sendMessageToNode(
+Java_net_hampoelz_capacitor_nodejs_CapacitorNodeJS_sendMessageToNode(
     JNIEnv *env,
     jobject /* this */,
     jstring channelName,
@@ -73,9 +73,9 @@ Java_net_hampoelz_capacitor_nodejs_NodeJS_sendMessageToNode(
 
 // Node's libUV requires all arguments being on contiguous memory.
 extern "C" jint JNICALL
-Java_net_hampoelz_capacitor_nodejs_NodeJS_startNodeWithArguments(
+Java_net_hampoelz_capacitor_nodejs_CapacitorNodeJS_startNodeWithArguments(
     JNIEnv *env,
-    jobject object/* this */,
+    jobject object /* this */,
     jobjectArray arguments,
     jstring nodePath,
     jboolean redirectOutputToLogcat)
