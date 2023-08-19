@@ -135,9 +135,9 @@ NodeJS.whenReady().then(() => {
 
 These config values are available:
 
-| Prop          | Type                | Description                                                                    | Default             | Since |
-| ------------- | ------------------- | ------------------------------------------------------------------------------ | ------------------- | ----- |
-| **`nodeDir`** | <code>string</code> | Relative path of the integrated Node.js project based on the Capacitor webdir. | <code>nodejs</code> | 1.0.0 |
+| Prop          | Type                | Description                                                                    | Default               | Since |
+| ------------- | ------------------- | ------------------------------------------------------------------------------ | --------------------- | ----- |
+| **`nodeDir`** | <code>string</code> | Relative path of the integrated Node.js project based on the Capacitor webdir. | <code>"nodejs"</code> | 1.0.0 |
 
 ### Examples
 
@@ -147,7 +147,7 @@ In `capacitor.config.json`:
 {
   "plugins": {
     "CapacitorNodeJS": {
-      "nodeDir": custom-nodejs
+      "nodeDir": "custom-nodejs"
     }
   }
 }
@@ -163,7 +163,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   plugins: {
     CapacitorNodeJS: {
-      nodeDir: custom-nodejs,
+      nodeDir: "custom-nodejs",
     },
   },
 };

@@ -10,8 +10,8 @@ declare module '@capacitor/cli' {
        * Relative path of the integrated Node.js project based on the Capacitor webdir.
        *
        * @since 1.0.0
-       * @default nodejs
-       * @example custom-nodejs
+       * @default "nodejs"
+       * @example "custom-nodejs"
        */
       nodeDir?: string;
     };
