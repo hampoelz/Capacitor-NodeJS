@@ -97,7 +97,6 @@ Now you can communicate with the Node.js layer in your Capacitor app:
 
 ```typescript
 import { NodeJS } from 'capacitor-nodejs';
-//const NodeJS = Capacitor.Plugins.NodeJS;
 
 // Listens to "msg-from-nodejs" from the Node.js process.
 NodeJS.addListener('msg-from-nodejs', event => {
@@ -173,7 +172,7 @@ export default config;
 
 </docgen-config>
 
-For example, if you change your `nodeDir` to `custom-nodejs`, then your project structure should look something like this:
+If you change your `nodeDir` to `custom-nodejs`, then your project structure should look something like this:
 
 ```
 my-capacitor-app/
