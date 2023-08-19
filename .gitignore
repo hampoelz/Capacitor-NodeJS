@@ -11,7 +11,7 @@ xcuserdata
 # macOS files
 .DS_Store
 
-# Packed NPM module
+# Packaged npm module
 capacitor-nodejs-*.tgz
 
 # Based on Android gitignore template: https://github.com/github/gitignore/blob/HEAD/Android.gitignore
