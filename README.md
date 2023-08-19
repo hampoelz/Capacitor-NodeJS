@@ -30,7 +30,7 @@
 **You've to use Capacitor v5 or newer. This project isn't compatible with lower versions of Capacitor.**
 
 ```bash
-npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.2/capacitor-nodejs.tgz
+npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.3/capacitor-nodejs.tgz
 npx cap sync
 ```
 
@@ -42,7 +42,7 @@ npx cap sync
 
 Several example projects can be found in the [hampoelz/Capacitor-NodeJS_Examples](https://github.com/hampoelz/Capacitor-NodeJS_Examples) repository.
 
-Currently there are two example projects available. One without any additional framework, located in the [`example/vanilla`](https://github.com/hampoelz/Capacitor-NodeJS_Examples/tree/example/vanilla) branch. And one that uses the vitejs framework in [`example/vite`](https://github.com/hampoelz/Capacitor-NodeJS_Examples/tree/example/vite).
+Currently there is one example project available. One that uses the vitejs framework, located in the [`example/vite`](https://github.com/hampoelz/Capacitor-NodeJS_Examples/tree/example/vite) branch. More is coming soon.
 
 ## Getting Started
 

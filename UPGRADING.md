@@ -1,3 +1,17 @@
+## Capacitor-NodeJS v1.0.0-beta.3
+
+1. Change the plugin name in your Capacitor configuration from `NodeJS` to `CapacitorNodeJS`. For example in `capacitor.config.json`:
+  ```diff
+  {
+    "plugins": {
+  -   "NodeJS": {
+  +   "CapacitorNodeJS": {
+        "nodeDir": "custom-nodejs"
+      }
+    }
+  }
+  ```
+
 ## Capacitor-NodeJS v1.0.0-beta.1
 
 1. Move your NodeJS project from you app's source directory to the subfolder `nodejs`. You can skip this step if you set a custom nodeDir in your capacitor configuration. Your project structure should then look something like this:

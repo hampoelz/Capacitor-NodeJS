@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-beta.3] - 2023-08-19
+
+_If you are upgrading: please see [`UPGRADING.md`](UPGRADING.md)._
+
+### Changed
+
+- Update to Capacitor v5 ([#11](https://github.com/hampoelz/Capacitor-NodeJS/issues/11), [#13](https://github.com/hampoelz/Capacitor-NodeJS/issues/13))
+  - **Breaking:** Drop support for Capacitor v3 and v4
+- Move native API behind a JavaScript wrapper
+  - **Breaking:** Change plugin name in Capacitor configuration from `NodeJS` to `CapacitorNodeJS`
+
 ## [1.0.0-beta.2] - 2023-01-30
 
 ### Changed

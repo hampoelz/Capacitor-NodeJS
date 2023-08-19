@@ -1,6 +1,6 @@
 {
   "name": "capacitor-nodejs",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "A full-fledged Node.js runtime for Capacitor apps",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
