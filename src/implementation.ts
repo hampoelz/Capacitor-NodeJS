@@ -7,7 +7,7 @@ import type {
 } from './definitions';
 
 export interface CapacitorNodeJSPlugin {
-    send(args: ChannelPayloadData): Promise<{ value: boolean }>;
+    send(args: ChannelPayloadData): Promise<void>;
     whenReady(): Promise<void>;
 
     addListener(
