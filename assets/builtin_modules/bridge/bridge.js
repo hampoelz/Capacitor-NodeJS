@@ -4,7 +4,14 @@ const isMobile = platform === 'android' || platform === 'ios';
 const EventEmitter = require('events');
 const NativeBridge = isMobile
   ? process._linkedBinding('nativeBridge')
-  : new EventEmitter();
+  : {
+    registerChannel: (channelName, callback) => process.on('message', args => {
+      if (args.channelName === channelName) {
+        callback(undefined, args.payload);
+      }
+    }),
+    emit: (channelName, payload) => process.send({ channelName, payload })
+  };
 
 class MessageCodec {
   constructor(_event, ..._payload) {
@@ -31,13 +38,11 @@ class Channel extends EventEmitter {
     super();
     this.name = name;
 
-    if (isMobile) {
-      const self = this;
-      NativeBridge.registerChannel(name, (_, data) => {
-        var messageCodec = MessageCodec.deserialize(data);
-        self.emitWrapper(messageCodec.event, ...messageCodec.payload);
-      });
-    }
+    const self = this;
+    NativeBridge.registerChannel(name, (_, data) => {
+      var messageCodec = MessageCodec.deserialize(data);
+      self.emitWrapper(messageCodec.event, ...messageCodec.payload);
+    });
   }
 
   send(eventName, ...args) {

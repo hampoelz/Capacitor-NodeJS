@@ -9,15 +9,15 @@
             "dom",
             "es2020"
         ],
-        "module": "commonjs",
+        "module": "esnext",
+        "moduleResolution": "node",
         "noImplicitAny": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "outDir": "build",
         "sourceMap": true,
-        "strict": false,
-        "target": "ES2017",
-        "allowJs": true
+        "strict": true,
+        "target": "es2017"
     },
     "include": [
         "src/**/*"

@@ -3,86 +3,112 @@ import { EventEmitter } from 'events';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-import type { Channel } from '../../assets/builtin_modules/bridge/bridge';
-import type { ChannelPayloadData } from '../../src/definitions';
+import type { ChannelCallbackData, ChannelPayloadData } from '../../src/definitions';
+
+import { CapacitorNodeJSImplementation } from './implementation';
+
+class PluginSettings {
+  nodeDir = "nodejs";
+}
 
 export class CapacitorNodeJS extends EventEmitter {
-  private isNodeEngineRunning = false;
-  private eventChannel: Channel = undefined;
+  private config?: Record<string, any>;
+  private implementation: CapacitorNodeJSImplementation;
 
-  constructor() {
+  constructor(config?: Record<string, any>) {
     super();
 
-    if (!app) return;
+    this.config = config;
+    this.implementation = new CapacitorNodeJSImplementation(this.PluginEventNotifier);
 
-    const _self = this;
-
-    //
-    // Get configurations and start NodeJS engine
-    //
-    const configFileBase = join(app.getAppPath(), 'capacitor.config.');
-        const configFileExt =
-            existsSync(configFileBase + 'json') ? 'json' :
-                existsSync(configFileBase + 'js') ? 'js' :
-                    existsSync(configFileBase + 'ts') ? 'ts' : undefined;
-
-    if (!configFileExt) startEngine();
-
-    const configFile = configFileBase + configFileExt;
-    import(configFile).then(value => {
-      const config = value.default || value;
-      startEngine({ nodeDir: config?.plugins?.NodeJS?.nodeDir });
+    // TODO: Allow manual startup of the Node.js runtime
+    this.readPluginSettings().then(pluginSettings => {
+      this.implementation.startEngine(pluginSettings.nodeDir);
     });
-
-    function startEngine(options: { nodeDir: string } = undefined): void {
-      const nodeDir = join(app.getAppPath(), 'app', options?.nodeDir ?? 'nodejs');
-      const nodePackageJson = join(nodeDir, 'package.json');
-      const bridgeModule = join(nodeDir, 'node_modules', 'bridge', 'bridge');
-
-      import(bridgeModule).then(bridge => {
-        _self.eventChannel = bridge.eventChannel;
-
-        //
-        // Forward event emits from the NodeJS engine to CapacitorJS
-        //
-        bridge.NativeBridge.addListener('APP_CHANNEL', (data: any) => {
-          const messageCodec = bridge.MessageCodec.deserialize(data);
-          if (messageCodec.event == 'ready') _self.isNodeEngineRunning = true;
-        });
-
-        bridge.NativeBridge.addListener('EVENT_CHANNEL', (data: any) => {
-          const messageCodec = bridge.MessageCodec.deserialize(data);
-          _self.emit(messageCodec.event, { args: messageCodec.payload });
-        });
-
-        //
-        // Start NodeJS project from app
-        //
-        import(nodePackageJson).then(value => {
-          const nodeMainFile = join(nodeDir, value.main);
-          require(nodeMainFile);
-        });
-      });
-    }
   }
 
-  async send(args: ChannelPayloadData): Promise<{ value: boolean }> {
-    if (!this.isNodeEngineRunning || !this.eventChannel)
-      return { value: false };
-    this.eventChannel.emitWrapper(args.eventName, args.args);
-    return { value: true };
+  private async readPluginSettings(): Promise<PluginSettings> {
+    let config = this.config?.plugins?.CapacitorNodeJS;
+
+    //!-------------------------- workaround ---------------------------
+    // the configuration exposed by the capacitor-community/electron platform
+    // is always empty for some reason
+    const configPathBase = join(app.getAppPath(), 'capacitor.config.');
+    const configPathExt =
+      existsSync(configPathBase + 'json') ? 'json' :
+        existsSync(configPathBase + 'js') ? 'js' :
+          existsSync(configPathBase + 'ts') ? 'ts' : undefined;
+    const configPath = configPathBase + configPathExt;
+    const configFile = await require(configPath);
+    const capacitorConfig = configFile.default || configFile;
+    config = capacitorConfig?.plugins?.CapacitorNodeJS;
+    //!-----------------------------------------------------------------
+
+    const settings = new PluginSettings();
+    settings.nodeDir = config?.nodeDir || settings.nodeDir;
+
+    return settings;
+  }
+
+  //#region PluginMethods
+  //---------------------------------------------------------------------------------------
+
+  async send(args: ChannelPayloadData): Promise<void> {
+    const eventName = args.eventName;
+    if (eventName === undefined) {
+      throw new Error("Required parameter 'eventName' was not specified");
+    }
+
+    if (args.args === undefined) {
+      args.args = [];
+    }
+
+    this.implementation.sendMessage(args);
   }
 
   async whenReady(): Promise<void> {
-    return new Promise(resolve => {
-      const timer = setTimeout(() => {
-        if (this.isNodeEngineRunning && this.eventChannel) {
-          resolve();
-          clearInterval(timer);
-        }
-      }, 50);
-    });
+    return this.implementation.resolveWhenReady();
   }
 
   // removeAllListeners() function is missing (https://github.com/capacitor-community/electron/pull/185)
+
+  //---------------------------------------------------------------------------------------
+  //#endregion
+
+  //#region PluginEvents
+  //---------------------------------------------------------------------------------------
+
+  protected PluginEventNotifier = {
+
+    // Bridge -------------------------------------------------------------------------------
+
+    channelReceive: (eventName: string, data: string): void => {
+      //? TODO: Deserialize data
+      let payloadArray = [];
+      try {
+        payloadArray = JSON.parse(data);
+        if (!Array.isArray(payloadArray)) {
+          payloadArray = [payloadArray];
+        }
+      } catch {
+        payloadArray = [data];
+      }
+
+      this.notifyChannelListeners(eventName, payloadArray);
+    }
+  }
+
+  //---------------------------------------------------------------------------------------
+  //#endregion
+
+  //#region PluginListeners
+  //---------------------------------------------------------------------------------------
+
+  private notifyChannelListeners(eventName: string, payloadArray: any[]): void {
+    const args: ChannelCallbackData = { args: payloadArray };
+    this.emit(eventName, args);
+  }
+
+  //---------------------------------------------------------------------------------------
+  //#endregion
 }

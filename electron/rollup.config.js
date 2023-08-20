@@ -4,9 +4,9 @@ export default {
     {
       file: 'electron/dist/plugin.js',
       format: 'cjs',
-      sourcemap: true,
+      sourcemap: 'inline',
       inlineDynamicImports: true,
     },
   ],
-  external: ['@capacitor/core', 'electron', 'fs', 'path'],
+  external: ['@capacitor/core', 'child_process', 'electron', 'events', 'path', 'fs' ],
 };
