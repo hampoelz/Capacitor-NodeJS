@@ -77,13 +77,34 @@ Java_net_hampoelz_capacitor_nodejs_NodeProcess_nativeStart(
     JNIEnv *env,
     jobject object /* this */,
     jobjectArray arguments,
-    jstring nodePath,
+    jobjectArray environmentVariables,
     jboolean redirectOutputToLogcat)
 {
-    // Node's libuv requires all arguments being on contiguous memory.
-    const char* path_path = env->GetStringUTFChars(nodePath, 0);
-    setenv("NODE_PATH", path_path, 1);
-    env->ReleaseStringUTFChars(nodePath, path_path);
+    jsize environmentVariablesCount = env->GetArrayLength(environmentVariables);
+    for (int i = 0; i < environmentVariablesCount; i++) {
+        jobjectArray environmentVariablePair = (jobjectArray)env->GetObjectArrayElement(environmentVariables, i);
+
+        jsize environmentVariablePairSize = env->GetArrayLength(environmentVariablePair);
+        if (environmentVariablePairSize != 2) {
+            continue;
+        }
+
+        jstring key = (jstring)env->GetObjectArrayElement(environmentVariablePair, 0);
+        jstring value = (jstring)env->GetObjectArrayElement(environmentVariablePair, 1);
+
+        // Node's libuv requires all arguments being on contiguous memory.
+        const char *keyContents = env->GetStringUTFChars(key, 0);
+        const char *valueContents = env->GetStringUTFChars(value, 0);
+
+        setenv(keyContents, valueContents, 1);
+
+        env->ReleaseStringUTFChars(key, keyContents);
+        env->ReleaseStringUTFChars(value, valueContents);
+
+        env->DeleteLocalRef(key);
+        env->DeleteLocalRef(value);
+        env->DeleteLocalRef(environmentVariablePair);
+    }
 
     // argc
     jsize argumentCount = env->GetArrayLength(arguments);

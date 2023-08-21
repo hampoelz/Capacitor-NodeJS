@@ -32,7 +32,7 @@ public class FileOperations {
     public static String CombineEnv(String... variables) {
         final StringBuilder builder = new StringBuilder();
 
-        for (int index = 1; index < variables.length; index++) {
+        for (int index = 0; index < variables.length; index++) {
             final String variable = variables[index];
 
             if (variable == null || variable.isEmpty()) {

@@ -5,13 +5,16 @@ import android.system.Os;
 
 import com.getcapacitor.Logger;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 public class NodeProcess {
     static {
         System.loadLibrary("native-lib");
         System.loadLibrary("node");
     }
 
-    private native Integer nativeStart(String[] arguments, String nodePath, boolean redirectOutputToLogcat);
+    private native Integer nativeStart(String[] arguments, String[][] environmentVariables, boolean redirectOutputToLogcat);
 
     private native void nativeSend(String channelName, String message);
 
@@ -22,7 +25,7 @@ public class NodeProcess {
 
     private final ReceiveCallback receiveCallback;
 
-    protected NodeProcess(String modulePath, String[] parameter, String NODE_PATH, String cachePath, ReceiveCallback receiveCallback) {
+    protected NodeProcess(String modulePath, String[] parameter, Map<String, String> env, String cachePath, ReceiveCallback receiveCallback) {
         this.receiveCallback = receiveCallback;
 
         try {
@@ -36,8 +39,16 @@ public class NodeProcess {
         arguments[0] = "node";
         arguments[1] = modulePath;
 
-        // TODO: pass environment variables from java to jni
-        new Thread(() -> nativeStart(arguments, NODE_PATH, true)).start();
+        final String[][] environmentVariables = new String[env.size()][2];
+
+        int envCount = 0;
+        for(Entry<String,String> entry : env.entrySet()){
+            environmentVariables[envCount][0] = entry.getKey();
+            environmentVariables[envCount][1] = entry.getValue();
+            envCount++;
+        }
+
+        new Thread(() -> nativeStart(arguments, environmentVariables, true)).start();
     }
 
     protected interface ReceiveCallback {

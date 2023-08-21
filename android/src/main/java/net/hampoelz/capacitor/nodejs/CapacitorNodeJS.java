@@ -15,6 +15,8 @@ import com.getcapacitor.PluginCall;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import org.json.JSONException;
@@ -144,9 +146,12 @@ public class CapacitorNodeJS {
             }
         }
 
+        final Map<String, String> nodeEnv = new HashMap<>();
+        nodeEnv.put("NODE_PATH", modulesPaths);
+
         final String[] nodeParameters = new String[] { };
 
-        nodeProcess = new NodeProcess(projectMainPath, nodeParameters, modulesPaths, cachePath, new ReceiveCallback());
+        nodeProcess = new NodeProcess(projectMainPath, nodeParameters, nodeEnv, cachePath, new ReceiveCallback());
     }
 
     protected void resolveWhenReady(PluginCall call) {
