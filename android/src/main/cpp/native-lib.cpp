@@ -35,7 +35,7 @@ void receiveMessageFromNode(const char *channelName, const char *channelMessage)
     if (javaClass != nullptr)
     {
         // Find the method.
-        jmethodID javaSendMessageMethod = env->GetMethodID(javaClass, "receiveMessageFromNode", "(Ljava/lang/String;Ljava/lang/String;)V");
+        jmethodID javaSendMessageMethod = env->GetMethodID(javaClass, "nativeReceive", "(Ljava/lang/String;Ljava/lang/String;)V");
 
         if (javaSendMessageMethod != nullptr)
         {
@@ -55,7 +55,7 @@ void receiveMessageFromNode(const char *channelName, const char *channelMessage)
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_net_hampoelz_capacitor_nodejs_CapacitorNodeJS_sendMessageToNode(
+Java_net_hampoelz_capacitor_nodejs_NodeProcess_nativeSend(
     JNIEnv *env,
     jobject /* this */,
     jstring channelName,
@@ -73,7 +73,7 @@ Java_net_hampoelz_capacitor_nodejs_CapacitorNodeJS_sendMessageToNode(
 
 // Node's libUV requires all arguments being on contiguous memory.
 extern "C" jint JNICALL
-Java_net_hampoelz_capacitor_nodejs_CapacitorNodeJS_startNodeWithArguments(
+Java_net_hampoelz_capacitor_nodejs_NodeProcess_nativeStart(
     JNIEnv *env,
     jobject object /* this */,
     jobjectArray arguments,

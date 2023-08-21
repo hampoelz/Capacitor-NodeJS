@@ -4,150 +4,226 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.system.ErrnoException;
-import android.system.Os;
-import java.io.File;
+import android.content.res.AssetManager;
+
+import androidx.annotation.Nullable;
+
+import com.getcapacitor.JSArray;
+import com.getcapacitor.JSObject;
+import com.getcapacitor.Logger;
+import com.getcapacitor.PluginCall;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Objects;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CapacitorNodeJS {
+    private NodeProcess nodeProcess;
+    private PackageInfo packageInfo;
+    private final Context context;
+    private final SharedPreferences preferences;
+    private final CapacitorNodeJSPlugin.PluginEventNotifier eventNotifier;
+    private final EngineStatus engineStatus = new EngineStatus();
 
-    private static final String SHARED_PREFS = "NODEJS_PREFS";
-    private static final String APP_UPDATED_TIME = "AppUpdateTime";
-
-    private static boolean isNodeEngineRunning = false;
-    public static boolean isNodeEngineReady = false;
-
-    static {
-        System.loadLibrary("native-lib");
-        System.loadLibrary("node");
-    }
-
-    private CapacitorNodeJSPlugin plugin;
-    private Context pluginContext;
-    private PackageInfo packageInfo = null;
-
-    public CapacitorNodeJS(CapacitorNodeJSPlugin plugin) {
-        this.plugin = plugin;
-        pluginContext = plugin.getActivity().getApplicationContext();
+    protected CapacitorNodeJS(Context context, CapacitorNodeJSPlugin.PluginEventNotifier eventNotifier) {
+        this.context = context;
+        this.preferences = context.getSharedPreferences(CapacitorNodeJSPlugin.PREFS_TAG, Context.MODE_PRIVATE);
+        this.eventNotifier = eventNotifier;
 
         try {
-            packageInfo = pluginContext.getPackageManager().getPackageInfo(pluginContext.getPackageName(), 0);
+            this.packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Logger.error(CapacitorNodeJSPlugin.LOGGER_TAG, "Failed to get the application's package information.", e);
         }
     }
 
-    public void StartEngine(boolean redirectOutputToLogcat) {
-        if (isNodeEngineRunning) return;
-        isNodeEngineRunning = true;
+    /** @noinspection InnerClassMayBeStatic*/
+    private class EngineStatus {
+        private final ArrayList<PluginCall> whenEngineReadyListeners = new ArrayList<>();
+        private boolean isEngineStarted = false;
+        private boolean isEngineReady = false;
 
-        // Sets the TMPDIR environment to the cacheDir, to be used in Node as os.tmpdir
-        try {
-            Os.setenv("TMPDIR", pluginContext.getCacheDir().getAbsolutePath(), true);
-        } catch (ErrnoException e) {
-            e.printStackTrace();
+        protected void setStarted() {
+            isEngineStarted = true;
         }
 
-        new Thread(
-            () -> {
-                try {
-                    String nodeLocation = plugin.getConfig().getString("nodeDir");
+        protected boolean isStarted() {
+            return isEngineStarted;
+        }
 
-                    if (nodeLocation == null) nodeLocation = "nodejs";
+        protected void setReady() {
+            isEngineReady = true;
 
-                    if (nodeLocation.startsWith("./"))
-                        nodeLocation = nodeLocation.substring(2);
-                    else if (nodeLocation.startsWith(".") || nodeLocation.startsWith("/"))
-                        nodeLocation = nodeLocation.substring(1);
+            while (whenEngineReadyListeners.size() > 0) {
+                final PluginCall whenEngineReadyListener = whenEngineReadyListeners.get(0);
+                whenEngineReadyListeners.remove(0);
+                whenEngineReadyListener.resolve();
+            }
+        }
 
-                    if (nodeLocation.endsWith("/"))
-                        nodeLocation = nodeLocation.substring(0, nodeLocation.length() - 1);
-                    
-                    String filesDir = pluginContext.getFilesDir().getAbsolutePath();
-                    String nodeFolder = filesDir + "/public/" + nodeLocation;
+        protected boolean isReady() {
+            return isEngineReady;
+        }
 
-                    copyNodeJsAssets(nodeLocation, nodeFolder);
+        protected void resolveWhenReady(PluginCall call) {
+            if (this.isReady()) {
+                call.resolve();
+            } else {
+                whenEngineReadyListeners.add(call);
+            }
+        }
+    }
 
-                    File packageFile = new File(nodeFolder + "/package.json");
-                    JSONObject packageJSON = new JSONObject(FileOperations.ReadFile(packageFile));
-
-                    String mainFile = packageJSON.getString("main");
-                    if (mainFile.startsWith("./"))
-                        mainFile = mainFile.substring(1);
-                    else if (!mainFile.startsWith("/"))
-                        mainFile = "/" + mainFile;
-
-                    String mainPath = nodeFolder + mainFile;
-
-                    startNodeWithArguments(new String[] { "node", mainPath }, nodeFolder, redirectOutputToLogcat);
-                } catch (Exception e) {
-                    e.printStackTrace();
+    protected void startEngine(@Nullable PluginCall call, String projectDir) {
+        final var callWrapper = new Object(){
+            public void reject(String message) {
+                if (call != null) {
+                    call.reject(message);
+                } else {
+                    Logger.debug(CapacitorNodeJSPlugin.LOGGER_TAG, message);
                 }
             }
-        ).start();
-    }
 
-    public boolean SendEventMessage(JSONObject data) {
-        if (!isNodeEngineReady) return false;
-
-        try {
-            sendMessageToNode("EVENT_CHANNEL", data.toString());
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    private native Integer startNodeWithArguments(String[] arguments, String nodePath, boolean redirectOutputToLogcat);
-
-    private native void sendMessageToNode(String channelName, String message);
-
-    private void receiveMessageFromNode(String channelName, String message) {
-        try {
-            JSONObject data = new JSONObject(message);
-
-            if (channelName.equals("EVENT_CHANNEL"))
-                plugin.receive(data);
-            else if (channelName.equals(("APP_CHANNEL"))) {
-                String event = data.get("event").toString();
-
-                if (event.equals("ready"))
-                    isNodeEngineReady = true;
+            public void reject(String message, Exception e) {
+                if (call != null) {
+                    call.reject(message, e);
+                } else {
+                    Logger.error(CapacitorNodeJSPlugin.LOGGER_TAG, message, e);
+                }
             }
+        };
+
+        if (engineStatus.isStarted()) {
+            callWrapper.reject("The Node.js engine has already been started.");
+            return;
+        }
+        engineStatus.setStarted();
+
+        final String filesPath = context.getFilesDir().getAbsolutePath();
+        final String cachePath = context.getCacheDir().getAbsolutePath();
+
+        final String projectPath = FileOperations.CombinePath(filesPath, "public", projectDir);
+
+        final boolean copySuccess = copyNodeProjectFromAPK(projectDir, projectPath);
+        if (!copySuccess) {
+            callWrapper.reject("Unable to copy the Node.js project from APK.");
+            return;
+        }
+
+        if (!FileOperations.ExistsPath(projectPath)) {
+            callWrapper.reject("Unable to access the Node.js project. (No such directory)");
+            return;
+        }
+
+        final String projectMainPath;
+        try {
+            final String projectPackageJsonPath = FileOperations.CombinePath(projectPath, "package.json");
+            final String projectPackageJsonData = FileOperations.ReadFileFromPath(projectPackageJsonPath);
+            final JSONObject projectPackageJson = new JSONObject(projectPackageJsonData);
+            final String projectMainFile = projectPackageJson.getString("main");
+            projectMainPath = FileOperations.CombinePath(projectPath, projectMainFile);
+        } catch (JSONException | IOException e) {
+            callWrapper.reject("Failed to read the package.json file of the Node.js project.", e);
+            return;
+        }
+
+        if (!FileOperations.ExistsPath(projectMainPath)) {
+            callWrapper.reject("Unable to access main script of the Node.js project. (No such file)");
+            return;
+        }
+
+        final String modulesPaths = FileOperations.CombineEnv(projectPath /*, bridgeModulePath, ... */);
+
+        class ReceiveCallback implements NodeProcess.ReceiveCallback {
+            @Override
+            public void receive(String channelName, String message) {
+                receiveMessage(channelName, message);
+            }
+        }
+
+        final String[] nodeParameters = new String[] { };
+
+        nodeProcess = new NodeProcess(projectMainPath, nodeParameters, modulesPaths, cachePath, new ReceiveCallback());
+    }
+
+    protected void resolveWhenReady(PluginCall call) {
+        if (!engineStatus.isStarted()) {
+            call.reject("The Node.js engine has not been started.");
+        }
+
+        engineStatus.resolveWhenReady(call);
+    }
+
+    protected void sendMessage(PluginCall call) {
+        if (!engineStatus.isStarted()) {
+            call.reject("The Node.js engine has not been started.");
+            return;
+        }
+
+        if (!engineStatus.isReady()) {
+            call.reject("The Node.js engine is not ready yet.");
+            return;
+        }
+
+        final String eventName = call.getString("eventName");
+        final JSArray data = call.getArray("args", new JSArray());
+
+        if (nodeProcess == null || eventName == null || data == null) return;
+
+        // TODO: refactor payload
+        final JSObject payload = new JSObject();
+        payload.put("event", eventName);
+        payload.put("payload", data.toString());
+
+        nodeProcess.send(CapacitorNodeJSPlugin.CHANNEL_NAME_EVENTS, payload.toString());
+    }
+
+    protected void receiveMessage(String channelName, String payload) {
+        final JSObject data;
+        try {
+            data = new JSObject(payload);
         } catch (JSONException e) {
-            // TODO
-            e.printStackTrace();
+            Logger.error(CapacitorNodeJSPlugin.LOGGER_TAG, "Failed to deserialize received data from the Node.js process.", e);
+            return;
+        }
+
+        final String eventName = data.getString("event");
+        final String args = data.getString("payload");
+
+        if (Objects.equals(channelName, CapacitorNodeJSPlugin.CHANNEL_NAME_APP) && Objects.equals(eventName, "ready")) {
+            engineStatus.setReady();
+        } else if (Objects.equals(channelName, CapacitorNodeJSPlugin.CHANNEL_NAME_EVENTS)) {
+            eventNotifier.channelReceive(eventName, args);
         }
     }
 
-    private void copyNodeJsAssets(String nodeLocation, String nodeFolder) throws IOException {
-        String assetNodeFolder = "public/" + nodeLocation;
+    private boolean copyNodeProjectFromAPK(String projectDir, String projectPath) {
+        final String assetDir = FileOperations.CombinePath("public", projectDir);
+        final AssetManager assetManager = context.getAssets();
 
-        File nodeFolderReference = new File(nodeFolder);
-        if (nodeFolderReference.exists() && wasAppUpdated())
-            FileOperations.DeleteFolderRecursively(nodeFolderReference);
-
-        FileOperations.CopyAssetFolder(pluginContext.getAssets(), assetNodeFolder, nodeFolder);
+        boolean success = true;
+        if (isAppUpdated()) {
+            success = FileOperations.DeleteDir(projectPath);
+        }
+        success &= FileOperations.CopyAssetDir(assetManager, assetDir, projectPath);
 
         saveAppUpdateTime();
+        return success;
     }
 
-    private boolean wasAppUpdated() {
-        SharedPreferences prefs = pluginContext.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        long previousLastUpdateTime = prefs.getLong(APP_UPDATED_TIME, 0);
-        long lastUpdateTime = packageInfo.lastUpdateTime;
-        return (lastUpdateTime != previousLastUpdateTime);
+    private boolean isAppUpdated() {
+        final long previousLastUpdateTime = preferences.getLong(CapacitorNodeJSPlugin.PREFS_APP_UPDATED_TIME, 0);
+        final long lastUpdateTime = packageInfo.lastUpdateTime;
+        return lastUpdateTime != previousLastUpdateTime;
     }
 
     private void saveAppUpdateTime() {
-        long lastUpdateTime = packageInfo.lastUpdateTime;
-        SharedPreferences prefs = pluginContext.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putLong(APP_UPDATED_TIME, lastUpdateTime);
-        editor.commit();
+        final long lastUpdateTime = packageInfo.lastUpdateTime;
+        final SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(CapacitorNodeJSPlugin.PREFS_APP_UPDATED_TIME, lastUpdateTime);
+        editor.apply();
     }
 }
