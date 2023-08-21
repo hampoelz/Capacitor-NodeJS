@@ -12,6 +12,9 @@ class PluginSettings {
 }
 
 export class CapacitorNodeJS extends EventEmitter {
+  public static CHANNEL_NAME_APP = "APP_CHANNEL";
+  public static CHANNEL_NAME_EVENTS = "EVENT_CHANNEL";
+
   private config?: Record<string, any>;
   private implementation: CapacitorNodeJSImplementation;
 
@@ -55,7 +58,7 @@ export class CapacitorNodeJS extends EventEmitter {
 
   async send(args: ChannelPayloadData): Promise<void> {
     const eventName = args.eventName;
-    if (eventName === undefined) {
+    if (eventName === undefined || eventName === "") {
       throw new Error("Required parameter 'eventName' was not specified");
     }
 

@@ -5,13 +5,11 @@ import { join as joinPath } from 'path';
 
 import type { ChannelPayloadData } from '../../src/definitions';
 
-import type { CapacitorNodeJS } from "./index";
+import { CapacitorNodeJS } from "./index";
 import { joinEnv } from './utils';
 
-type EngineStatusReadyCallback = () => void;
-
 class EngineStatus {
-    private whenEngineReadyListeners: EngineStatusReadyCallback[] = [];
+    private whenEngineReadyListeners: (() => void)[] = [];
     private isEngineStarted = false;
     private isEngineReady = false;
 
@@ -37,7 +35,7 @@ class EngineStatus {
         return this.isEngineReady;
     }
 
-    public whenReady(callback: EngineStatusReadyCallback): void {
+    public whenReady(callback: () => void): void {
         if (this.isReady()) {
             callback();
         } else {
@@ -110,19 +108,19 @@ export class CapacitorNodeJSImplementation {
 
         // TODO: refactor payload
         const payload = { event: eventName, payload: JSON.stringify(data) };
-        this.nodeProcess.send({ channelName: "EVENT_CHANNEL", payload: JSON.stringify(payload) });
+        this.nodeProcess.send({ channelName: CapacitorNodeJS.CHANNEL_NAME_EVENTS, payload: JSON.stringify(payload) });
     }
 
-    private receiveMessage(channelName: string, payload: string) {
+    private receiveMessage(channelName: string, payload: string): void {
         // TODO: refactor payload
         const data = JSON.parse(payload);
 
         const eventName = data.event;
         const args = data.payload;
 
-        if (channelName === "APP_CHANNEL" && eventName === "ready") {
+        if (channelName === CapacitorNodeJS.CHANNEL_NAME_APP && eventName === "ready") {
             this.engineStatus.setReady();
-        } else if (channelName === "EVENT_CHANNEL") {
+        } else if (channelName === CapacitorNodeJS.CHANNEL_NAME_EVENTS) {
             this.eventNotifier.channelReceive(eventName, args);
         }
     }
