@@ -60,6 +60,7 @@ export class CapacitorNodeJSImplementation {
         this.engineStatus.setStarted();
 
         const projectPath = joinPath(app.getAppPath(), 'app', projectDir);
+        const modulesPath = joinPath(__dirname, '..', 'assets', 'builtin_modules')
 
         const projectPackageJsonPath = joinPath(projectPath, "package.json");
         const projectPackageJson = await import(projectPackageJsonPath);
@@ -67,7 +68,7 @@ export class CapacitorNodeJSImplementation {
         const projectMainFile = projectPackageJson.main;
         const projectMainPath = joinPath(projectPath, projectMainFile);
 
-        const modulesPaths = joinEnv(projectPath /*, bridgeModulePath, ... */);
+        const modulesPaths = joinEnv(projectPath, modulesPath);
 
         const nodeParameters: string[] = [];
         const nodeOptions: ForkOptions = {

@@ -107,9 +107,10 @@ public class CapacitorNodeJS {
         final String filesPath = context.getFilesDir().getAbsolutePath();
         final String cachePath = context.getCacheDir().getAbsolutePath();
 
-        final String projectPath = FileOperations.CombinePath(filesPath, "public", projectDir);
+        final String projectPath = FileOperations.CombinePath(filesPath, "public", "nodejs");
+        final String modulesPath = FileOperations.CombinePath(filesPath, "builtin_modules");
 
-        final boolean copySuccess = copyNodeProjectFromAPK(projectDir, projectPath);
+        final boolean copySuccess = copyNodeProjectFromAPK(projectDir, projectPath, modulesPath);
         if (!copySuccess) {
             callWrapper.reject("Unable to copy the Node.js project from APK.");
             return;
@@ -137,7 +138,7 @@ public class CapacitorNodeJS {
             return;
         }
 
-        final String modulesPaths = FileOperations.CombineEnv(projectPath /*, bridgeModulePath, ... */);
+        final String modulesPaths = FileOperations.CombineEnv(projectPath, modulesPath);
 
         class ReceiveCallback implements NodeProcess.ReceiveCallback {
             @Override
@@ -205,15 +206,21 @@ public class CapacitorNodeJS {
         }
     }
 
-    private boolean copyNodeProjectFromAPK(String projectDir, String projectPath) {
-        final String assetDir = FileOperations.CombinePath("public", projectDir);
+    private boolean copyNodeProjectFromAPK(String projectDir, String projectPath, String modulesPath) {
+        final String nodeAssetDir = FileOperations.CombinePath("public", projectDir);
+        final String modulesAssetDir = FileOperations.CombinePath("builtin_modules");
         final AssetManager assetManager = context.getAssets();
 
         boolean success = true;
-        if (isAppUpdated()) {
+        if (FileOperations.ExistsPath(projectPath) && isAppUpdated()) {
             success = FileOperations.DeleteDir(projectPath);
         }
-        success &= FileOperations.CopyAssetDir(assetManager, assetDir, projectPath);
+        success &= FileOperations.CopyAssetDir(assetManager, nodeAssetDir, projectPath);
+
+        if (FileOperations.ExistsPath(modulesPath) && isAppUpdated()) {
+            success = FileOperations.DeleteDir(modulesPath);
+        }
+        success &= FileOperations.CopyAssetDir(assetManager, modulesAssetDir, modulesPath);
 
         saveAppUpdateTime();
         return success;

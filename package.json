@@ -11,10 +11,10 @@
     "android/libnode/",
     "android/build.gradle",
     "android/CMakeLists.txt",
+    "assets/",
     "dist/",
     "ios/Plugin/",
     "electron/",
-    "assets/builtin_modules/bridge/",
     "CapacitorNodejs.podspec"
   ],
   "author": "Rene Hampölz",
@@ -42,8 +42,9 @@
     "prettier": "prettier \"**/*.{css,html,ts,js,java}\"",
     "swiftlint": "node-swiftlint",
     "docgen": "docgen --api NodeJSInterface --output-readme README.md --output-json dist/docs.json",
+    "build-bridge": "cp -r bridge assets/builtin_modules/bridge && cp -r bridge android/src/main/assets/builtin_modules/bridge && cp -r bridge electron/assets/builtin_modules/bridge",
     "build-electron": "tsc --project electron/tsconfig.json && rollup -c electron/rollup.config.js && rimraf ./electron/build",
-    "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.js && npm run build-electron",
+    "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.js && npm run build-electron && npm run build-bridge",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
     "prepublishOnly": "npm run build"
