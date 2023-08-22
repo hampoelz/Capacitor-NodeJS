@@ -84,18 +84,7 @@ export class CapacitorNodeJS extends EventEmitter {
 
     // Bridge -------------------------------------------------------------------------------
 
-    channelReceive: (eventName: string, data: string): void => {
-      //? TODO: Deserialize data
-      let payloadArray = [];
-      try {
-        payloadArray = JSON.parse(data);
-        if (!Array.isArray(payloadArray)) {
-          payloadArray = [payloadArray];
-        }
-      } catch {
-        payloadArray = [data];
-      }
-
+    channelReceive: (eventName: string, payloadArray: any[]): void => {
       this.notifyChannelListeners(eventName, payloadArray);
     }
   }

@@ -3,6 +3,8 @@ import { fork } from 'child_process';
 import { app } from 'electron';
 import { join as joinPath } from 'path';
 
+import type { NativeBridgePayloadData } from '../../bridge/src/definitions';
+import { ChannelMessageCodec } from '../../bridge/src/utils';
 import type { ChannelPayloadData } from '../../src/definitions';
 
 import { CapacitorNodeJS } from "./index";
@@ -78,8 +80,8 @@ export class CapacitorNodeJSImplementation {
 
         this.nodeProcess = fork(projectMainPath, nodeParameters, nodeOptions);
 
-        this.nodeProcess.on('message', (args: any) => {
-            this.receiveMessage(args.channelName, args.payload);
+        this.nodeProcess.on('message', (args: NativeBridgePayloadData) => {
+            this.receiveMessage(args.channelName, args.channelMessage);
         });
     }
 
@@ -93,7 +95,7 @@ export class CapacitorNodeJSImplementation {
         });
     }
 
-    public sendMessage(args: ChannelPayloadData): void {
+    public sendMessage(payload: ChannelPayloadData): void {
         if (!this.engineStatus.isStarted()) {
             throw new Error('The Node.js engine has not been started.');
         }
@@ -102,22 +104,24 @@ export class CapacitorNodeJSImplementation {
             throw new Error('The Node.js engine is not ready yet.');
         }
 
-        const eventName = args.eventName;
-        const data = args.args;
-        
-        if (this.nodeProcess === undefined || !eventName || !data) return;
+        if (this.nodeProcess === undefined || !payload.eventName || !payload.args) return;
 
-        // TODO: refactor payload
-        const payload = { event: eventName, payload: JSON.stringify(data) };
-        this.nodeProcess.send({ channelName: CapacitorNodeJS.CHANNEL_NAME_EVENTS, payload: JSON.stringify(payload) });
+        const channelName = CapacitorNodeJS.CHANNEL_NAME_EVENTS;
+        const channelMessage = ChannelMessageCodec.serialize(payload);
+
+        const channelData: NativeBridgePayloadData = {
+            channelName,
+            channelMessage
+        }
+
+        this.nodeProcess.send(channelData);
     }
 
-    private receiveMessage(channelName: string, payload: string): void {
-        // TODO: refactor payload
-        const data = JSON.parse(payload);
+    private receiveMessage(channelName: string, channelMessage: string): void {
+        const payload = ChannelMessageCodec.deserialize(channelMessage);
 
-        const eventName = data.event;
-        const args = data.payload;
+        const eventName = payload.eventName;
+        const args = payload.args;
 
         if (channelName === CapacitorNodeJS.CHANNEL_NAME_APP && eventName === "ready") {
             this.engineStatus.setReady();

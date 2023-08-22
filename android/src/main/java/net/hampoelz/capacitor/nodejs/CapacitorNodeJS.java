@@ -175,34 +175,41 @@ public class CapacitorNodeJS {
         }
 
         final String eventName = call.getString("eventName");
-        final JSArray data = call.getArray("args", new JSArray());
+        final JSArray args = call.getArray("args", new JSArray());
 
-        if (nodeProcess == null || eventName == null || data == null) return;
+        if (nodeProcess == null || eventName == null || args == null) return;
 
-        // TODO: refactor payload
-        final JSObject payload = new JSObject();
-        payload.put("event", eventName);
-        payload.put("payload", data.toString());
+        final String eventMessage = args.toString();
 
-        nodeProcess.send(CapacitorNodeJSPlugin.CHANNEL_NAME_EVENTS, payload.toString());
+        final JSObject data = new JSObject();
+        data.put("eventName", eventName);
+        data.put("eventMessage", eventMessage);
+
+        final String channelName = CapacitorNodeJSPlugin.CHANNEL_NAME_EVENTS;
+        final String channelMessage = data.toString();
+
+        nodeProcess.send(channelName, channelMessage);
     }
 
-    protected void receiveMessage(String channelName, String payload) {
-        final JSObject data;
+    protected void receiveMessage(String channelName, String channelMessage) {
         try {
-            data = new JSObject(payload);
+            final JSObject payload = new JSObject(channelMessage);
+
+            final String eventName = payload.getString("eventName");
+            final String eventMessage = payload.getString("eventMessage");
+
+            JSArray args = new JSArray();
+            if (eventMessage != null && !eventMessage.isEmpty()) {
+                args = new JSArray(eventMessage);
+            }
+
+            if (Objects.equals(channelName, CapacitorNodeJSPlugin.CHANNEL_NAME_APP) && Objects.equals(eventName, "ready")) {
+                engineStatus.setReady();
+            } else if (Objects.equals(channelName, CapacitorNodeJSPlugin.CHANNEL_NAME_EVENTS)) {
+                eventNotifier.channelReceive(eventName, args);
+            }
         } catch (JSONException e) {
             Logger.error(CapacitorNodeJSPlugin.LOGGER_TAG, "Failed to deserialize received data from the Node.js process.", e);
-            return;
-        }
-
-        final String eventName = data.getString("event");
-        final String args = data.getString("payload");
-
-        if (Objects.equals(channelName, CapacitorNodeJSPlugin.CHANNEL_NAME_APP) && Objects.equals(eventName, "ready")) {
-            engineStatus.setReady();
-        } else if (Objects.equals(channelName, CapacitorNodeJSPlugin.CHANNEL_NAME_EVENTS)) {
-            eventNotifier.channelReceive(eventName, args);
         }
     }
 

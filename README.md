@@ -375,7 +375,7 @@ It has the following methods:
 ### send(...)
 
 ```typescript
-send(args: ChannelPayloadData) => Promise<{ value: boolean; }>
+send(args: ChannelPayloadData) => Promise<void>
 ```
 
 Sends a message to the Node.js process.
@@ -383,8 +383,6 @@ Sends a message to the Node.js process.
 | Param      | Type                                                              |
 | ---------- | ----------------------------------------------------------------- |
 | **`args`** | <code><a href="#channelpayloaddata">ChannelPayloadData</a></code> |
-
-**Returns:** <code>Promise&lt;{ value: boolean; }&gt;</code>
 
 **Since:** 1.0.0
 
@@ -447,7 +445,7 @@ Removes the specified `listenerHandle` from the listener array for the event it 
 ### removeAllListeners(...)
 
 ```typescript
-removeAllListeners(eventName?: string | undefined) => Promise<void>
+removeAllListeners(eventName?: string) => Promise<void>
 ```
 
 Removes all listeners, or those of the specified `eventName`, for this plugin.

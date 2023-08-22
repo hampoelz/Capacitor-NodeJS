@@ -9,7 +9,6 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginConfig;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
-import org.json.JSONException;
 
 @CapacitorPlugin(name = "CapacitorNodeJS")
 public class CapacitorNodeJSPlugin extends Plugin {
@@ -76,21 +75,7 @@ public class CapacitorNodeJSPlugin extends Plugin {
 
         // Bridge -------------------------------------------------------------------------------
 
-        protected void channelReceive(String eventName, String data) {
-            //? TODO: Deserialize data
-            JSArray payloadArray;
-            try {
-                payloadArray = new JSArray(data);
-            } catch (JSONException e) {
-                payloadArray = new JSArray();
-                try {
-                    JSObject payload = new JSObject(data);
-                    payloadArray.put(payload);
-                } catch (JSONException ex) {
-                    payloadArray.put(data);
-                }
-            }
-
+        protected void channelReceive(String eventName, JSArray payloadArray) {
             notifyChannelListeners(eventName, payloadArray);
         }
     }

@@ -1,0 +1,8 @@
+{
+    "name": "@types/bridge",
+    "version": "__VERSION__",
+    "types": "dist/index.d.ts",
+    "author": "Rene Hampölz",
+    "license": "MIT",
+    "private": true
+}

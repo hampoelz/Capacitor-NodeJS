@@ -1,0 +1,16 @@
+{
+    "name": "bridge",
+    "version": "__VERSION__",
+    "type": "module",
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "author": "Rene Hampölz",
+    "license": "MIT",
+    "private": true
+}
