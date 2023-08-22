@@ -1,23 +1,20 @@
 {
+    "extends": "../configs/strict",
     "compilerOptions": {
-        "allowSyntheticDefaultImports": true,
+        "lib": [ "dom", "es2020" ],
+        "module": "commonjs",
+        "target": "es2017",
+
         "declaration": true,
+        "sourceMap": true,
+        "outDir": "build",
+
+        "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "noEmitHelpers": true,
         "importHelpers": true,
-        "lib": [
-            "dom",
-            "es2020"
-        ],
-        "module": "esnext",
-        "moduleResolution": "node",
-        "noImplicitAny": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "outDir": "build",
-        "sourceMap": true,
-        "strict": true,
-        "target": "es2017"
+
+        "pretty": true,
     },
     "include": [
         "src/**/*"

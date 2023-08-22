@@ -14,14 +14,14 @@ class PluginSettings {
 export class CapacitorNodeJS extends EventEmitter {
   public static CHANNEL_NAME_APP = "APP_CHANNEL";
   public static CHANNEL_NAME_EVENTS = "EVENT_CHANNEL";
-
-  private config?: Record<string, any>;
+  
+  //private config?: Record<string, any>;
   private implementation: CapacitorNodeJSImplementation;
 
-  constructor(config?: Record<string, any>) {
+  constructor(/*config?: Record<string, any>*/) {
     super();
 
-    this.config = config;
+    //this.config = config;
     this.implementation = new CapacitorNodeJSImplementation(this.PluginEventNotifier);
 
     // TODO: Allow manual startup of the Node.js runtime
@@ -31,7 +31,6 @@ export class CapacitorNodeJS extends EventEmitter {
   }
 
   private async readPluginSettings(): Promise<PluginSettings> {
-    let config = this.config?.plugins?.CapacitorNodeJS;
 
     //!-------------------------- workaround ---------------------------
     // the configuration exposed by the capacitor-community/electron platform
@@ -44,7 +43,7 @@ export class CapacitorNodeJS extends EventEmitter {
     const configPath = configPathBase + configPathExt;
     const configFile = await require(configPath);
     const capacitorConfig = configFile.default || configFile;
-    config = capacitorConfig?.plugins?.CapacitorNodeJS;
+    const config = capacitorConfig?.plugins?.CapacitorNodeJS;
     //!-----------------------------------------------------------------
 
     const settings = new PluginSettings();
