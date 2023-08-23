@@ -107,11 +107,13 @@ public class CapacitorNodeJS {
         final String filesPath = context.getFilesDir().getAbsolutePath();
         final String cachePath = context.getCacheDir().getAbsolutePath();
 
-        final String projectPath = FileOperations.CombinePath(filesPath, "public", "nodejs");
-        final String modulesPath = FileOperations.CombinePath(filesPath, "builtin_modules");
+        final String basePath = FileOperations.CombinePath(filesPath, "nodejs");
+        final String projectPath = FileOperations.CombinePath(basePath, "public");
+        final String modulesPath = FileOperations.CombinePath(basePath, "builtin_modules");
+        final String dataPath = FileOperations.CombinePath(basePath, "data");
 
-        final boolean copySuccess = copyNodeProjectFromAPK(projectDir, projectPath, modulesPath);
-        if (!copySuccess) {
+        final boolean copyNodeProjectSuccess = copyNodeProjectFromAPK(projectDir, projectPath, modulesPath);
+        if (!copyNodeProjectSuccess) {
             callWrapper.reject("Unable to copy the Node.js project from APK.");
             return;
         }
@@ -119,6 +121,11 @@ public class CapacitorNodeJS {
         if (!FileOperations.ExistsPath(projectPath)) {
             callWrapper.reject("Unable to access the Node.js project. (No such directory)");
             return;
+        }
+
+        final boolean createDataDirSuccess = FileOperations.CreateDir(dataPath);
+        if (!createDataDirSuccess) {
+            Logger.debug(CapacitorNodeJSPlugin.LOGGER_TAG, "Unable to create a directory for persistent data storage.");
         }
 
         final String projectMainPath;
@@ -148,6 +155,7 @@ public class CapacitorNodeJS {
         }
 
         final Map<String, String> nodeEnv = new HashMap<>();
+        nodeEnv.put("DATADIR", dataPath);
         nodeEnv.put("NODE_PATH", modulesPaths);
 
         final String[] nodeParameters = new String[] { };

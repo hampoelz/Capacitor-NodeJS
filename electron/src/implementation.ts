@@ -63,6 +63,7 @@ export class CapacitorNodeJSImplementation {
 
         const projectPath = joinPath(app.getAppPath(), 'app', projectDir);
         const modulesPath = joinPath(__dirname, '..', 'assets', 'builtin_modules')
+        const dataPath = app.getPath('appData');
 
         const projectPackageJsonPath = joinPath(projectPath, "package.json");
         const projectPackageJson = await import(projectPackageJsonPath);
@@ -74,7 +75,10 @@ export class CapacitorNodeJSImplementation {
 
         const nodeParameters: string[] = [];
         const nodeOptions: ForkOptions = {
-            env: { NODE_PATH: modulesPaths },
+            env: {
+                "NODE_PATH": modulesPaths,
+                "DATADIR": dataPath
+            },
             serialization: 'json'
         };
 

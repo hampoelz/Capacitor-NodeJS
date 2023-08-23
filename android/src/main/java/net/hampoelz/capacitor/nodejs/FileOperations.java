@@ -65,6 +65,11 @@ public class FileOperations {
         return builder.toString();
     }
 
+    public static boolean CreateDir(String dirPath) {
+        final File directory = new File(dirPath);
+        return directory.mkdirs();
+    }
+
     public static boolean DeleteDir(String dirPath) {
         final File directory = new File(dirPath);
         return DeleteDir(directory);
@@ -100,10 +105,7 @@ public class FileOperations {
             if (files.length == 0) {
                 success = CopyAsset(assetManager, assetPath, destinationPath);
             } else {
-                final File destinationDir = new File(destinationPath);
-
-                //noinspection ResultOfMethodCallIgnored
-                destinationDir.mkdirs();
+                CreateDir(destinationPath);
 
                 for (String file : files) {
                     success &= CopyAssetDir(assetManager, CombinePath(assetPath, file), CombinePath(destinationPath, file));

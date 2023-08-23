@@ -82,12 +82,21 @@ class Channel extends EventEmitter {
     }
 }
 
-const EventChannel = new Channel('EVENT_CHANNEL');
-const AppChannel = new Channel('APP_CHANNEL');
+const eventChannel = new Channel('EVENT_CHANNEL');
+const appChannel = new Channel('APP_CHANNEL');
+
+function getDataDir(): string {
+    const path = process.env['DATADIR'];
+    if (!path) {
+        throw new Error("Unable to get a directory for persistent data storage.")
+    }
+    return path;
+}
 
 export {
     ChannelMessageCodec,
-    AppChannel,
-    EventChannel,
-    platform
+    appChannel,
+    eventChannel,
+    getDataDir,
+    platform,
 }
