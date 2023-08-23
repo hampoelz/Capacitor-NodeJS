@@ -67,6 +67,7 @@ public class FileOperations {
 
     public static boolean CreateDir(String dirPath) {
         final File directory = new File(dirPath);
+        if (directory.exists()) return true;
         return directory.mkdirs();
     }
 

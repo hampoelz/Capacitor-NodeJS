@@ -79,7 +79,7 @@ public class CapacitorNodeJS {
         }
     }
 
-    protected void startEngine(@Nullable PluginCall call, String projectDir) {
+    protected void startEngine(@Nullable PluginCall call, String projectDir, @Nullable String mainFile, String[] args, Map<String, String> env) {
         final var callWrapper = new Object(){
             public void reject(String message) {
                 if (call != null) {
@@ -128,17 +128,27 @@ public class CapacitorNodeJS {
             Logger.debug(CapacitorNodeJSPlugin.LOGGER_TAG, "Unable to create a directory for persistent data storage.");
         }
 
-        final String projectMainPath;
-        try {
-            final String projectPackageJsonPath = FileOperations.CombinePath(projectPath, "package.json");
-            final String projectPackageJsonData = FileOperations.ReadFileFromPath(projectPackageJsonPath);
-            final JSONObject projectPackageJson = new JSONObject(projectPackageJsonData);
-            final String projectMainFile = projectPackageJson.getString("main");
-            projectMainPath = FileOperations.CombinePath(projectPath, projectMainFile);
-        } catch (JSONException | IOException e) {
-            callWrapper.reject("Failed to read the package.json file of the Node.js project.", e);
-            return;
+        final String projectPackageJsonPath = FileOperations.CombinePath(projectPath, "package.json");
+
+        String projectMainFile = "index.js";
+        if (mainFile != null && !mainFile.isEmpty()) {
+            projectMainFile = mainFile;
+        } else if (FileOperations.ExistsPath(projectPackageJsonPath)) {
+            try {
+                final String projectPackageJsonData = FileOperations.ReadFileFromPath(projectPackageJsonPath);
+                final JSONObject projectPackageJson = new JSONObject(projectPackageJsonData);
+                final String projectPackageJsonMainFile = projectPackageJson.getString("main");
+
+                if (!projectPackageJsonMainFile.isEmpty()) {
+                    projectMainFile = projectPackageJsonMainFile;
+                }
+            } catch (JSONException | IOException e) {
+                callWrapper.reject("Failed to read the package.json file of the Node.js project.", e);
+                return;
+            }
         }
+
+        final String projectMainPath = FileOperations.CombinePath(projectPath, projectMainFile);
 
         if (!FileOperations.ExistsPath(projectMainPath)) {
             callWrapper.reject("Unable to access main script of the Node.js project. (No such file)");
@@ -157,15 +167,14 @@ public class CapacitorNodeJS {
         final Map<String, String> nodeEnv = new HashMap<>();
         nodeEnv.put("DATADIR", dataPath);
         nodeEnv.put("NODE_PATH", modulesPaths);
+        nodeEnv.putAll(env);
 
-        final String[] nodeParameters = new String[] { };
-
-        nodeProcess = new NodeProcess(projectMainPath, nodeParameters, nodeEnv, cachePath, new ReceiveCallback());
+        nodeProcess = new NodeProcess(projectMainPath, args, nodeEnv, cachePath, new ReceiveCallback());
     }
 
     protected void resolveWhenReady(PluginCall call) {
         if (!engineStatus.isStarted()) {
-            call.reject("The Node.js engine has not been started.");
+            call.reject("The Node.js engine has not been started yet.");
         }
 
         engineStatus.resolveWhenReady(call);
@@ -173,7 +182,7 @@ public class CapacitorNodeJS {
 
     protected void sendMessage(PluginCall call) {
         if (!engineStatus.isStarted()) {
-            call.reject("The Node.js engine has not been started.");
+            call.reject("The Node.js engine has not been started yet.");
             return;
         }
 

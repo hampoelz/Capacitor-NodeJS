@@ -1,11 +1,12 @@
 import type { ChildProcess, ForkOptions } from 'child_process';
 import { fork } from 'child_process';
 import { app } from 'electron';
+import { existsSync } from 'fs';
 import { join as joinPath } from 'path';
 
 import type { NativeBridgePayloadData } from '../../bridge/src/definitions';
 import { ChannelMessageCodec } from '../../bridge/src/utils';
-import type { ChannelPayloadData } from '../../src/definitions';
+import type { ChannelPayloadData, NodeEnv } from '../../src/definitions';
 
 import { CapacitorNodeJS } from "./index";
 import { joinEnv } from './utils';
@@ -55,7 +56,7 @@ export class CapacitorNodeJSImplementation {
         this.eventNotifier = eventNotifier;
     }
 
-    public async startEngine(projectDir: string): Promise<void> {
+    public async startEngine(projectDir: string, mainFile?: string, args?: string[], env?: NodeEnv): Promise<void> {
         if (this.engineStatus.isStarted()) {
             throw new Error('The Node.js engine has already been started.');
         }
@@ -65,24 +66,48 @@ export class CapacitorNodeJSImplementation {
         const modulesPath = joinPath(__dirname, '..', 'assets', 'builtin_modules')
         const dataPath = app.getPath('appData');
 
-        const projectPackageJsonPath = joinPath(projectPath, "package.json");
-        const projectPackageJson = await import(projectPackageJsonPath);
+        if (!existsSync(projectPath)) {
+            throw new Error("Unable to access the Node.js project. (No such directory)");
+        }
 
-        const projectMainFile = projectPackageJson.main;
+        const projectPackageJsonPath = joinPath(projectPath, "package.json");
+        
+        let projectMainFile = "index.js";
+        if (mainFile) {
+            projectMainFile = mainFile;
+        } else if (existsSync(projectPackageJsonPath)) {
+            try {
+                const projectPackageJson = await import(projectPackageJsonPath);
+                const projectPackageJsonMainFile = projectPackageJson.main;
+
+                if (projectPackageJsonMainFile) {
+                    projectMainFile = projectPackageJson.main;
+                }
+            } catch {
+                throw new Error("Failed to read the package.json file of the Node.js project.");
+            }
+        }
+
         const projectMainPath = joinPath(projectPath, projectMainFile);
+
+        if (!existsSync(projectMainPath)) {
+            throw new Error("Unable to access main script of the Node.js project. (No such file)");
+        }
 
         const modulesPaths = joinEnv(projectPath, modulesPath);
 
-        const nodeParameters: string[] = [];
+        const nodeEnv = {
+            "NODE_PATH": modulesPaths,
+            "DATADIR": dataPath,
+            ...env
+        }
+
         const nodeOptions: ForkOptions = {
-            env: {
-                "NODE_PATH": modulesPaths,
-                "DATADIR": dataPath
-            },
+            env: nodeEnv,
             serialization: 'json'
         };
 
-        this.nodeProcess = fork(projectMainPath, nodeParameters, nodeOptions);
+        this.nodeProcess = fork(projectMainPath, args, nodeOptions);
 
         this.nodeProcess.on('message', (args: NativeBridgePayloadData) => {
             this.receiveMessage(args.channelName, args.channelMessage);
@@ -92,7 +117,7 @@ export class CapacitorNodeJSImplementation {
     public resolveWhenReady(): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             if (!this.engineStatus.isStarted()) {
-                reject('The Node.js engine has not been started.');
+                reject('The Node.js engine has not been started yet.');
             }
 
             this.engineStatus.whenReady(() => resolve());
@@ -101,7 +126,7 @@ export class CapacitorNodeJSImplementation {
 
     public sendMessage(payload: ChannelPayloadData): void {
         if (!this.engineStatus.isStarted()) {
-            throw new Error('The Node.js engine has not been started.');
+            throw new Error('The Node.js engine has not been started yet.');
         }
 
         if (!this.engineStatus.isReady()) {

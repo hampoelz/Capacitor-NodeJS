@@ -3,12 +3,13 @@ import { EventEmitter } from 'events';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-import type { ChannelCallbackData, ChannelPayloadData } from '../../src/definitions';
+import type { StartMode, StartOptions, ChannelCallbackData, ChannelPayloadData } from '../../src/definitions';
 
 import { CapacitorNodeJSImplementation } from './implementation';
 
 class PluginSettings {
   nodeDir = "nodejs";
+  startMode: StartMode = "auto";
 }
 
 export class CapacitorNodeJS extends EventEmitter {
@@ -24,9 +25,10 @@ export class CapacitorNodeJS extends EventEmitter {
     //this.config = config;
     this.implementation = new CapacitorNodeJSImplementation(this.PluginEventNotifier);
 
-    // TODO: Allow manual startup of the Node.js runtime
     this.readPluginSettings().then(pluginSettings => {
-      this.implementation.startEngine(pluginSettings.nodeDir);
+      if (pluginSettings.startMode === 'auto') {
+        this.implementation.startEngine(pluginSettings.nodeDir);
+      }
     });
   }
 
@@ -48,12 +50,28 @@ export class CapacitorNodeJS extends EventEmitter {
 
     const settings = new PluginSettings();
     settings.nodeDir = config?.nodeDir || settings.nodeDir;
+    settings.startMode = config?.startMode || settings.startMode;
 
     return settings;
   }
 
   //#region PluginMethods
   //---------------------------------------------------------------------------------------
+
+  async start(args?: StartOptions): Promise<void> {
+    const pluginSettings = await this.readPluginSettings();
+
+    if (pluginSettings.startMode !== 'manual') {
+      throw new Error("Manual startup of the Node.js engine is not enabled.");
+    }
+
+    const projectDir = args?.nodeDir ?? pluginSettings.nodeDir;
+    const nodeMain = args?.script;
+    const nodeArgs = args?.args;
+    const nodeEnv = args?.env;
+
+    this.implementation.startEngine(projectDir, nodeMain, nodeArgs, nodeEnv);
+  }
 
   async send(args: ChannelPayloadData): Promise<void> {
     const eventName = args.eventName;

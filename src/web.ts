@@ -8,6 +8,10 @@ export class CapacitorNodeJSWeb extends WebPlugin implements CapacitorNodeJSPlug
     return this.unavailable('The NodeJS engine is not available in the browser!');
   }
 
+  start(): Promise<void> {
+    throw this.unavailableNodeJS();
+  }
+
   send(): Promise<void> {
     throw this.unavailableNodeJS();
   }

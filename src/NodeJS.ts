@@ -4,11 +4,19 @@ import { Capacitor } from '@capacitor/core';
 import type {
     ChannelPayloadData,
     ChannelCallbackData,
-    ChannelListenerCallback
+    ChannelListenerCallback,
+    StartOptions
 } from './definitions';
 import { CapacitorNodeJS } from './implementation';
 
 export interface NodeJSInterface {
+    /**
+     * Starts the Node.js engine with properties as set by the `options`.
+     * 
+     * @since 1.0.0
+     */
+    start(options?: StartOptions): Promise<void>;
+
     /**
      * Sends a message to the Node.js process.
      *
@@ -53,6 +61,10 @@ export interface NodeJSInterface {
 
 class NodeJSPlugin implements NodeJSInterface {
     private readonly listenerList: { eventName: string, listenerHandle: Promise<PluginListenerHandle> & PluginListenerHandle }[] = [];
+
+    start(args?: StartOptions): Promise<void> {
+        return CapacitorNodeJS.start(args);
+    }
 
     send(args: ChannelPayloadData): Promise<void> {
         return CapacitorNodeJS.send(args);

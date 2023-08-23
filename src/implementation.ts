@@ -3,10 +3,12 @@ import { registerPlugin } from '@capacitor/core';
 
 import type {
     ChannelPayloadData,
-    ChannelListenerCallback
+    ChannelListenerCallback,
+    StartOptions
 } from './definitions';
 
 export interface CapacitorNodeJSPlugin {
+    start(args?: StartOptions): Promise<void>;
     send(args: ChannelPayloadData): Promise<void>;
     whenReady(): Promise<void>;
 
