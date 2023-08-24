@@ -25,9 +25,11 @@ public class NodeProcess {
 
     private final ReceiveCallback receiveCallback;
 
-    protected NodeProcess(String modulePath, String[] parameter, Map<String, String> env, String cachePath, ReceiveCallback receiveCallback) {
+    protected NodeProcess(ReceiveCallback receiveCallback) {
         this.receiveCallback = receiveCallback;
+    }
 
+    protected void start(String modulePath, String[] parameter, Map<String, String> env, String cachePath) {
         try {
             Os.setenv("TMPDIR", cachePath, true);
         } catch (ErrnoException e) {
@@ -48,7 +50,7 @@ public class NodeProcess {
             envCount++;
         }
 
-        new Thread(() -> nativeStart(arguments, environmentVariables, true)).start();
+        nativeStart(arguments, environmentVariables, true);
     }
 
     protected interface ReceiveCallback {

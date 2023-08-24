@@ -23,12 +23,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CapacitorNodeJS {
-    private NodeProcess nodeProcess;
     private PackageInfo packageInfo;
     private final Context context;
     private final SharedPreferences preferences;
     private final CapacitorNodeJSPlugin.PluginEventNotifier eventNotifier;
     private final EngineStatus engineStatus = new EngineStatus();
+    private final NodeProcess nodeProcess = new NodeProcess(new ReceiveCallback());
 
     protected CapacitorNodeJS(Context context, CapacitorNodeJSPlugin.PluginEventNotifier eventNotifier) {
         this.context = context;
@@ -81,6 +81,11 @@ public class CapacitorNodeJS {
 
     protected void startEngine(@Nullable PluginCall call, String projectDir, @Nullable String mainFile, String[] args, Map<String, String> env) {
         final var callWrapper = new Object(){
+            public void resolve() {
+                if (call != null) {
+                    call.resolve();
+                }
+            }
             public void reject(String message) {
                 if (call != null) {
                     call.reject(message);
@@ -104,72 +109,68 @@ public class CapacitorNodeJS {
         }
         engineStatus.setStarted();
 
-        final String filesPath = context.getFilesDir().getAbsolutePath();
-        final String cachePath = context.getCacheDir().getAbsolutePath();
+        new Thread(() -> {
+            final String filesPath = context.getFilesDir().getAbsolutePath();
+            final String cachePath = context.getCacheDir().getAbsolutePath();
 
-        final String basePath = FileOperations.CombinePath(filesPath, "nodejs");
-        final String projectPath = FileOperations.CombinePath(basePath, "public");
-        final String modulesPath = FileOperations.CombinePath(basePath, "builtin_modules");
-        final String dataPath = FileOperations.CombinePath(basePath, "data");
+            final String basePath = FileOperations.CombinePath(filesPath, "nodejs");
+            final String projectPath = FileOperations.CombinePath(basePath, "public");
+            final String modulesPath = FileOperations.CombinePath(basePath, "builtin_modules");
+            final String dataPath = FileOperations.CombinePath(basePath, "data");
 
-        final boolean copyNodeProjectSuccess = copyNodeProjectFromAPK(projectDir, projectPath, modulesPath);
-        if (!copyNodeProjectSuccess) {
-            callWrapper.reject("Unable to copy the Node.js project from APK.");
-            return;
-        }
-
-        if (!FileOperations.ExistsPath(projectPath)) {
-            callWrapper.reject("Unable to access the Node.js project. (No such directory)");
-            return;
-        }
-
-        final boolean createDataDirSuccess = FileOperations.CreateDir(dataPath);
-        if (!createDataDirSuccess) {
-            Logger.debug(CapacitorNodeJSPlugin.LOGGER_TAG, "Unable to create a directory for persistent data storage.");
-        }
-
-        final String projectPackageJsonPath = FileOperations.CombinePath(projectPath, "package.json");
-
-        String projectMainFile = "index.js";
-        if (mainFile != null && !mainFile.isEmpty()) {
-            projectMainFile = mainFile;
-        } else if (FileOperations.ExistsPath(projectPackageJsonPath)) {
-            try {
-                final String projectPackageJsonData = FileOperations.ReadFileFromPath(projectPackageJsonPath);
-                final JSONObject projectPackageJson = new JSONObject(projectPackageJsonData);
-                final String projectPackageJsonMainFile = projectPackageJson.getString("main");
-
-                if (!projectPackageJsonMainFile.isEmpty()) {
-                    projectMainFile = projectPackageJsonMainFile;
-                }
-            } catch (JSONException | IOException e) {
-                callWrapper.reject("Failed to read the package.json file of the Node.js project.", e);
+            final boolean copyNodeProjectSuccess = copyNodeProjectFromAPK(projectDir, projectPath, modulesPath);
+            if (!copyNodeProjectSuccess) {
+                callWrapper.reject("Unable to copy the Node.js project from APK.");
                 return;
             }
-        }
 
-        final String projectMainPath = FileOperations.CombinePath(projectPath, projectMainFile);
-
-        if (!FileOperations.ExistsPath(projectMainPath)) {
-            callWrapper.reject("Unable to access main script of the Node.js project. (No such file)");
-            return;
-        }
-
-        final String modulesPaths = FileOperations.CombineEnv(projectPath, modulesPath);
-
-        class ReceiveCallback implements NodeProcess.ReceiveCallback {
-            @Override
-            public void receive(String channelName, String message) {
-                receiveMessage(channelName, message);
+            if (!FileOperations.ExistsPath(projectPath)) {
+                callWrapper.reject("Unable to access the Node.js project. (No such directory)");
+                return;
             }
-        }
 
-        final Map<String, String> nodeEnv = new HashMap<>();
-        nodeEnv.put("DATADIR", dataPath);
-        nodeEnv.put("NODE_PATH", modulesPaths);
-        nodeEnv.putAll(env);
+            final boolean createDataDirSuccess = FileOperations.CreateDir(dataPath);
+            if (!createDataDirSuccess) {
+                Logger.debug(CapacitorNodeJSPlugin.LOGGER_TAG, "Unable to create a directory for persistent data storage.");
+            }
 
-        nodeProcess = new NodeProcess(projectMainPath, args, nodeEnv, cachePath, new ReceiveCallback());
+            final String projectPackageJsonPath = FileOperations.CombinePath(projectPath, "package.json");
+
+            String projectMainFile = "index.js";
+            if (mainFile != null && !mainFile.isEmpty()) {
+                projectMainFile = mainFile;
+            } else if (FileOperations.ExistsPath(projectPackageJsonPath)) {
+                try {
+                    final String projectPackageJsonData = FileOperations.ReadFileFromPath(projectPackageJsonPath);
+                    final JSONObject projectPackageJson = new JSONObject(projectPackageJsonData);
+                    final String projectPackageJsonMainFile = projectPackageJson.getString("main");
+
+                    if (!projectPackageJsonMainFile.isEmpty()) {
+                        projectMainFile = projectPackageJsonMainFile;
+                    }
+                } catch (JSONException | IOException e) {
+                    callWrapper.reject("Failed to read the package.json file of the Node.js project.", e);
+                    return;
+                }
+            }
+
+            final String projectMainPath = FileOperations.CombinePath(projectPath, projectMainFile);
+
+            if (!FileOperations.ExistsPath(projectMainPath)) {
+                callWrapper.reject("Unable to access main script of the Node.js project. (No such file)");
+                return;
+            }
+
+            final String modulesPaths = FileOperations.CombineEnv(projectPath, modulesPath);
+
+            final Map<String, String> nodeEnv = new HashMap<>();
+            nodeEnv.put("DATADIR", dataPath);
+            nodeEnv.put("NODE_PATH", modulesPaths);
+            nodeEnv.putAll(env);
+
+            nodeProcess.start(projectMainPath, args, nodeEnv, cachePath);
+            callWrapper.resolve();
+        }).start();
     }
 
     protected void resolveWhenReady(PluginCall call) {
@@ -194,7 +195,7 @@ public class CapacitorNodeJS {
         final String eventName = call.getString("eventName");
         final JSArray args = call.getArray("args", new JSArray());
 
-        if (nodeProcess == null || eventName == null || args == null) return;
+        if (eventName == null || args == null) return;
 
         final String eventMessage = args.toString();
 
@@ -206,6 +207,14 @@ public class CapacitorNodeJS {
         final String channelMessage = data.toString();
 
         nodeProcess.send(channelName, channelMessage);
+        call.resolve();
+    }
+
+    class ReceiveCallback implements NodeProcess.ReceiveCallback {
+        @Override
+        public void receive(String channelName, String message) {
+            receiveMessage(channelName, message);
+        }
     }
 
     protected void receiveMessage(String channelName, String channelMessage) {

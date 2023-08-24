@@ -101,7 +101,6 @@ public class CapacitorNodeJSPlugin extends Plugin {
         }
 
         implementation.startEngine(call, projectDir, nodeMain, nodeArgsArray, nodeEnvMap);
-        call.resolve();
     }
 
     @PluginMethod
@@ -113,7 +112,6 @@ public class CapacitorNodeJSPlugin extends Plugin {
         }
 
         implementation.sendMessage(call);
-        call.resolve();
     }
 
     @PluginMethod
