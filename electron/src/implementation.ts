@@ -64,7 +64,7 @@ export class CapacitorNodeJSImplementation {
 
         const projectPath = joinPath(app.getAppPath(), 'app', projectDir);
         const modulesPath = joinPath(__dirname, '..', 'assets', 'builtin_modules')
-        const dataPath = app.getPath('appData');
+        const dataPath = app.getPath('userData');
 
         if (!existsSync(projectPath)) {
             throw new Error("Unable to access the Node.js project. (No such directory)");
