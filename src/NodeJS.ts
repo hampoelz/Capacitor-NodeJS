@@ -2,16 +2,18 @@ import type { PluginListenerHandle } from '@capacitor/core';
 import { Capacitor } from '@capacitor/core';
 
 import type {
-    ChannelPayloadData,
-    ChannelCallbackData,
-    ChannelListenerCallback,
-    StartOptions
+  ChannelPayloadData,
+  ChannelCallbackData,
+  ChannelListenerCallback,
+  StartOptions
 } from './definitions';
 import { CapacitorNodeJS } from './implementation';
 
 export interface NodeJSInterface {
   /**
    * Starts the Node.js engine with properties as set by the `options`.
+   *
+   * **Note:** This method is only available if the Node.js engine startup mode was set to `'manual'` via the plugin configuration.
    *
    * @since 1.0.0
    */

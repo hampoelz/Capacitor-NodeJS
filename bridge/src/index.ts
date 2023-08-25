@@ -1,5 +1,5 @@
-import { appChannel, eventChannel, getDataDir, platform } from './bridge';
+import { appChannel, eventChannel, getDataPath } from './bridge';
 
 appChannel.send('ready');
 
-export { eventChannel as channel, getDataDir as datadir, platform };
+export { eventChannel as channel, getDataPath };

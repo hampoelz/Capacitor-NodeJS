@@ -18,23 +18,18 @@ declare module '@capacitor/cli' {
       /**
        * Startup mode of the Node.js engine.
        *
+       * The following values are accepted:
+       * `auto`: The Node.js engine starts automatically when the application is launched.
+       * `manual`: The Node.js engine is started via the `NodeJS.start()` method.
+       *
        * @since 1.0.0
        * @default "auto"
        * @example "manual"
        */
-      startMode?: StartMode;
+      startMode?: 'auto' | 'manual';
     };
   }
 }
-
-/**
- * A string that represents the Node.js engine startup mode.
- *
- * The following values are accepted:
- * - `auto`: The Node.js engine starts automatically when the application is launched.
- * - `manual`: The Node.js engine is started via the `NodeJS.start()` method.
- */
-export type StartMode = 'auto' | 'manual';
 
 /**
  * An interface containing the options used when starting the Node.js engine manually.
@@ -52,7 +47,7 @@ export interface StartOptions {
 
   /**
    * The primary entry point to the Node.js program.
-   * This should be a module relative to the root of your Node.js project folder.
+   * This should be a module relative to the root of the Node.js project folder.
    *
    * Defaults to the `main` field in the project's package.json. If the `main` field
    * is not set, `index.js` in the project's root folder is used.

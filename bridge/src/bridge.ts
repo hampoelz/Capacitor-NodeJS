@@ -63,6 +63,13 @@ class Channel extends EventEmitter {
     });
   }
 
+  /**
+   * Sends a message to the Capacitor layer via eventName, along with arguments.
+   * Arguments will be serialized with JSON.
+   *
+   * @param eventName The name of the event being send to.
+   * @param args The Array of arguments to send.
+   */
   send(eventName: string, ...args: any[]) {
     if (eventName === undefined || eventName === '') {
       throw new Error("Required parameter 'eventName' was not specified");
@@ -87,12 +94,59 @@ class Channel extends EventEmitter {
       self.emit(eventName, ...args);
     });
   }
+
+  /**
+   * Listens to `eventName` and calls `listener(args...)` when a new message arrives from the Capacitor layer.
+   */
+  override on(eventName: string, listener: (...args: any[]) => void): this {
+    return super.on(eventName, listener);
+  }
+
+  /**
+   * Listens one time to `eventName` and calls `listener(args...)` when a new message
+   * arrives from the Capacitor layer, after which it is removed.
+   */
+  override once(eventName: string, listener: (...args: any[]) => void): this {
+    return super.once(eventName, listener);
+  }
+
+  /**
+   * Alias for `channel.on(eventName, listener)`.
+   */
+  override addListener(eventName: string, listener: (...args: any[]) => void): this {
+    return super.once(eventName, listener);
+  }
+
+  /**
+   * Removes the specified `listener` from the listener array for the specified `eventName`.
+   */
+  override removeListener(eventName: string, listener: (...args: any[]) => void): this {
+    return super.removeListener(eventName, listener);
+  }
+
+  /**
+   * Removes all listeners, or those of the specified `eventName`.
+   *
+   * @param eventName The name of the event all listeners will be removed from.
+   */
+  override removeAllListeners(eventName?: string): this {
+    return super.removeAllListeners(eventName);
+  }
 }
 
 const appChannel = new Channel('APP_CHANNEL');
+
+/**
+ * Provides a few methods to send messages from the Node.js process to the Capacitor layer,
+ * and to receive replies from the Capacitor layer.
+ */
 const eventChannel = new Channel('EVENT_CHANNEL');
 
-function getDataDir(): string {
+/**
+ * Returns a path for a per-user application data directory on each platform,
+ * where data can be read and written.
+ */
+function getDataPath(): string {
   const path = process.env['DATADIR'];
   if (!path) {
     throw new Error('Unable to get a directory for persistent data storage.');
@@ -100,4 +154,4 @@ function getDataDir(): string {
   return path;
 }
 
-export { ChannelMessageCodec, appChannel, eventChannel, getDataDir };
+export { ChannelMessageCodec, appChannel, eventChannel, getDataPath };

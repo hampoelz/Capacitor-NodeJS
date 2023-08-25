@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-beta.4] - 2023-08-25
+
+_If you are upgrading: please see [`UPGRADING.md`](UPGRADING.md)._
+
+### Added
+
+- Add a types package for the `bridge` module ([#6](https://github.com/hampoelz/Capacitor-NodeJS/issues/6))
+- Allow manual startup of the Node.js runtime, pass environment variables and arguments ([#8](https://github.com/hampoelz/Capacitor-NodeJS/issues/8))
+  - Add `startMode` configuration
+  - Add `start()` method
+- Add API to get a writeable data directory on each platform
+
+### Changed
+
+- **Breaking:** Remove return type of `send()` method
+- Rewrite the `bridge` module in TypeScript ([#14](https://github.com/hampoelz/Capacitor-NodeJS/issues/14))
+- Start the Node.js runtime as child process on Electron ([#12](https://github.com/hampoelz/Capacitor-NodeJS/issues/12), [#15](https://github.com/hampoelz/Capacitor-NodeJS/issues/15))
+- Change loading mechanism of the `bridge` module to a built-in module ([#12](https://github.com/hampoelz/Capacitor-NodeJS/issues/12))
+
 ## [1.0.0-beta.3] - 2023-08-19
 
 _If you are upgrading: please see [`UPGRADING.md`](UPGRADING.md)._
