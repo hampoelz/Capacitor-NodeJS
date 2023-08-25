@@ -1,7 +1,6 @@
 package net.hampoelz.capacitor.nodejs;
 
 import android.content.Context;
-
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -9,12 +8,10 @@ import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginConfig;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
-
-import org.json.JSONException;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.json.JSONException;
 
 @CapacitorPlugin(name = "CapacitorNodeJS")
 public class CapacitorNodeJSPlugin extends Plugin {
@@ -34,12 +31,13 @@ public class CapacitorNodeJSPlugin extends Plugin {
 
         final PluginSettings pluginSettings = readPluginSettings();
         if (pluginSettings.startMode.equals("auto")) {
-            implementation.startEngine(null, pluginSettings.nodeDir, null, new String[] { }, new HashMap<>());
+            implementation.startEngine(null, pluginSettings.nodeDir, null, new String[] {}, new HashMap<>());
         }
     }
 
     /** @noinspection InnerClassMayBeStatic*/
     private class PluginSettings {
+
         protected String nodeDir = "nodejs";
         protected String startMode = "auto";
     }
@@ -83,13 +81,13 @@ public class CapacitorNodeJSPlugin extends Plugin {
                 return;
             }
         } else {
-            nodeArgsArray = new String[] { };
+            nodeArgsArray = new String[] {};
         }
 
         final Map<String, String> nodeEnvMap = new HashMap<>();
         if (nodeEnv != null) {
             Iterator<String> keys = nodeEnv.keys();
-            while(keys.hasNext()) {
+            while (keys.hasNext()) {
                 String key = keys.next();
                 if (key == null || key.isEmpty()) continue;
 
@@ -146,7 +144,6 @@ public class CapacitorNodeJSPlugin extends Plugin {
 
         notifyListeners(eventName, args);
     }
-
     //---------------------------------------------------------------------------------------
     //endregion
 }

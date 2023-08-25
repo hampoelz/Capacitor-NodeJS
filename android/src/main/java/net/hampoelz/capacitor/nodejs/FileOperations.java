@@ -1,9 +1,7 @@
 package net.hampoelz.capacitor.nodejs;
 
 import android.content.res.AssetManager;
-
 import com.getcapacitor.Logger;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;

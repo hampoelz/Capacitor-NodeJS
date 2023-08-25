@@ -2,9 +2,7 @@ package net.hampoelz.capacitor.nodejs;
 
 import android.system.ErrnoException;
 import android.system.Os;
-
 import com.getcapacitor.Logger;
-
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -44,7 +42,7 @@ public class NodeProcess {
         final String[][] environmentVariables = new String[env.size()][2];
 
         int envCount = 0;
-        for(Entry<String,String> entry : env.entrySet()){
+        for (Entry<String, String> entry : env.entrySet()) {
             environmentVariables[envCount][0] = entry.getKey();
             environmentVariables[envCount][1] = entry.getValue();
             envCount++;

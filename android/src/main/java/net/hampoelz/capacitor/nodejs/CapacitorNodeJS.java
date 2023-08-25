@@ -5,24 +5,21 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-
 import androidx.annotation.Nullable;
-
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Logger;
 import com.getcapacitor.PluginCall;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CapacitorNodeJS {
+
     private PackageInfo packageInfo;
     private final Context context;
     private final SharedPreferences preferences;
@@ -44,6 +41,7 @@ public class CapacitorNodeJS {
 
     /** @noinspection InnerClassMayBeStatic*/
     private class EngineStatus {
+
         private final ArrayList<PluginCall> whenEngineReadyListeners = new ArrayList<>();
         private boolean isEngineStarted = false;
         private boolean isEngineReady = false;
@@ -80,12 +78,13 @@ public class CapacitorNodeJS {
     }
 
     protected void startEngine(@Nullable PluginCall call, String projectDir, @Nullable String mainFile, String[] args, Map<String, String> env) {
-        final var callWrapper = new Object(){
+        final var callWrapper = new Object() {
             public void resolve() {
                 if (call != null) {
                     call.resolve();
                 }
             }
+
             public void reject(String message) {
                 if (call != null) {
                     call.reject(message);
@@ -211,6 +210,7 @@ public class CapacitorNodeJS {
     }
 
     class ReceiveCallback implements NodeProcess.ReceiveCallback {
+
         @Override
         public void receive(String channelName, String message) {
             receiveMessage(channelName, message);

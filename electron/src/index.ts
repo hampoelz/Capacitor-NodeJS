@@ -3,19 +3,23 @@ import { EventEmitter } from 'events';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-import type { StartMode, StartOptions, ChannelCallbackData, ChannelPayloadData } from '../../src/definitions';
+import type {
+  StartOptions,
+  ChannelCallbackData,
+  ChannelPayloadData
+} from '../../src/definitions';
 
 import { CapacitorNodeJSImplementation } from './implementation';
 
 class PluginSettings {
-  nodeDir = "nodejs";
-  startMode: StartMode = "auto";
+  nodeDir = 'nodejs';
+  startMode = 'auto';
 }
 
 export class CapacitorNodeJS extends EventEmitter {
-  public static CHANNEL_NAME_APP = "APP_CHANNEL";
-  public static CHANNEL_NAME_EVENTS = "EVENT_CHANNEL";
-  
+  public static CHANNEL_NAME_APP = 'APP_CHANNEL';
+  public static CHANNEL_NAME_EVENTS = 'EVENT_CHANNEL';
+
   //private config?: Record<string, any>;
   private implementation: CapacitorNodeJSImplementation;
 
@@ -33,7 +37,6 @@ export class CapacitorNodeJS extends EventEmitter {
   }
 
   private async readPluginSettings(): Promise<PluginSettings> {
-
     //!-------------------------- workaround ---------------------------
     // the configuration exposed by the capacitor-community/electron platform
     // is always empty for some reason
@@ -62,7 +65,7 @@ export class CapacitorNodeJS extends EventEmitter {
     const pluginSettings = await this.readPluginSettings();
 
     if (pluginSettings.startMode !== 'manual') {
-      throw new Error("Manual startup of the Node.js engine is not enabled.");
+      throw new Error('Manual startup of the Node.js engine is not enabled.');
     }
 
     const projectDir = args?.nodeDir ?? pluginSettings.nodeDir;
@@ -75,7 +78,7 @@ export class CapacitorNodeJS extends EventEmitter {
 
   async send(args: ChannelPayloadData): Promise<void> {
     const eventName = args.eventName;
-    if (eventName === undefined || eventName === "") {
+    if (eventName === undefined || eventName === '') {
       throw new Error("Required parameter 'eventName' was not specified");
     }
 
@@ -105,7 +108,7 @@ export class CapacitorNodeJS extends EventEmitter {
     channelReceive: (eventName: string, payloadArray: any[]): void => {
       this.notifyChannelListeners(eventName, payloadArray);
     }
-  }
+  };
 
   //---------------------------------------------------------------------------------------
   //#endregion

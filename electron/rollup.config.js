@@ -12,7 +12,14 @@ export default {
       exports: 'default',
     },
   ],
-  external: ['@capacitor/core', 'child_process', 'electron', 'events', 'path', 'fs'],
+  external: [
+    '@capacitor/core',
+    'child_process',
+    'electron',
+    'events',
+    'path',
+    'fs',
+  ],
   plugins: [
     nodeResolve(),
     commonjs({
@@ -21,5 +28,5 @@ export default {
         'node_modules/capacitor-nodejs/electron/dist/plugin.js',
       ],
     }),
-  ]
+  ],
 };
