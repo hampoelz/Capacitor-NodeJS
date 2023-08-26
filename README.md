@@ -30,7 +30,7 @@
 
 ## Install
 
-**You've to use Capacitor v5 or newer. This project isn't compatible with lower versions of Capacitor.**
+**Capacitor v5 or newer is required. This project isn't compatible with lower versions of Capacitor.**
 
 ```bash
 npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.4/capacitor-nodejs.tgz
@@ -61,7 +61,7 @@ This guide shows how to add a minimal Node.js project to a Capacitor application
 
 ### Basics
 
-In the example below uses the Vite build system. However, any build system can be used as long as the following criteria are met:
+In the example below the Vite build system is used. However, any build system can be used as long as the following criteria are met:
 
 1. The Node.js project (to be executed by the engine) must be located in a subdirectory named `nodejs` _(or the path set via `nodeDir`)_ of the Capacitor `webDir`.
 2. The Node.js project must have a starting point, this can either be a script named `index.js` or a package.json with a `main` field.
@@ -153,7 +153,7 @@ channel.addListener('msg-from-capacitor', message => {
 
 </br>
 
-Now you can communicate with the Node.js process in the Capacitor app:
+Now it is possible to communicate with the Node.js process in the Capacitor app:
 
 ```typescript
 import { NodeJS } from 'capacitor-nodejs';
@@ -193,11 +193,11 @@ A full API documentation can be found in the [API - Bridge module](#api---bridge
 ### Custom starting point
 
 In the [Getting Started](#getting-started) guide, the default starting point `index.js` was used for the Node.js project.
-However, you may want to rename the main script or move it to subdirectories for a better organized project.
+However, the main script can be renamed or moved to subdirectories for a better organized project.
 
 To change this starting point, add a file called `package.json` to the Node.js project, which describes the project more in detail.
 Using the `main` field in this file, a custom starting point for the Node.js project can be specified.
-This should be a module relative to the root of the Capacitor project folder.
+This should be a module relative to the root of the Node.js project directory.
 
 The package.json file could look like the following, if the `main` field is set to `./server.js`:
 
@@ -233,16 +233,16 @@ To install Node.js modules, the project requires a `package.json` file.
 See section [Custom starting point](#custom-starting-point) for more details.
 
 The modules have to be installed in the Node.js project directory in which the `package.json` file was created using the npm CLI.
-After installing modules, rebuild and sync the Capacitor project so that the Node.js project with the newly installed modules is updated in the application.
+After installing modules, rebuild and sync the Capacitor project to update the application with the Node.js project.
 
-For convenience, a postinstall script can be added to the main `package.json` in the Capacitor project to automatically install the modules of the Node.js project:
+For convenience, a postinstall script can be added to the main `package.json` in the root of the Capacitor project to automatically install the modules of the Node.js project:
 
-```json
+```javascript
 // package.json
 {
   "scripts": {
     "postinstall": "cd static/nodejs/ && npm install"
-	},
+  },
   // other config options
 }
 ```
@@ -251,17 +251,17 @@ For convenience, a postinstall script can be added to the main `package.json` in
 > To do this, create a new file called `.gitignore` in the Node.js project directory and copy the contents of [github/gitignore/Node.gitignore](https://github.com/github/gitignore/blob/main/Node.gitignore) into it.
 
 > [!IMPORTANT]  
-> If you are using the [`capacitor-community/electron`](https://github.com/capacitor-community/electron) plugin, packaging with the electron-builder may cause problems since it does not include the modules installed in the Node.js project by default.
+> If the [`capacitor-community/electron`](https://github.com/capacitor-community/electron) plugin is used, packaging with the electron-builder may cause problems since it does not include the modules installed in the Node.js project by default.
 >
 > To fix this issue, add the configuration `"includeSubNodeModules": true` to the `electron-builder.config.json`.
 
 ### Improve Node.js loading times
 
 The Node.js project can quickly grow very large when installing modules.
-For projects that contain a large number of files, the load time can be reduced by decreasing the number of files.
+For projects that contain a large number of files, the load time can be reduced by decreasing the number of files and the file sizes.
 
 For this reason, it is recommended to use bunder tools such as [Rollup.js](https://rollupjs.org/).
-In the following example, Rollup is used to bundle the Node.js project with all the modules used in a single file.
+In the following example, Rollup is used to bundle the Node.js project with all its modules to a single file.
 
 To get started install Rollup and its plugins "commonjs", "node-resolve" and "json" into the root of the Capacitor project.
 If Vite is used as build system, Rollup is already pre-installed and does not need to be installed:
@@ -360,6 +360,8 @@ So the project structure should look something like this:
   ├── vite.config.ts
   ├── ...
 ```
+
+<!-- TODO: Add @rollup/plugin-terser to further reduce the size of the bundle -->
 
 After building and syncing the project, the Node.js runtime should start faster now.
 

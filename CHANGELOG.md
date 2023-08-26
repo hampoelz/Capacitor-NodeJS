@@ -19,7 +19,7 @@ _If you are upgrading: please see [`UPGRADING.md`](UPGRADING.md)._
 
 ### Changed
 
-- **Breaking:** Remove return type of `send()` method
+- **Breaking:** Change return type of `send()` method to `void`
 - Rewrite the `bridge` module in TypeScript ([#14](https://github.com/hampoelz/Capacitor-NodeJS/issues/14))
 - Start the Node.js runtime as child process on Electron ([#12](https://github.com/hampoelz/Capacitor-NodeJS/issues/12), [#15](https://github.com/hampoelz/Capacitor-NodeJS/issues/15))
 - Change loading mechanism of the `bridge` module to a built-in module ([#12](https://github.com/hampoelz/Capacitor-NodeJS/issues/12))
