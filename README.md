@@ -392,6 +392,13 @@ import { NodeJS } from 'capacitor-nodejs';
 
 // Starts the Node.js engine.
 NodeJS.start();
+
+// Waits for the Node.js process to initialize.
+NodeJS.whenReady().then(() => {
+
+  // Communicate with the Node.js process.
+
+});
 ```
 
 Manually starting the Node.js runtime provides options to override the `nodeDir` configuration or even the path for the main script.
@@ -413,7 +420,18 @@ const options = {
 
 // Starts the Node.js engine with properties as set by the `options`.
 NodeJS.start(options);
+
+// Waits for the Node.js process to initialize.
+NodeJS.whenReady().then(() => {
+
+  // Communicate with the Node.js process.
+  
+});
 ```
+
+> [!Note]  
+>
+> Due to limitations in the Node.js for Mobile Apps toolkit, restarting the runtime after it has finished is not supported.
 
 ### Data storage
 
