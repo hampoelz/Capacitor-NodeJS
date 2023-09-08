@@ -1,5 +1,6 @@
 /*
  * Implements the bridge APIs between the native Java code and the Node.js engine.
+ * https://github.com/nodejs-mobile/nodejs-mobile-cordova/blob/unstable/src/common/cordova-bridge/cordova-bridge.cpp
  */
 
 #include <map>

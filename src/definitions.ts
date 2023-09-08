@@ -19,8 +19,8 @@ declare module '@capacitor/cli' {
        * Startup mode of the Node.js engine.
        *
        * The following values are accepted:
-       * `auto`: The Node.js engine starts automatically when the application is launched.
-       * `manual`: The Node.js engine is started via the `NodeJS.start()` method.
+       * **`auto`**: The Node.js engine starts automatically when the application is launched.
+       * **`manual`**: The Node.js engine is started via the `NodeJS.start()` method.
        *
        * @since 1.0.0
        * @default "auto"

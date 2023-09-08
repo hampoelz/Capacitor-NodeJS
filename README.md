@@ -147,7 +147,10 @@ channel.addListener('msg-from-capacitor', message => {
     console.log('[Node.js] Message from Capacitor: ' + message);
     
     // Sends a message back to the Capacitor layer.
-    channel.send("msg-from-nodejs", `Replying to the message '${message}'.`, "And optionally add more arguments.");
+    channel.send("msg-from-nodejs",
+      `Replying to the message '${message}'.`,
+      "And optionally add more arguments."
+    );
 });
 ```
 
@@ -199,7 +202,7 @@ To change this starting point, add a file called `package.json` to the Node.js p
 Using the `main` field in this file, a custom starting point for the Node.js project can be specified.
 This should be a module relative to the root of the Node.js project directory.
 
-The package.json file could look like the following, if the `main` field is set to `./server.js`:
+The package.json file could look like the following, if the `main` field is set to `server.js`:
 
 ```javascript
 // static/nodejs/package.json
@@ -395,9 +398,7 @@ NodeJS.start();
 
 // Waits for the Node.js process to initialize.
 NodeJS.whenReady().then(() => {
-
   // Communicate with the Node.js process.
-
 });
 ```
 
@@ -420,13 +421,6 @@ const options = {
 
 // Starts the Node.js engine with properties as set by the `options`.
 NodeJS.start(options);
-
-// Waits for the Node.js process to initialize.
-NodeJS.whenReady().then(() => {
-
-  // Communicate with the Node.js process.
-  
-});
 ```
 
 > [!Note]  
@@ -466,6 +460,10 @@ const tmpPath = os.tmpdir();
 ---
 
 ## Mobile Node.js APIs differences
+
+> [!NOTE]
+>
+> This section is based on the documentation of the Node.js for Mobile Apps toolkits.
 
 Not every API is supported on mobile devices. Mobile operating systems do not allow applications to call certain APIs that are expected to be available on other operating systems.
 
@@ -523,10 +521,10 @@ The following functions are only available on POSIX platforms, so they are unava
 
 These config values are available:
 
-| Prop            | Type                            | Description                                                                                                                                                                                                                       | Default               | Since |
-| --------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | ----- |
-| **`nodeDir`**   | <code>string</code>             | Relative path of the integrated Node.js project based on the Capacitor webdir.                                                                                                                                                    | <code>"nodejs"</code> | 1.0.0 |
-| **`startMode`** | <code>'auto' \| 'manual'</code> | Startup mode of the Node.js engine. The following values are accepted: `auto`: The Node.js engine starts automatically when the application is launched. `manual`: The Node.js engine is started via the `NodeJS.start()` method. | <code>"auto"</code>   | 1.0.0 |
+| Prop            | Type                            | Description                                                                                                                                                                                                                               | Default               | Since |
+| --------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | ----- |
+| **`nodeDir`**   | <code>string</code>             | Relative path of the integrated Node.js project based on the Capacitor webdir.                                                                                                                                                            | <code>"nodejs"</code> | 1.0.0 |
+| **`startMode`** | <code>'auto' \| 'manual'</code> | Startup mode of the Node.js engine. The following values are accepted: **`auto`**: The Node.js engine starts automatically when the application is launched. **`manual`**: The Node.js engine is started via the `NodeJS.start()` method. | <code>"auto"</code>   | 1.0.0 |
 
 ### Examples
 
@@ -572,10 +570,9 @@ The `bridge` module is built-in. It provides an API to communicate between the C
 
 TypeScript declarations for this `bridge` module can be manually installed as dev-dependency. If needed, the types-only package can be found under `node_modules/capacitor-nodejs/assets/types/bridge` in the root of the Capacitor project.
 
-
---------------------
-
 * [`getDataPath()`](#getDataPath)
+* [`channel`](#channel)
+
 
 ### getDataPath()
 
@@ -589,6 +586,7 @@ Returns a path for a per-user application data directory on each platform, where
 
 --------------------
 
+### channel
 
 The `channel` class of the `bridge` module is an [Event Emitter](https://nodejs.org/api/events.html#events_class_eventemitter). It provides a few methods to send messages from the Node.js process to the Capacitor layer, and to receive replies from the Capacitor layer.
 
