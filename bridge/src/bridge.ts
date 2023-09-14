@@ -114,7 +114,7 @@ class Channel extends EventEmitter {
    * Alias for `channel.on(eventName, listener)`.
    */
   override addListener(eventName: string, listener: (...args: any[]) => void): this {
-    return super.once(eventName, listener);
+    return super.addListener(eventName, listener);
   }
 
   /**
