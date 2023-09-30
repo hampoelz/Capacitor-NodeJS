@@ -6,10 +6,7 @@ import { version } from '../package.json';
 
 const outputName = 'index';
 
-const destinations = [
-  'android/src/main/assets/builtin_modules/bridge',
-  'electron/assets/builtin_modules/bridge',
-];
+const destinations = ['android/src/main/assets/builtin_modules/bridge', 'electron/assets/builtin_modules/bridge'];
 
 function generateOutputConfig() {
   const outputConfig = [];
@@ -54,8 +51,7 @@ function generateCopyTargets() {
       src: 'bridge/package.module.json',
       dest: outputDest,
       rename: 'package.json',
-      transform: contents =>
-        contents.toString().replace('__VERSION__', version),
+      transform: (contents) => contents.toString().replace('__VERSION__', version),
     };
   }
 
@@ -91,8 +87,7 @@ export default [
             src: 'bridge/package.types.json',
             dest: 'assets/types/bridge/',
             rename: 'package.json',
-            transform: contents =>
-              contents.toString().replace('__VERSION__', version),
+            transform: (contents) => contents.toString().replace('__VERSION__', version),
           },
         ],
       }),

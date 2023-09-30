@@ -1,12 +1,7 @@
 import type { PluginListenerHandle } from '@capacitor/core';
 import { Capacitor } from '@capacitor/core';
 
-import type {
-  ChannelPayloadData,
-  ChannelCallbackData,
-  ChannelListenerCallback,
-  StartOptions
-} from './definitions';
+import type { ChannelPayloadData, ChannelCallbackData, ChannelListenerCallback, StartOptions } from './definitions';
 import { CapacitorNodeJS } from './implementation';
 
 export interface NodeJSInterface {
@@ -43,7 +38,7 @@ export interface NodeJSInterface {
    */
   addListener(
     eventName: string,
-    listenerFunc: ChannelListenerCallback
+    listenerFunc: ChannelListenerCallback,
   ): Promise<PluginListenerHandle> & PluginListenerHandle;
 
   /**
@@ -81,10 +76,13 @@ class NodeJSPlugin implements NodeJSInterface {
 
   addListener(
     eventName: string,
-    listenerFunc: ChannelListenerCallback
+    listenerFunc: ChannelListenerCallback,
   ): Promise<PluginListenerHandle> & PluginListenerHandle;
 
-  addListener(eventName: any, listenerFunc: ChannelListenerCallback): Promise<PluginListenerHandle> & PluginListenerHandle {
+  addListener(
+    eventName: any,
+    listenerFunc: ChannelListenerCallback,
+  ): Promise<PluginListenerHandle> & PluginListenerHandle {
     const listenerHandle = CapacitorNodeJS.addListener(eventName, (data: ChannelCallbackData) => {
       listenerFunc(data);
     });

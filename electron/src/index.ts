@@ -3,11 +3,7 @@ import { EventEmitter } from 'events';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-import type {
-  StartOptions,
-  ChannelCallbackData,
-  ChannelPayloadData
-} from '../../src/definitions';
+import type { StartOptions, ChannelCallbackData, ChannelPayloadData } from '../../src/definitions';
 
 import { CapacitorNodeJSImplementation } from './implementation';
 
@@ -29,7 +25,7 @@ export class CapacitorNodeJS extends EventEmitter {
     //this.config = config;
     this.implementation = new CapacitorNodeJSImplementation(this.PluginEventNotifier);
 
-    this.readPluginSettings().then(pluginSettings => {
+    this.readPluginSettings().then((pluginSettings) => {
       if (pluginSettings.startMode === 'auto') {
         this.implementation.startEngine(pluginSettings.nodeDir);
       }
@@ -41,10 +37,13 @@ export class CapacitorNodeJS extends EventEmitter {
     // the configuration exposed by the capacitor-community/electron platform
     // is always empty for some reason
     const configPathBase = join(app.getAppPath(), 'capacitor.config.');
-    const configPathExt =
-      existsSync(configPathBase + 'json') ? 'json' :
-        existsSync(configPathBase + 'js') ? 'js' :
-          existsSync(configPathBase + 'ts') ? 'ts' : undefined;
+    const configPathExt = existsSync(configPathBase + 'json')
+      ? 'json'
+      : existsSync(configPathBase + 'js')
+      ? 'js'
+      : existsSync(configPathBase + 'ts')
+      ? 'ts'
+      : undefined;
     const configPath = configPathBase + configPathExt;
     const configFile = await require(configPath);
     const capacitorConfig = configFile.default || configFile;
@@ -102,12 +101,11 @@ export class CapacitorNodeJS extends EventEmitter {
   //---------------------------------------------------------------------------------------
 
   protected PluginEventNotifier = {
-
     // Bridge -------------------------------------------------------------------------------
 
     channelReceive: (eventName: string, payloadArray: any[]): void => {
       this.notifyChannelListeners(eventName, payloadArray);
-    }
+    },
   };
 
   //---------------------------------------------------------------------------------------

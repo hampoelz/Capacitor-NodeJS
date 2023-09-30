@@ -77,7 +77,13 @@ public class CapacitorNodeJS {
         }
     }
 
-    protected void startEngine(@Nullable PluginCall call, String projectDir, @Nullable String mainFile, String[] args, Map<String, String> env) {
+    protected void startEngine(
+        @Nullable PluginCall call,
+        String projectDir,
+        @Nullable String mainFile,
+        String[] args,
+        Map<String, String> env
+    ) {
         final var callWrapper = new Object() {
             public void resolve() {
                 if (call != null) {

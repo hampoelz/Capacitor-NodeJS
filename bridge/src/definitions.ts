@@ -1,9 +1,6 @@
 export interface NativeBridge {
   emit: (args: NativeBridgePayloadData) => void;
-  registerChannel: (
-    channelName: string,
-    callback: NativeBridgeCallback
-  ) => void;
+  registerChannel: (channelName: string, callback: NativeBridgeCallback) => void;
 }
 
 export interface NativeBridgePayloadData {

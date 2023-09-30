@@ -99,12 +99,12 @@ export class CapacitorNodeJSImplementation {
     const nodeEnv = {
       NODE_PATH: modulesPaths,
       DATADIR: dataPath,
-      ...env
+      ...env,
     };
 
     const nodeOptions: ForkOptions = {
       env: nodeEnv,
-      serialization: 'json'
+      serialization: 'json',
     };
 
     this.nodeProcess = fork(projectMainPath, args, nodeOptions);
@@ -137,15 +137,14 @@ export class CapacitorNodeJSImplementation {
       throw new Error('The Node.js engine is not ready yet.');
     }
 
-    if (this.nodeProcess === undefined || !payload.eventName || !payload.args)
-      return;
+    if (this.nodeProcess === undefined || !payload.eventName || !payload.args) return;
 
     const channelName = CapacitorNodeJS.CHANNEL_NAME_EVENTS;
     const channelMessage = ChannelMessageCodec.serialize(payload);
 
     const channelData: NativeBridgePayloadData = {
       channelName,
-      channelMessage
+      channelMessage,
     };
 
     this.nodeProcess.send(channelData);

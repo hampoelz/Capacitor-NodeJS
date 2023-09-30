@@ -1,12 +1,7 @@
 import { EventEmitter } from 'events';
 import process from 'process';
 
-import type {
-  NativeBridge,
-  NativeBridgePayloadData,
-  NativeBridgeCallback,
-  Platform
-} from './definitions';
+import type { NativeBridge, NativeBridgePayloadData, NativeBridgeCallback, Platform } from './definitions';
 import { ChannelMessageCodec } from './utils';
 
 class NativeMobileBridge implements NativeBridge {
@@ -44,9 +39,7 @@ class NativeDesktopBridge implements NativeBridge {
 const platform = process.platform as Platform;
 const isMobilePlatform = platform === 'android' || platform === 'ios';
 
-const nativeBridge: NativeBridge = isMobilePlatform
-  ? new NativeMobileBridge()
-  : new NativeDesktopBridge();
+const nativeBridge: NativeBridge = isMobilePlatform ? new NativeMobileBridge() : new NativeDesktopBridge();
 
 class Channel extends EventEmitter {
   private channelName: string;
@@ -56,7 +49,7 @@ class Channel extends EventEmitter {
     this.channelName = channelName;
 
     const self = this;
-    nativeBridge.registerChannel(channelName, args => {
+    nativeBridge.registerChannel(channelName, (args) => {
       const channelMessage = args.channelMessage;
       const payload = ChannelMessageCodec.deserialize(channelMessage);
       self.emitWrapper(payload.eventName, ...payload.args);
@@ -82,7 +75,7 @@ class Channel extends EventEmitter {
 
     const channelPayload = {
       channelName,
-      channelMessage
+      channelMessage,
     };
 
     nativeBridge.emit(channelPayload);

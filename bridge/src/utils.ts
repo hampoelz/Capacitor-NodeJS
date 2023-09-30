@@ -11,7 +11,7 @@ export class ChannelMessageCodec {
 
     const data: NativeBridgeChannelMessageData = {
       eventName,
-      eventMessage
+      eventMessage,
     };
 
     const channelMessage = JSON.stringify(data);
@@ -31,7 +31,7 @@ export class ChannelMessageCodec {
 
     const payload = {
       eventName,
-      args
+      args,
     };
 
     return payload;
