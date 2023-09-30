@@ -112,6 +112,10 @@ export class CapacitorNodeJSImplementation {
     this.nodeProcess.on('message', (args: NativeBridgePayloadData) => {
       this.receiveMessage(args.channelName, args.channelMessage);
     });
+
+    app.on('quit', () => {
+      this.nodeProcess?.kill();
+    });
   }
 
   public resolveWhenReady(): Promise<void> {
