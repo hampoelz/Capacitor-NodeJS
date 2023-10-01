@@ -114,7 +114,7 @@ public class CapacitorNodeJS {
         }
         engineStatus.setStarted();
 
-        new Thread(() -> {
+        Thread engine = new Thread(() -> {
             final String filesPath = context.getFilesDir().getAbsolutePath();
             final String cachePath = context.getCacheDir().getAbsolutePath();
 
@@ -175,7 +175,9 @@ public class CapacitorNodeJS {
 
             nodeProcess.start(projectMainPath, args, nodeEnv, cachePath);
             callWrapper.resolve();
-        }).start();
+        });
+
+        engine.start();
     }
 
     protected void resolveWhenReady(PluginCall call) {
@@ -200,6 +202,12 @@ public class CapacitorNodeJS {
         final String eventName = call.getString("eventName");
         final JSArray args = call.getArray("args", new JSArray());
 
+        sendMessage(CapacitorNodeJSPlugin.CHANNEL_NAME_EVENT, eventName, args);
+
+        call.resolve();
+    }
+
+    protected void sendMessage(String channelName, String eventName, JSArray args) {
         if (eventName == null || args == null) return;
 
         final String eventMessage = args.toString();
@@ -208,11 +216,9 @@ public class CapacitorNodeJS {
         data.put("eventName", eventName);
         data.put("eventMessage", eventMessage);
 
-        final String channelName = CapacitorNodeJSPlugin.CHANNEL_NAME_EVENTS;
         final String channelMessage = data.toString();
 
         nodeProcess.send(channelName, channelMessage);
-        call.resolve();
     }
 
     class ReceiveCallback implements NodeProcess.ReceiveCallback {
@@ -237,7 +243,7 @@ public class CapacitorNodeJS {
 
             if (Objects.equals(channelName, CapacitorNodeJSPlugin.CHANNEL_NAME_APP) && Objects.equals(eventName, "ready")) {
                 engineStatus.setReady();
-            } else if (Objects.equals(channelName, CapacitorNodeJSPlugin.CHANNEL_NAME_EVENTS)) {
+            } else if (Objects.equals(channelName, CapacitorNodeJSPlugin.CHANNEL_NAME_EVENT)) {
                 eventNotifier.channelReceive(eventName, args);
             }
         } catch (JSONException e) {

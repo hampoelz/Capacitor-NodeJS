@@ -136,6 +136,20 @@ const appChannel = new Channel('APP_CHANNEL');
 const eventChannel = new Channel('EVENT_CHANNEL');
 
 /**
+ * Emitted when the application gains focus.
+ */
+function onResume(listener: () => void): void {
+  appChannel.on('resume', listener);
+}
+
+/**
+ * Emitted when the application loses focus.
+ */
+function onPause(listener: () => void): void {
+  appChannel.on('pause', listener);
+}
+
+/**
  * Returns a path for a per-user application data directory on each platform,
  * where data can be read and written.
  */
@@ -147,4 +161,4 @@ function getDataPath(): string {
   return path;
 }
 
-export { ChannelMessageCodec, appChannel, eventChannel, getDataPath };
+export { ChannelMessageCodec, appChannel, eventChannel, onResume, onPause, getDataPath };

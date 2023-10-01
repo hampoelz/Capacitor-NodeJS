@@ -570,9 +570,39 @@ The `bridge` module is built-in. It provides an API to communicate between the C
 
 TypeScript declarations for this `bridge` module can be manually installed as dev-dependency. If needed, the types-only package can be found under `node_modules/capacitor-nodejs/assets/types/bridge` in the root of the Capacitor project.
 
-* [`getDataPath()`](#getDataPath)
-* [`channel`](#channel)
+- [`onPause()`](#onPause)
+- [`onResume()`](#onResume)
+- [`getDataPath()`](#getDataPath)
+- [`channel`](#channel)
 
+
+### onPause()
+
+```typescript
+onPause: (listener: () => void) => string;
+```
+
+Emitted when the application loses focus.
+
+| Param          | Type                    |
+| -------------- | ----------------------- |
+| **`listener`** | <code>() => void</code> |
+
+**Since:** 1.0.0
+
+### onResume()
+
+```typescript
+onResume: (listener: () => void) => string;
+```
+
+Emitted when the application gains focus.
+
+| Param          | Type                    |
+| -------------- | ----------------------- |
+| **`listener`** | <code>() => void</code> |
+
+**Since:** 1.0.0
 
 ### getDataPath()
 

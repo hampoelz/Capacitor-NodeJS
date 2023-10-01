@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import { EventEmitter } from 'events';
 import { existsSync } from 'fs';
 import { join } from 'path';
@@ -14,7 +14,7 @@ class PluginSettings {
 
 export class CapacitorNodeJS extends EventEmitter {
   public static CHANNEL_NAME_APP = 'APP_CHANNEL';
-  public static CHANNEL_NAME_EVENTS = 'EVENT_CHANNEL';
+  public static CHANNEL_NAME_EVENT = 'EVENT_CHANNEL';
 
   //private config?: Record<string, any>;
   private implementation: CapacitorNodeJSImplementation;
@@ -22,8 +22,24 @@ export class CapacitorNodeJS extends EventEmitter {
   constructor(/*config?: Record<string, any>*/) {
     super();
 
+    const browserWindow = BrowserWindow.getAllWindows()[0];
+
     //this.config = config;
     this.implementation = new CapacitorNodeJSImplementation(this.PluginEventNotifier);
+
+    browserWindow.on('focus', () => {
+      this.implementation.sendMessage(CapacitorNodeJS.CHANNEL_NAME_APP, {
+        eventName: 'resume',
+        args: [],
+      });
+    });
+
+    browserWindow.on('blur', () => {
+      this.implementation.sendMessage(CapacitorNodeJS.CHANNEL_NAME_APP, {
+        eventName: 'pause',
+        args: [],
+      });
+    });
 
     this.readPluginSettings().then((pluginSettings) => {
       if (pluginSettings.startMode === 'auto') {
@@ -85,7 +101,7 @@ export class CapacitorNodeJS extends EventEmitter {
       args.args = [];
     }
 
-    this.implementation.sendMessage(args);
+    this.implementation.sendMessage(CapacitorNodeJS.CHANNEL_NAME_EVENT, args);
   }
 
   async whenReady(): Promise<void> {

@@ -20,7 +20,7 @@ public class CapacitorNodeJSPlugin extends Plugin {
     protected static final String PREFS_TAG = "CapacitorNodeJS_PREFS";
     protected static final String PREFS_APP_UPDATED_TIME = "AppUpdateTime";
     protected static final String CHANNEL_NAME_APP = "APP_CHANNEL";
-    protected static final String CHANNEL_NAME_EVENTS = "EVENT_CHANNEL";
+    protected static final String CHANNEL_NAME_EVENT = "EVENT_CHANNEL";
 
     private final PluginEventNotifier eventNotifier = new PluginEventNotifier();
     private CapacitorNodeJS implementation;
@@ -50,6 +50,18 @@ public class CapacitorNodeJSPlugin extends Plugin {
         settings.startMode = config.getString("startMode", settings.startMode);
 
         return settings;
+    }
+
+    @Override
+    protected void handleOnResume() {
+        super.handleOnResume();
+        implementation.sendMessage(CapacitorNodeJSPlugin.CHANNEL_NAME_APP, "resume", new JSArray());
+    }
+
+    @Override
+    protected void handleOnPause() {
+        super.handleOnPause();
+        implementation.sendMessage(CapacitorNodeJSPlugin.CHANNEL_NAME_APP, "pause", new JSArray());
     }
 
     //region PluginMethods

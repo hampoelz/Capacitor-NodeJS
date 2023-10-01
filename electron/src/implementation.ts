@@ -128,7 +128,7 @@ export class CapacitorNodeJSImplementation {
     });
   }
 
-  public sendMessage(payload: ChannelPayloadData): void {
+  public sendMessage(channelName: string, payload: ChannelPayloadData): void {
     if (!this.engineStatus.isStarted()) {
       throw new Error('The Node.js engine has not been started yet.');
     }
@@ -138,8 +138,6 @@ export class CapacitorNodeJSImplementation {
     }
 
     if (this.nodeProcess === undefined || !payload.eventName || !payload.args) return;
-
-    const channelName = CapacitorNodeJS.CHANNEL_NAME_EVENTS;
     const channelMessage = ChannelMessageCodec.serialize(payload);
 
     const channelData: NativeBridgePayloadData = {
@@ -158,7 +156,7 @@ export class CapacitorNodeJSImplementation {
 
     if (channelName === CapacitorNodeJS.CHANNEL_NAME_APP && eventName === 'ready') {
       this.engineStatus.setReady();
-    } else if (channelName === CapacitorNodeJS.CHANNEL_NAME_EVENTS) {
+    } else if (channelName === CapacitorNodeJS.CHANNEL_NAME_EVENT) {
       this.eventNotifier.channelReceive(eventName, args);
     }
   }
