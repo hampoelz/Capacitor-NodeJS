@@ -568,7 +568,7 @@ export default config;
 
 The `bridge` module is built-in. It provides an API to communicate between the Capacitor layer and the Node.js process, as well as an API to get a per-user application data directory on each platform.
 
-TypeScript declarations for this `bridge` module can be manually installed as dev-dependency. If needed, the types-only package can be found under `node_modules/capacitor-nodejs/assets/types/bridge` in the root of the Capacitor project.
+TypeScript declarations for this `bridge` module can be manually installed as dev-dependency. If needed, the types-only package can be found under `node_modules/capacitor-nodejs/assets/types/bridge.tgz` in the root of the Capacitor project.
 
 - [`onPause()`](#onPause)
 - [`onResume()`](#onResume)

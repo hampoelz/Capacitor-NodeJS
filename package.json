@@ -47,6 +47,8 @@
     "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.js && npm run build-electron && npm run build-bridge",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
+    "pack:bridge": "cd assets/types/bridge && npm pack --pack-destination ../ && mv ../types-bridge-*.tgz ../bridge.tgz",
+    "pack": "npm run pack:bridge && npm pack",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
