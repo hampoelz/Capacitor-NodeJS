@@ -10,23 +10,23 @@
 
 **Table of contents**
 
-* [Install](#install)
-  + [Supported Platforms](#supported-platforms)
-* [Examples](#examples)
-* [Getting Started](#getting-started)
-  + [Basics](#basics)
-  + [Minimal example](#minimal-example)
-  + [Inter-Process Communication](#inter-process-communication)
-* [Complex Projects](#complex-projects)
-  + [Custom starting point](#custom-starting-point)
-  + [Install Node.js Modules](#install-nodejs-modules)
-  + [Improve Node.js loading times](#improve-nodejs-loading-times)
-  + [Manual Node.js runtime start](#manual-nodejs-runtime-start)
-  + [Data storage](#data-storage)
-* [Mobile Node.js APIs differences](#mobile-nodejs-apis-differences)
-* [Configuration](#configuration)
-* [API - Bridge module](#api---bridge-module)
-* [API - Capacitor layer](#api---capacitor-layer)
+- [Install](#install)
+  - [Supported Platforms](#supported-platforms)
+- [Examples](#examples)
+- [Getting Started](#getting-started)
+  - [Basics](#basics)
+  - [Minimal example](#minimal-example)
+  - [Inter-Process Communication](#inter-process-communication)
+- [Complex Projects](#complex-projects)
+  - [Custom starting point](#custom-starting-point)
+  - [Install Node.js Modules](#install-nodejs-modules)
+  - [Improve Node.js loading times](#improve-nodejs-loading-times)
+  - [Manual Node.js runtime start](#manual-nodejs-runtime-start)
+  - [Data storage](#data-storage)
+- [Mobile Node.js APIs differences](#mobile-nodejs-apis-differences)
+- [Configuration](#configuration)
+- [API - Bridge module](#api---bridge-module)
+- [API - Capacitor layer](#api---capacitor-layer)
 
 ## Install
 
@@ -144,13 +144,10 @@ const { channel } = require('bridge');
 
 // Listens to "msg-from-capacitor" from the Capacitor layer.
 channel.addListener('msg-from-capacitor', message => {
-    console.log('[Node.js] Message from Capacitor: ' + message);
-    
-    // Sends a message back to the Capacitor layer.
-    channel.send("msg-from-nodejs",
-      `Replying to the message '${message}'.`,
-      "And optionally add more arguments."
-    );
+  console.log('[Node.js] Message from Capacitor: ' + message);
+
+  // Sends a message back to the Capacitor layer.
+  channel.send('msg-from-nodejs', `Replying to the message '${message}'.`, 'And optionally add more arguments.');
 });
 ```
 
@@ -175,13 +172,11 @@ NodeJS.addListener('msg-from-nodejs', event => {
 
 // Waits for the Node.js process to initialize.
 NodeJS.whenReady().then(() => {
-
   // Sends a message to the Node.js process.
   NodeJS.send({
-      eventName: "msg-from-capacitor",
-      args: [ "Hello from Capacitor!" ]
+    eventName: 'msg-from-capacitor',
+    args: ['Hello from Capacitor!'],
   });
-
 });
 ```
 
@@ -305,7 +300,7 @@ For example to the root directory of the Capcitors project:
 ```
 
 > Don't forget to update the new path to the project in the postinstall script,
-> if one is used, as described in the [Installing Node.js modules](#install-nodejs-modules) section. 
+> if one is used, as described in the [Installing Node.js modules](#install-nodejs-modules) section.
 
 After the restructuring of the project, Rollup can be configured.
 Create a new file called `rollup.config.mjs` with the following content:
@@ -333,7 +328,7 @@ export default {
 };
 ```
 
-To add bundling of the Node.js project to the build steps, modify the main `package.json` in the root of the Capacitor project 
+To add bundling of the Node.js project to the build steps, modify the main `package.json` in the root of the Capacitor project
 and add `&& rollup -c rollup.config.mjs` to the `build` entry in the `scripts` object:
 
 ```diff
@@ -371,7 +366,7 @@ After building and syncing the project, the Node.js runtime should start faster 
 ### Manual Node.js runtime start
 
 By default, the Node.js runtime starts automatically with application start.
-However, this behavior may not be suitable for all projects. 
+However, this behavior may not be suitable for all projects.
 
 This behavior can be disabled globally via the `startMode` plugin configuration:
 
@@ -411,19 +406,19 @@ import { NodeJS } from 'capacitor-nodejs';
 
 // Options for starting the Node.js engine manually.
 const options = {
-  args: [ "--option", "value" ],
+  args: ['--option', 'value'],
   env: {
-    "DB_HOST": "localhost",
-    "DB_USER": "myuser",
-    "DB_PASS": "mypassword"
-  }
-}
+    DB_HOST: 'localhost',
+    DB_USER: 'myuser',
+    DB_PASS: 'mypassword',
+  },
+};
 
 // Starts the Node.js engine with properties as set by the `options`.
 NodeJS.start(options);
 ```
 
-> [!Note]  
+> [!Note]
 >
 > Due to limitations in the Node.js for Mobile Apps toolkit, restarting the runtime after it has finished is not supported.
 
@@ -440,8 +435,8 @@ const { getDataPath } = require('bridge');
 const dataPath = getDataPath();
 ```
 
-> [!WARNING]  
-> 
+> [!WARNING]
+>
 > Do not use the Node.js project directory itself for data storage, it will be overwritten after each application update!
 
 To get a path for temporary files, the node.js inbuilt method `os.tmpdir()` can be used:
@@ -453,8 +448,8 @@ const os = require('os');
 const tmpPath = os.tmpdir();
 ```
 
-> [!WARNING]  
-> 
+> [!WARNING]
+>
 > On Android, the files in the cache are kept until the system needs space, so it increases the application's disk space unless the developer manually deletes them.
 
 ---
@@ -551,8 +546,8 @@ import { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   plugins: {
     CapacitorNodeJS: {
-      nodeDir: "custom-nodejs",
-      startMode: "manual",
+      nodeDir: 'custom-nodejs',
+      startMode: 'manual',
     },
   },
 };
@@ -575,14 +570,13 @@ TypeScript declarations for this `bridge` module can be manually installed as de
 - [`getDataPath()`](#getDataPath)
 - [`channel`](#channel)
 
-
 ### onPause()
 
 ```typescript
 onPause: (listener: () => void) => string;
 ```
 
-Emitted when the application loses focus.
+Emits when the application loses focus.
 
 | Param          | Type                    |
 | -------------- | ----------------------- |
@@ -596,7 +590,7 @@ Emitted when the application loses focus.
 onResume: (listener: () => void) => string;
 ```
 
-Emitted when the application gains focus.
+Emits when the application gains focus.
 
 | Param          | Type                    |
 | -------------- | ----------------------- |
@@ -607,14 +601,14 @@ Emitted when the application gains focus.
 ### getDataPath()
 
 ```typescript
-getDataPath: () => string
+getDataPath: () => string;
 ```
 
 Returns a path for a per-user application data directory on each platform, where data can be read and written.
 
 **Since:** 1.0.0
 
---------------------
+---
 
 ### channel
 
@@ -622,12 +616,12 @@ The `channel` class of the `bridge` module is an [Event Emitter](https://nodejs.
 
 It has the following method to listen for events and send messages:
 
-* [`send(...)`](#channelsend)
-* [`on(string, ...)`](#channelonstring)
-* [`once(string, ...)`](#channeloncestring)
-* [`addListener(string, ...)`](#channeladdlistenerstring)
-* [`removeListener(...)`](#channelremovelistener)
-* [`removeAllListeners(...)`](#channelremovealllisteners)
+- [`send(...)`](#channelsend)
+- [`on(string, ...)`](#channelonstring)
+- [`once(string, ...)`](#channeloncestring)
+- [`addListener(string, ...)`](#channeladdlistenerstring)
+- [`removeListener(...)`](#channelremovelistener)
+- [`removeAllListeners(...)`](#channelremovealllisteners)
 
 ### channel.send(...)
 
@@ -645,8 +639,7 @@ Arguments will be serialized with JSON.
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ### channel.on(string, ...)
 
@@ -665,14 +658,13 @@ Listens to `eventName` and calls `listener(args...)` when a new message arrives 
 listener: (...args: any[]) => void
 ```
 
-| Param      | Type                | Description                      | Since |
-| ---------- | ------------------- | -------------------------------- | ----- |
-| **`args`** | <code>any[]</code>  | The received array of arguments. | 1.0.0 |
+| Param      | Type               | Description                      | Since |
+| ---------- | ------------------ | -------------------------------- | ----- |
+| **`args`** | <code>any[]</code> | The received array of arguments. | 1.0.0 |
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ### channel.once(string, ...)
 
@@ -691,14 +683,13 @@ Listens one time to `eventName` and calls `listener(args...)` when a new message
 listener: (...args: any[]) => void
 ```
 
-| Param      | Type                | Description                      | Since |
-| ---------- | ------------------- | -------------------------------- | ----- |
-| **`args`** | <code>any[]</code>  | The received array of arguments. | 1.0.0 |
+| Param      | Type               | Description                      | Since |
+| ---------- | ------------------ | -------------------------------- | ----- |
+| **`args`** | <code>any[]</code> | The received array of arguments. | 1.0.0 |
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ### channel.addListener(string, ...)
 
@@ -717,14 +708,13 @@ Alias for [`channel.on(string, ...)`](#channelonstring).
 listener: (...args: any[]) => void
 ```
 
-| Param      | Type                | Description                      | Since |
-| ---------- | ------------------- | -------------------------------- | ----- |
-| **`args`** | <code>any[]</code>  | The received array of arguments. | 1.0.0 |
+| Param      | Type               | Description                      | Since |
+| ---------- | ------------------ | -------------------------------- | ----- |
+| **`args`** | <code>any[]</code> | The received array of arguments. | 1.0.0 |
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ### channel.removeListener(...)
 
@@ -741,8 +731,7 @@ Removes the specified `listener` from the listener array for the specified `even
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ### channel.removeAllListeners(...)
 
@@ -758,8 +747,7 @@ Removes all listeners, or those of the specified `eventName`.
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ## API - Capacitor layer
 
@@ -769,14 +757,14 @@ It has the following methods:
 
 <docgen-index>
 
-* [`start(...)`](#start)
-* [`send(...)`](#send)
-* [`whenReady()`](#whenready)
-* [`addListener(string, ...)`](#addlistenerstring)
-* [`removeListener(...)`](#removelistener)
-* [`removeAllListeners(...)`](#removealllisteners)
-* [Interfaces](#interfaces)
-* [Type Aliases](#type-aliases)
+- [`start(...)`](#start)
+- [`send(...)`](#send)
+- [`whenReady()`](#whenready)
+- [`addListener(string, ...)`](#addlistenerstring)
+- [`removeListener(...)`](#removelistener)
+- [`removeAllListeners(...)`](#removealllisteners)
+- [Interfaces](#interfaces)
+- [Type Aliases](#type-aliases)
 
 </docgen-index>
 
@@ -799,8 +787,7 @@ Starts the Node.js engine with properties as set by the `options`.
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ### send(...)
 
@@ -816,8 +803,7 @@ Sends a message to the Node.js process.
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ### whenReady()
 
@@ -829,8 +815,7 @@ Resolves when the Node.js process is initialized.
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ### addListener(string, ...)
 
@@ -852,8 +837,7 @@ Use [`removeListener(listenerFunc)`](#removelistener) instead.
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ### removeListener(...)
 
@@ -869,8 +853,7 @@ Removes the specified `listenerHandle` from the listener array for the event it 
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ### removeAllListeners(...)
 
@@ -886,11 +869,9 @@ Removes all listeners, or those of the specified `eventName`, for this plugin.
 
 **Since:** 1.0.0
 
---------------------
-
+---
 
 ### Interfaces
-
 
 #### StartOptions
 
@@ -903,11 +884,9 @@ An interface containing the options used when starting the Node.js engine manual
 | **`args`**    | <code>string[]</code>                       | A list of string arguments.                                                                                                                                                                                                                                              | 1.0.0 |
 | **`env`**     | <code><a href="#nodeenv">NodeEnv</a></code> | Environment key-value pairs.                                                                                                                                                                                                                                             | 1.0.0 |
 
-
 #### NodeEnv
 
 An interface that holds environment variables as string key-value pairs.
-
 
 #### ChannelPayloadData
 
@@ -919,13 +898,11 @@ along with arguments. Arguments will be serialized with JSON.
 | **`eventName`** | <code>string</code> | The name of the event being send to. | 1.0.0 |
 | **`args`**      | <code>any[]</code>  | The array of arguments to send.      | 1.0.0 |
 
-
 #### PluginListenerHandle
 
 | Prop         | Type                                      |
 | ------------ | ----------------------------------------- |
 | **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
-
 
 #### ChannelCallbackData
 
@@ -935,15 +912,15 @@ The callback data object when a message from the Node.js process arrives.
 | ---------- | ------------------ | -------------------------------- | ----- |
 | **`args`** | <code>any[]</code> | The received array of arguments. | 1.0.0 |
 
-
 ### Type Aliases
-
 
 #### ChannelListenerCallback
 
 The callback function to be called when listen to messages from the Node.js process.
 
-<code>(data: <a href="#channelcallbackdata">ChannelCallbackData</a>): void</code>
+<code>
+  (data: <a href="#channelcallbackdata">ChannelCallbackData</a>): void
+</code>
 
 </docgen-api>
 
