@@ -33,7 +33,7 @@
 **Capacitor v5 or newer is required. This project isn't compatible with lower versions of Capacitor.**
 
 ```bash
-npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.6/capacitor-nodejs.tgz
+npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.7/capacitor-nodejs.tgz
 npx cap sync
 ```
 
