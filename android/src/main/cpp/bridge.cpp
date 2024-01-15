@@ -1,14 +1,17 @@
 /*
  * Implements the bridge APIs between the native Java code and the Node.js engine.
- * https://github.com/nodejs-mobile/nodejs-mobile-cordova/blob/unstable/src/common/cordova-bridge/cordova-bridge.cpp
+ * Based on https://github.com/nodejs-mobile/nodejs-mobile-react-native/blob/main/android/src/main/cpp/rn-bridge.cpp
  */
 
 #include <map>
 #include <mutex>
 #include <queue>
 #include <string>
+#include <cstring>
+#include <cstdlib>
 
 #include "uv.h"
+#include "node.h"
 #include "bridge.h"
 #include "node_api.h"
 
@@ -21,28 +24,26 @@ void FlushMessageQueue(uv_async_t *handle);
 class Channel
 {
 private:
-  napi_env env = NULL;
-  napi_ref functionRef = NULL;
-  uv_async_t *uvHandleQueue = NULL;
+  v8::Isolate *isolate = nullptr;
+  v8::Persistent<v8::Function> function;
+  uv_async_t *uvHandleQueue = nullptr;
   std::mutex uvHandleMutex;
-  std::mutex mutexQueue;
+  std::mutex queueMutex;
   std::queue<char *> messageQueue;
   std::string name;
   bool initialized = false;
 
 public:
-  Channel(std::string name) : name(name){};
+  Channel(std::string name) : name(name) {};
 
-  // Set up the channel's node api data. This method can be called only once per channel.
-  void setNapiRefs(napi_env &env, napi_ref &functionRef)
+  // Set up the channel's V8 data. This method can be called only once per channel.
+  void setV8Function(v8::Isolate *isolate, v8::Local<v8::Function> func)
   {
+    this->isolate = isolate;
+    this->function.Reset(isolate, func);
     this->uvHandleMutex.lock();
-
-    if (this->uvHandleQueue == NULL)
+    if (this->uvHandleQueue == nullptr)
     {
-      this->env = env;
-      this->functionRef = functionRef;
-
       this->uvHandleQueue = (uv_async_t *)malloc(sizeof(uv_async_t));
       uv_async_init(uv_default_loop(), this->uvHandleQueue, FlushMessageQueue);
       this->uvHandleQueue->data = (void *)this;
@@ -50,8 +51,11 @@ public:
       uv_async_send(this->uvHandleQueue);
     }
     else
-      napi_throw_error(env, NULL, "Channel already exists.");
-
+    {
+      isolate->ThrowException(v8::Exception::TypeError(
+        v8::String::NewFromUtf8(isolate, "Channel already exists.").ToLocalChecked()
+      ));
+    }
     this->uvHandleMutex.unlock();
   };
 
@@ -59,9 +63,9 @@ public:
   // call us back to do the actual message delivery.
   void queueMessage(char *message)
   {
-    this->mutexQueue.lock();
+    this->queueMutex.lock();
     this->messageQueue.push(message);
-    this->mutexQueue.unlock();
+    this->queueMutex.unlock();
 
     if (initialized)
       uv_async_send(this->uvHandleQueue);
@@ -71,19 +75,19 @@ public:
   // threads and minimize lock retention.
   void flushQueue()
   {
-    char *message = NULL;
+    char *message = nullptr;
     bool empty = true;
 
-    this->mutexQueue.lock();
+    this->queueMutex.lock();
     if (!(this->messageQueue.empty()))
     {
       message = this->messageQueue.front();
       this->messageQueue.pop();
       empty = this->messageQueue.empty();
     }
-    this->mutexQueue.unlock();
+    this->queueMutex.unlock();
 
-    if (message != NULL)
+    if (message != nullptr)
     {
       this->invokeNodeListener(message);
       free(message);
@@ -97,28 +101,24 @@ public:
   // This method is always executed on the main libuv loop thread.
   void invokeNodeListener(char *message)
   {
-    napi_handle_scope scope;
-    napi_open_handle_scope(this->env, &scope);
+    v8::HandleScope scope(isolate);
 
-    napi_value nodeFunction;
-    napi_get_reference_value(this->env, this->functionRef, &nodeFunction);
-    napi_value global;
-    napi_get_global(this->env, &global);
+    v8::Local<v8::Function> nodeFunction = v8::Local<v8::Function>::New(isolate, function);
+    v8::Local<v8::Value> global = isolate->GetCurrentContext()->Global();
 
-    napi_value channelName;
-    napi_create_string_utf8(this->env, this->name.c_str(), this->name.size(), &channelName);
+    v8::Local<v8::String> channelName = v8::String::NewFromUtf8(isolate, this->name.c_str(), v8::NewStringType::kNormal).ToLocalChecked();
+    v8::Local<v8::String> channelMessage = v8::String::NewFromUtf8(isolate, message, v8::NewStringType::kNormal).ToLocalChecked();
 
-    napi_value channelMessage;
-    napi_create_string_utf8(this->env, message, strlen(message), &channelMessage);
+    const int argc = 2;
+    v8::Local<v8::Value> argv[argc] = { channelName, channelMessage };
 
-    size_t argc = 2;
-    napi_value argv[argc];
-    argv[0] = channelName;
-    argv[1] = channelMessage;
+    v8::MaybeLocal<v8::Value> result = nodeFunction->Call(isolate->GetCurrentContext(), global, argc, argv);
 
-    napi_value result;
-    napi_call_function(this->env, global, nodeFunction, argc, argv, &result);
-    napi_close_handle_scope(this->env, scope);
+    if (!result.IsEmpty())
+    {
+      v8::Local<v8::Value> local_result = result.ToLocalChecked();
+      // Do something with the result if needed
+    }
   };
 };
 
@@ -133,7 +133,7 @@ void FlushMessageQueue(uv_async_t *handle)
 std::mutex channelsMutex;
 std::map<std::string, Channel *> channels;
 
-callbackFunction sendMessageToNative = NULL;
+callbackFunction sendMessageToNative = nullptr;
 
 /*
  * Called by the native Java code to register the callback
@@ -148,7 +148,7 @@ void RegisterCallback(callbackFunction function)
 Channel *GetOrCreateChannel(std::string channelName)
 {
   channelsMutex.lock();
-  Channel *channel = NULL;
+  Channel *channel = nullptr;
   auto it = channels.find(channelName);
   if (it != channels.end())
     channel = it->second;
@@ -172,149 +172,64 @@ void SendMessageToNode(const char *channelName, const char *channelMessage)
   channel->queueMessage(message);
 }
 
-#define GET_AND_THROW_LAST_ERROR(env)                                                                                 \
-  do                                                                                                                  \
-  {                                                                                                                   \
-    const napi_extended_error_info *errorInfo;                                                                        \
-    napi_get_last_error_info((env), &errorInfo);                                                                      \
-                                                                                                                      \
-    bool isPending;                                                                                                   \
-    napi_is_exception_pending((env), &isPending);                                                                     \
-                                                                                                                      \
-    /* If an exception is already pending, don't rethrow it */                                                        \
-    if (!isPending)                                                                                                   \
-    {                                                                                                                 \
-      const char *errorMessage = errorInfo->error_message != NULL ? errorInfo->error_message : "empty error message"; \
-      napi_throw_error((env), NULL, errorMessage);                                                                    \
-    }                                                                                                                 \
-  } while (0)
-
-#define NAPI_ASSERT_BASE(env, assertion, message, returnValue)                      \
-  do                                                                                \
-  {                                                                                 \
-    if (!(assertion))                                                               \
-    {                                                                               \
-      napi_throw_error((env), NULL, "assertion (" #assertion ") failed: " message); \
-      return returnValue;                                                           \
-    }                                                                               \
-  } while (0)
-
-// Returns NULL on failed assertion.
-// This is meant to be used inside napi_callback methods.
-#define NAPI_ASSERT(env, assertion, message) NAPI_ASSERT_BASE(env, assertion, message, NULL)
-
-#define NAPI_CALL_BASE(env, call, returnValue) \
-  do                                           \
-  {                                            \
-    if ((call) != napi_ok)                     \
-    {                                          \
-      GET_AND_THROW_LAST_ERROR((env));         \
-      return returnValue;                      \
-    }                                          \
-  } while (0)
-
-// Returns NULL if the_call doesn't return napi_ok.
-#define NAPI_CALL(env, call) NAPI_CALL_BASE(env, call, NULL)
-
 // Send a message to the native Java code
-napi_value Method_SendMessage(napi_env env, napi_callback_info info)
+void Method_SendMessage(const v8::FunctionCallbackInfo<v8::Value> &args)
 {
-  size_t argc = 2;
-  napi_value args[argc];
+  v8::Isolate *isolate = args.GetIsolate();
+  if (args.Length() != 2)
+  {
+    isolate->ThrowException(v8::Exception::TypeError(
+      v8::String::NewFromUtf8(isolate, "Wrong number of arguments.").ToLocalChecked()
+    ));
+    return;
+  }
 
-  NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, NULL, NULL));
-  NAPI_ASSERT(env, argc == 2, "Wrong number of arguments.");
+  v8::String::Utf8Value channelName(isolate, args[0]);
+  std::string channelNameStr(*channelName);
 
-  // args[0] is the channel name
-  napi_value channelName = args[0];
-  napi_valuetype valueType0;
-  NAPI_CALL(env, napi_typeof(env, channelName, &valueType0));
-  NAPI_ASSERT(env, valueType0 == napi_string, "Expected a string.");
+  v8::String::Utf8Value channelMessage(isolate, args[1]);
+  std::string channelMessageStr(*channelMessage);
 
-  size_t length;
-  NAPI_CALL(env, napi_get_value_string_utf8(env, channelName, NULL, 0, &length));
-  std::unique_ptr<char[]> uniqueChannelNameBuffer(new char[length + 1]());
-  char *channelNameUtf8 = uniqueChannelNameBuffer.get();
-
-  size_t lengthCopied;
-  NAPI_CALL(env, napi_get_value_string_utf8(env, channelName, channelNameUtf8, length + 1, &lengthCopied));
-  NAPI_ASSERT(env, lengthCopied == length, "Couldn't fully copy the channel name.");
-
-  // args[1] is the message string
-  napi_value channelMessage = args[1];
-  napi_valuetype valueType1;
-  NAPI_CALL(env, napi_typeof(env, channelMessage, &valueType1));
-  if (valueType1 != napi_string)
-    NAPI_CALL(env, napi_coerce_to_string(env, channelMessage, &channelMessage));
-
-  length = 0;
-  NAPI_CALL(env, napi_get_value_string_utf8(env, channelMessage, NULL, 0, &length));
-  std::unique_ptr<char[]> uniqueMessageBuffer(new char[length + 1]());
-  char *channelMessageUtf8 = uniqueMessageBuffer.get();
-
-  lengthCopied = 0;
-  NAPI_CALL(env, napi_get_value_string_utf8(env, channelMessage, channelMessageUtf8, length + 1, &lengthCopied));
-  NAPI_ASSERT(env, lengthCopied == length, "Couldn't fully copy the message.");
-
-  NAPI_ASSERT(env, sendMessageToNative, "No callback is set in native code to receive the message.");
   if (sendMessageToNative)
-    sendMessageToNative(channelNameUtf8, channelMessageUtf8);
-
-  return nullptr;
+    sendMessageToNative(channelNameStr.c_str(), channelMessageStr.c_str());
 }
 
 // Register a channel and its listener
-napi_value Method_RegisterChannel(napi_env env, napi_callback_info info)
+void Method_RegisterChannel(const v8::FunctionCallbackInfo<v8::Value> &args)
 {
-  size_t argc = 2;
-  napi_value args[argc];
-  NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, NULL, NULL));
-  NAPI_ASSERT(env, argc == 2, "Wrong number of arguments.");
-
-  // args[0] is the channel name
-  napi_value channelName = args[0];
-  napi_valuetype valueType0;
-  NAPI_CALL(env, napi_typeof(env, channelName, &valueType0));
-  NAPI_ASSERT(env, valueType0 == napi_string, "Expected a string.");
-
-  size_t length;
-  NAPI_CALL(env, napi_get_value_string_utf8(env, channelName, NULL, 0, &length));
-  std::unique_ptr<char[]> uniqueChannelNameBuffer(new char[length + 1]());
-  char *channelNameUtf8 = uniqueChannelNameBuffer.get();
-
-  size_t lengthCopied;
-  NAPI_CALL(env, napi_get_value_string_utf8(env, channelName, channelNameUtf8, length + 1, &lengthCopied));
-  NAPI_ASSERT(env, lengthCopied == length, "Couldn't fully copy the channel name.");
-
-  // args[1] is the channel listener
-  napi_value listenerFunction = args[1];
-  napi_valuetype valueType1;
-  NAPI_CALL(env, napi_typeof(env, listenerFunction, &valueType1));
-  NAPI_ASSERT(env, valueType1 == napi_function, "Expected a function.");
-
-  napi_ref functionRef;
-  NAPI_CALL(env, napi_create_reference(env, listenerFunction, 1, &functionRef));
-
-  Channel *channel = GetOrCreateChannel(channelNameUtf8);
-  channel->setNapiRefs(env, functionRef);
-  return nullptr;
-}
-
-#define DECLARE_NAPI_METHOD(name, func)     \
-  {                                         \
-    name, 0, func, 0, 0, 0, napi_default, 0 \
+  v8::Isolate *isolate = args.GetIsolate();
+  if (args.Length() != 2)
+  {
+    isolate->ThrowException(v8::Exception::TypeError(
+      v8::String::NewFromUtf8(isolate, "Wrong number of arguments.").ToLocalChecked()
+    ));
+    return;
   }
 
-napi_value Init(napi_env env, napi_value exports)
+  v8::String::Utf8Value channelName(isolate, args[0]);
+  std::string channelNameStr(*channelName);
+
+  if (!args[1]->IsFunction())
+  {
+    isolate->ThrowException(v8::Exception::TypeError(
+      v8::String::NewFromUtf8(isolate, "Expected a function.").ToLocalChecked()
+    ));
+    return;
+  }
+
+  v8::Local<v8::Function> listener = v8::Local<v8::Function>::Cast(args[1]);
+
+  v8::Persistent<v8::Function> ref_to_function(isolate, listener);
+
+  Channel *channel = GetOrCreateChannel(channelNameStr);
+  channel->setV8Function(isolate, listener); // ref_to_function
+}
+
+void Init(v8::Local<v8::Object> exports)
 {
-  napi_status status;
-  napi_property_descriptor properties[] = {
-      DECLARE_NAPI_METHOD("emit", Method_SendMessage),
-      DECLARE_NAPI_METHOD("registerChannel", Method_RegisterChannel),
-  };
-  NAPI_CALL(env, napi_define_properties(env, exports, sizeof(properties) / sizeof(*properties), properties));
-  return exports;
+  NODE_SET_METHOD(exports, "emit", Method_SendMessage);
+  NODE_SET_METHOD(exports, "registerChannel", Method_RegisterChannel);
 }
 
 // Register the bridge to the native Java code at libnode startup
-NAPI_MODULE_X(nativeBridge, Init, NULL, NM_F_LINKED)
+NODE_MODULE_LINKED(nativeBridge, Init);

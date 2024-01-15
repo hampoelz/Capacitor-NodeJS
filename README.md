@@ -37,9 +37,6 @@ npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.
 npx cap sync
 ```
 
-> [!NOTE]  
-> For now Android 32-bit x86 support is disabled since Capacitor-NodeJS v1.0.0-beta.2 _(based on node.js v16)_ as there is currently no support for it in the latest version of the nodejs-mobile core library.
-
 ### Supported Platforms
 
 - [x] Android
