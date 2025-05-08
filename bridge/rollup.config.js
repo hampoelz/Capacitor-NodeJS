@@ -2,7 +2,7 @@ import { join } from 'path';
 import copy from 'rollup-plugin-copy';
 import dts from 'rollup-plugin-dts';
 
-import { version } from '../package.json';
+import packageJson from '../package.json' with { type: 'json' };
 
 const outputName = 'index';
 
@@ -51,7 +51,7 @@ function generateCopyTargets() {
       src: 'bridge/package.module.json',
       dest: outputDest,
       rename: 'package.json',
-      transform: (contents) => contents.toString().replace('__VERSION__', version),
+      transform: (contents) => contents.toString().replace('__VERSION__', packageJson.version),
     };
   }
 
@@ -87,7 +87,7 @@ export default [
             src: 'bridge/package.types.json',
             dest: 'assets/types/bridge/',
             rename: 'package.json',
-            transform: (contents) => contents.toString().replace('__VERSION__', version),
+            transform: (contents) => contents.toString().replace('__VERSION__', packageJson.version),
           },
         ],
       }),
