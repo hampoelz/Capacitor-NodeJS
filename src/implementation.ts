@@ -11,7 +11,7 @@ export interface CapacitorNodeJSPlugin {
   addListener(
     eventName: string,
     listenerFunc: ChannelListenerCallback,
-  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+  ): Promise<PluginListenerHandle>;
 }
 
 const CapacitorNodeJS = registerPlugin<CapacitorNodeJSPlugin>('CapacitorNodeJS', {

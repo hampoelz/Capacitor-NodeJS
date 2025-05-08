@@ -39,7 +39,7 @@ export interface NodeJSInterface {
   addListener(
     eventName: string,
     listenerFunc: ChannelListenerCallback,
-  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+  ): Promise<PluginListenerHandle>;
 
   /**
    * Removes the specified `listenerHandle` from the listener array for the event it refers to.
@@ -59,7 +59,7 @@ export interface NodeJSInterface {
 class NodeJSPlugin implements NodeJSInterface {
   private readonly listenerList: {
     eventName: string;
-    listenerHandle: Promise<PluginListenerHandle> & PluginListenerHandle;
+    listenerHandle: Promise<PluginListenerHandle>;
   }[] = [];
 
   start(args?: StartOptions): Promise<void> {
@@ -77,12 +77,12 @@ class NodeJSPlugin implements NodeJSInterface {
   addListener(
     eventName: string,
     listenerFunc: ChannelListenerCallback,
-  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+  ): Promise<PluginListenerHandle>;
 
   addListener(
     eventName: any,
     listenerFunc: ChannelListenerCallback,
-  ): Promise<PluginListenerHandle> & PluginListenerHandle {
+  ): Promise<PluginListenerHandle> {
     const listenerHandle = CapacitorNodeJS.addListener(eventName, (data: ChannelCallbackData) => {
       listenerFunc(data);
     });

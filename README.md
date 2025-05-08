@@ -543,8 +543,8 @@ import { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   plugins: {
     CapacitorNodeJS: {
-      nodeDir: 'custom-nodejs',
-      startMode: 'manual',
+      nodeDir: "custom-nodejs",
+      startMode: "manual",
     },
   },
 };
@@ -754,14 +754,14 @@ It has the following methods:
 
 <docgen-index>
 
-- [`start(...)`](#start)
-- [`send(...)`](#send)
-- [`whenReady()`](#whenready)
-- [`addListener(string, ...)`](#addlistenerstring)
-- [`removeListener(...)`](#removelistener)
-- [`removeAllListeners(...)`](#removealllisteners)
-- [Interfaces](#interfaces)
-- [Type Aliases](#type-aliases)
+* [`start(...)`](#start)
+* [`send(...)`](#send)
+* [`whenReady()`](#whenready)
+* [`addListener(string, ...)`](#addlistenerstring-)
+* [`removeListener(...)`](#removelistener)
+* [`removeAllListeners(...)`](#removealllisteners)
+* [Interfaces](#interfaces)
+* [Type Aliases](#type-aliases)
 
 </docgen-index>
 
@@ -784,7 +784,8 @@ Starts the Node.js engine with properties as set by the `options`.
 
 **Since:** 1.0.0
 
----
+--------------------
+
 
 ### send(...)
 
@@ -800,7 +801,8 @@ Sends a message to the Node.js process.
 
 **Since:** 1.0.0
 
----
+--------------------
+
 
 ### whenReady()
 
@@ -812,12 +814,13 @@ Resolves when the Node.js process is initialized.
 
 **Since:** 1.0.0
 
----
+--------------------
+
 
 ### addListener(string, ...)
 
 ```typescript
-addListener(eventName: string, listenerFunc: ChannelListenerCallback) => Promise<PluginListenerHandle> & PluginListenerHandle
+addListener(eventName: string, listenerFunc: ChannelListenerCallback) => Promise<PluginListenerHandle>
 ```
 
 Listens to `eventName` and calls `listenerFunc(data)` when a new message arrives from the Node.js process.
@@ -830,11 +833,12 @@ Use [`removeListener(listenerFunc)`](#removelistener) instead.
 | **`eventName`**    | <code>string</code>                                                         |
 | **`listenerFunc`** | <code><a href="#channellistenercallback">ChannelListenerCallback</a></code> |
 
-**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
 **Since:** 1.0.0
 
----
+--------------------
+
 
 ### removeListener(...)
 
@@ -850,7 +854,8 @@ Removes the specified `listenerHandle` from the listener array for the event it 
 
 **Since:** 1.0.0
 
----
+--------------------
+
 
 ### removeAllListeners(...)
 
@@ -866,9 +871,11 @@ Removes all listeners, or those of the specified `eventName`, for this plugin.
 
 **Since:** 1.0.0
 
----
+--------------------
+
 
 ### Interfaces
+
 
 #### StartOptions
 
@@ -881,9 +888,11 @@ An interface containing the options used when starting the Node.js engine manual
 | **`args`**    | <code>string[]</code>                       | A list of string arguments.                                                                                                                                                                                                                                              | 1.0.0 |
 | **`env`**     | <code><a href="#nodeenv">NodeEnv</a></code> | Environment key-value pairs.                                                                                                                                                                                                                                             | 1.0.0 |
 
+
 #### NodeEnv
 
 An interface that holds environment variables as string key-value pairs.
+
 
 #### ChannelPayloadData
 
@@ -895,11 +904,13 @@ along with arguments. Arguments will be serialized with JSON.
 | **`eventName`** | <code>string</code> | The name of the event being send to. | 1.0.0 |
 | **`args`**      | <code>any[]</code>  | The array of arguments to send.      | 1.0.0 |
 
+
 #### PluginListenerHandle
 
 | Prop         | Type                                      |
 | ------------ | ----------------------------------------- |
 | **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
+
 
 #### ChannelCallbackData
 
@@ -909,15 +920,15 @@ The callback data object when a message from the Node.js process arrives.
 | ---------- | ------------------ | -------------------------------- | ----- |
 | **`args`** | <code>any[]</code> | The received array of arguments. | 1.0.0 |
 
+
 ### Type Aliases
+
 
 #### ChannelListenerCallback
 
 The callback function to be called when listen to messages from the Node.js process.
 
-<code>
-  (data: <a href="#channelcallbackdata">ChannelCallbackData</a>): void
-</code>
+<code>(data: <a href="#channelcallbackdata">ChannelCallbackData</a>): void</code>
 
 </docgen-api>
 
