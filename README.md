@@ -926,7 +926,8 @@ The callback function to be called when listen to messages from the Node.js proc
 <p align="center">
   Made with ❤️ by Rene Hampölz
   <br><br>
-  <a href="https://github.com/hampoelz"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"></a>
-  <a href="https://www.instagram.com/rene_hampi/"><img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram"></a>
-  <a href="https://twitter.com/rene_hampi/"><img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter"></a>
+  <a href="https://hampi.at/requests/github"><img src="https://img.shields.io/badge/Email-181717?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOS4zODEiIGhlaWdodD0iOS42MzkiIHZpZXdCb3g9IjAgMCAyLjQ4MiAyLjU1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjx0ZXh0IHhtbDpzcGFjZT0icHJlc2VydmUiIHN0eWxlPSJmb250LXNpemU6My4xNzVweDtmaWxsOiMwMDA7c3Ryb2tlLXdpZHRoOi4yNjQ1ODMiIHg9IjkxLjg2NyIgeT0iMTEwLjEyNyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTkyLjA1IC0xMDcuODYzKSI+PHRzcGFuIHN0eWxlPSJmb250LXN0eWxlOm5vcm1hbDtmb250LXZhcmlhbnQ6bm9ybWFsO2ZvbnQtd2VpZ2h0OjQwMDtmb250LXN0cmV0Y2g6bm9ybWFsO2ZvbnQtZmFtaWx5OidPcGVuIFNhbnMnOy1pbmtzY2FwZS1mb250LXNwZWNpZmljYXRpb246J09wZW4gU2Fucyc7ZmlsbDojZmZmO2ZpbGwtb3BhY2l0eToxO3N0cm9rZS13aWR0aDouMjY0NTgzIiB4PSI5MS44NjciIHk9IjExMC4xMjciPkA8L3RzcGFuPjwvdGV4dD48L3N2Zz4=" alt="Email"></a>
+  <a href="https://hampi.at/github"><img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"></a>
+  <a href="https://hampi.at/discord"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://hampi.at/instagram"><img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram"></a>
 </p>
