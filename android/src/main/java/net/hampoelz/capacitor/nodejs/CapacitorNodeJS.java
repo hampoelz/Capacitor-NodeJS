@@ -57,7 +57,7 @@ public class CapacitorNodeJS {
         protected void setReady() {
             isEngineReady = true;
 
-            while (whenEngineReadyListeners.size() > 0) {
+            while (!whenEngineReadyListeners.isEmpty()) {
                 final PluginCall whenEngineReadyListener = whenEngineReadyListeners.get(0);
                 whenEngineReadyListeners.remove(0);
                 whenEngineReadyListener.resolve();

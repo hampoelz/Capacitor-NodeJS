@@ -12,7 +12,7 @@ public class NodeProcess {
         System.loadLibrary("node");
     }
 
-    private native Integer nativeStart(String[] arguments, String[][] environmentVariables, boolean redirectOutputToLogcat);
+    private native int nativeStart(String[] arguments, String[][] environmentVariables, boolean redirectOutputToLogcat);
 
     private native void nativeSend(String channelName, String message);
 
