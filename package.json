@@ -1,6 +1,6 @@
 {
   "name": "capacitor-nodejs",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "description": "A full-fledged Node.js runtime for Capacitor apps",
   "type": "module",
   "main": "dist/plugin.cjs.js",
@@ -92,8 +92,5 @@
     "electron": {
       "src": "electron"
     }
-  },
-  "engines": {
-    "node": ">=20.10"
   }
 }
