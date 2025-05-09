@@ -3,16 +3,33 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
   "postCreateCommand": "npm install",
-  "remoteUser": "node",
   "customizations": {
     "vscode": {
       "extensions": [
         "Ionic.ionic",
+        "redhat.java",
         "vscjava.vscode-gradle",
+        "vscjava.vscode-java-dependency",
         "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode"
-      ]
+        "esbenp.prettier-vscode",
+        "ms-vscode.cpptools"
+      ],
+      "settings": {
+        "[cpp]": {
+          "editor.defaultFormatter": "ms-vscode.cpptools"
+        },
+        "C_Cpp.formatting": "vcFormat",
+        "C_Cpp.vcFormat.space.pointerReferenceAlignment": "left"
+      }
     }
   }
 }
