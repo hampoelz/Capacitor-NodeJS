@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0-beta.9] - Unreleased
 
+### Changed
+
+- Update to Capacitor v7 ([#28](https://github.com/hampoelz/Capacitor-NodeJS/issues/28))
+  - **Breaking:** Drop support for Capacitor v6
+
 ## [1.0.0-beta.8] - 2025-05-08
 
 ### Changed
