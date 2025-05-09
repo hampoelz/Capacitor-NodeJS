@@ -30,10 +30,12 @@
 
 ## Install
 
-**Capacitor v6 or newer is required.**
+**Capacitor v7 or newer is required.**
+
+> _If you need Capacitor v6 support, you can use `v1.0.0-beta.8` of this plugin._
 
 ```bash
-npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.8/capacitor-nodejs.tgz
+npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.9/capacitor-nodejs.tgz
 npx cap sync
 ```
 
