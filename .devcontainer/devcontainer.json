@@ -8,14 +8,14 @@
       "version": "21"
     },
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "20"
+      "version": "22"
     }
   },
   "postCreateCommand": "npm install",
   "customizations": {
     "vscode": {
       "extensions": [
-        "Ionic.ionic",
+        "WebNative.webnative",
         "redhat.java",
         "vscjava.vscode-gradle",
         "vscjava.vscode-java-dependency",
