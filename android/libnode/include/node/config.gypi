@@ -10,7 +10,7 @@
                  'enable_pgo_use': 'false',
                  'error_on_warn': 'false',
                  'force_dynamic_crt': 0,
-                 'gas_version': '2.34',
+                 'gas_version': '2.38',
                  'host_arch': 'x64',
                  'icu_data_in': '../../deps/icu-tmp/icudt74l.dat',
                  'icu_endianness': 'l',
