@@ -2,11 +2,15 @@
 
 :arrow_right: A full-fledged [Node.js](https://nodejs.org/) runtime for [Capacitor](https://capacitorjs.com) apps.
 
-> [!NOTE]  
-> This project uses the [Node.js for Mobile Apps](https://github.com/nodejs-mobile/nodejs-mobile) toolkit to add Node.js support in Android and iOS
-
-> [!WARNING]  
-> **WIP - Work in Progress**
+> [!CAUTION]
+> **TL;DR: This plugin is no longer recommended for new projects. Consider migrating to [Tauri](https://tauri.app/).**
+>
+> Due to unmaintained upstream dependencies, I strongly encourage existing projects to migrate away. Continuing to use this plugin presents several security and performance concerns:
+> - **Outdated Node.js**: The underlying [Node.js for Mobile Apps](https://github.com/nodejs-mobile/nodejs-mobile) toolkit is unmaintained and stuck on Node.js 18.20, which reached end-of-life in mid-2025.
+> - **Outdated Electron Support**: As of `v1.0.0-beta.10`, Electron support has been removed. The required [`capacitor-community/electron`](https://github.com/capacitor-community/electron) plugin is similarly unmaintained and depends on Electron 26, which reached end-of-life in early 2024.
+> - Beyond these security and maintenance risks, embedding a full Node.js runtime heavily inflates app size, slows down startup times, and increases runtime memory consumption compared to modern alternatives.
+>
+> **I strongly recommend [Tauri](https://tauri.app/) instead.** Tauri allows you to reuse your existing web frontend while using a lightweight Rust-based backend. With Tauri v2+, both desktop and mobile platforms are supported from a single codebase.
 
 **Table of contents**
 
@@ -30,12 +34,10 @@
 
 ## Install
 
-**Capacitor v7 or newer is required.**
-
-> _If you need Capacitor v6 support, you can use `v1.0.0-beta.8` of this plugin._
+**Capacitor v8 or newer is required.**
 
 ```bash
-npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.9/capacitor-nodejs.tgz
+npm install https://github.com/hampoelz/capacitor-nodejs/releases/download/v1.0.0-beta.10/capacitor-nodejs.tgz
 npx cap sync
 ```
 
@@ -43,10 +45,10 @@ npx cap sync
 
 - [x] Android
 - [ ] IOS _(coming soon)_
-- [x] Using the [`capacitor-community/electron` plugin](https://github.com/capacitor-community/electron):
-  - [x] Windows
-  - [x] Linux
-  - [x] macOS
+- [x] ~~Using the [`capacitor-community/electron` plugin](https://github.com/capacitor-community/electron):~~
+  - [x] ~~Windows~~
+  - [x] ~~Linux~~
+  - [x] ~~macOS~~
 - [ ] _Web (maybe in future with WebAssembly?)_
 
 ## Examples
@@ -518,7 +520,7 @@ These config values are available:
 | Prop            | Type                            | Description                                                                                                                                                                                                                               | Default               | Since |
 | --------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | ----- |
 | **`nodeDir`**   | <code>string</code>             | Relative path of the integrated Node.js project based on the Capacitor webdir.                                                                                                                                                            | <code>"nodejs"</code> | 1.0.0 |
-| **`startMode`** | <code>'auto' \| 'manual'</code> | Startup mode of the Node.js engine. The following values are accepted: **`auto`**: The Node.js engine starts automatically when the application is launched. **`manual`**: The Node.js engine is started via the `NodeJS.start()` method. | <code>"auto"</code>   | 1.0.0 |
+| **`startMode`** | <code>'manual' \| 'auto'</code> | Startup mode of the Node.js engine. The following values are accepted: **`auto`**: The Node.js engine starts automatically when the application is launched. **`manual`**: The Node.js engine is started via the `NodeJS.start()` method. | <code>"auto"</code>   | 1.0.0 |
 
 ### Examples
 
