@@ -6,7 +6,7 @@ import packageJson from '../package.json' with { type: 'json' };
 
 const outputName = 'index';
 
-const destinations = ['android/src/main/assets/builtin_modules/bridge', 'electron/assets/builtin_modules/bridge'];
+const destinations = ['android/src/main/assets/builtin_modules/bridge'];
 
 function generateOutputConfig() {
   const outputConfig = [];
