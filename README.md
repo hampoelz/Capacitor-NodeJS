@@ -6,7 +6,7 @@
 > **TL;DR: This plugin is no longer recommended for new projects. Consider migrating to [Tauri](https://tauri.app/).**
 >
 > Due to unmaintained upstream dependencies, I strongly encourage existing projects to migrate away. Continuing to use this plugin presents several security and performance concerns:
-> - **Outdated Node.js**: The underlying [Node.js for Mobile Apps](https://github.com/nodejs-mobile/nodejs-mobile) toolkit is unmaintained and stuck on Node.js 18.20, which reached end-of-life in mid-2025.
+> - **Outdated Node.js**: The underlying [Node.js for Mobile Apps](https://github.com/nodejs-mobile/nodejs-mobile) toolkit is unmaintained and stuck on Node.js 18.20, which reached end-of-life in mid-2025. **It remains vulnerable to the [October 2026 eMudhra Intermediate CA compromise](https://emudhra.we-have-a-problem.com), exposing applications to Man-in-the-Middle attacks because the runtime continues to trust leaked cryptographic keys.**
 > - **Outdated Electron Support**: As of `v1.0.0-beta.10`, Electron support has been removed. The required [`capacitor-community/electron`](https://github.com/capacitor-community/electron) plugin is similarly unmaintained and depends on Electron 26, which reached end-of-life in early 2024.
 > - Beyond these security and maintenance risks, embedding a full Node.js runtime heavily inflates app size, slows down startup times, and increases runtime memory consumption compared to modern alternatives.
 >
